@@ -2,26 +2,360 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Premium Obsidian Backgrounds */
+    --color-bg: #0A0A0C;
+    --color-surface: #0F0F12;
+    --color-surface-alt: #16161A;
+    
+    /* Text - High contrast but soft */
+    --color-text: #EDEDED;
+    --color-text-secondary: #8A8A8A;
+    --color-text-tertiary: #6B6B6B;
+    
+    /* Accent (Used extremely sparingly) */
+    --color-accent: #00B8D4;
+    --color-accent-hover: #00E5FF;
+    --color-accent-muted: rgba(0, 184, 212, 0.08);
+    
+    /* CTA Button - Stark contrast */
+    --color-cta-bg: #EDEDED;
+    --color-cta-text: #0A0A0C;
+    --color-cta-hover: #FFFFFF;
+    
+    /* Structural / Architectural Lines */
+    --color-border: #222225;
+    --color-border-muted: #1A1A1D;
+
+    /* Spacing Scale */
+    --space-0:    0px;
+    --space-1:    4px;
+    --space-2:    8px;
+    --space-3:    12px;
+    --space-4:    16px;
+    --space-5:    20px;
+    --space-6:    24px;
+    --space-7:    28px;
+    --space-8:    32px;
+    --space-10:   40px;
+    --space-12:   48px;
+    --space-14:   56px;
+    --space-16:   64px;
+    --space-20:   80px;
+    --space-24:   96px;
+    --space-28:   112px;
+    --space-32:   128px;
+
+    /* Grid System */
+    --grid-cols: 12;
+    --grid-gap: clamp(1rem, 2vw, 1.5rem); /* Tighter gap for editorial precision */
+    --container-max: 1440px;
+
+    /* Border Radius - Brutalist/Editorial (Zero) */
+    --radius-button:  0px;
+    --radius-input:   0px;
+    --radius-card:    0px;
+    --radius-image:   0px;
+    --radius-subtle:  0px;
+
+    /* Borders */
+    --border-width:   1px;
+
+    /* Shadows - Disabled for flat architectural look */
+    --shadow-sm:  none;
+    --shadow-md:  none;
+    --shadow-lg:  none;
+    --shadow-xl:  none;
+
+    /* Depth System */
+    --z-atmosphere: -10;
+    --z-document: 0;
+    --z-interface: 10;
+    
+    /* Motion System */
+    --duration-fast: 150ms;
+    --duration-standard: 300ms;
+    --duration-slow: 600ms;
+    --duration-ambient: 3000ms;
+    
+    --ease-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-linear: linear;
+    
+    --perspective-standard: 1000px;
+
+    /* Fonts */
+    --font-display: var(--font-display, 'IBM Plex Serif', Georgia, serif);
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    --font-mono: var(--font-mono, 'IBM Plex Mono', 'Monaco', 'Courier New', monospace);
+  }
+
+  html {
+    scroll-padding-top: 5rem; /* Prevents sticky header clipping anchored content */
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden; /* Prevent horizontal scrollbars on mobile */
+  }
+
+  /* Responsive Grid Adjustments */
+  @media (max-width: 1023px) and (min-width: 768px) {
+    :root {
+      --grid-cols: 8;
+      --grid-gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 767px) {
+    :root {
+      --grid-cols: 4;
+      --grid-gap: 1rem;
+    }
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .text-display {
+    font-size: clamp(2.5rem, 5vw, 80px); /* Tamed aggressive scale to prevent collision */
+    font-weight: 300; /* Lighter weight for elegance */
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-family: var(--font-display);
+  }
+
+  .text-display-secondary {
+    font-size: clamp(2rem, 4vw, 56px); /* Tamed aggressive scale */
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    font-family: var(--font-display);
+  }
+
+  .text-headline {
+    font-size: clamp(1.5rem, 3vw, 40px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-family: var(--font-display);
+  }
+
+  .text-subheading {
+    font-size: clamp(1.25rem, 2vw, 24px);
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0px;
+    font-family: var(--font-body);
+  }
+
+  .text-body-large {
+    font-size: clamp(1rem, 1.2vw, 18px);
+    font-weight: 400;
+    line-height: 1.75;
+    letter-spacing: 0px;
+    font-family: var(--font-body);
+  }
+
+  .text-body {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0px;
+    font-family: var(--font-body);
+  }
+
+  .text-body-small {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0px;
+    font-family: var(--font-body);
+  }
+
+  .text-label {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: var(--font-body);
+  }
+
+  .text-caption {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: 0px;
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+  }
+
+  .text-mono {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0px;
+    font-family: var(--font-mono);
+  }
+
+  .text-mono-label {
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+  }
+
+  /* Grid Container - precise alignment */
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    gap: var(--grid-gap);
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 5vw, 4rem);
+  }
+  
+  /* Architectural drafting background pattern */
+  .bg-blueprint {
+    background-image: 
+      linear-gradient(var(--color-border-muted) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-border-muted) 1px, transparent 1px);
+    background-size: clamp(3rem, 5vw, 6rem) clamp(3rem, 5vw, 6rem);
+    background-position: center top;
+  }
+  
+  /* Technical Corner Marks (+) */
+  .corner-marks {
+    position: relative;
+  }
+  .corner-marks::before,
+  .corner-marks::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .corner-marks::before {
+    top: -4px;
+    left: -4px;
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
+    background: 
+      linear-gradient(to right, var(--color-text-secondary) 1px, transparent 1px) 0 0,
+      linear-gradient(to right, var(--color-text-secondary) 1px, transparent 1px) 100% 0,
+      linear-gradient(to bottom, var(--color-text-secondary) 1px, transparent 1px) 0 0,
+      linear-gradient(to bottom, var(--color-text-secondary) 1px, transparent 1px) 0 100%;
+    background-size: 8px 8px;
+    background-repeat: no-repeat;
+  }
+  
+  /* Architecture Diagram Ticks */
+  .tech-frame {
+    position: relative;
+    border: 1px solid var(--color-border);
+  }
+  .tech-frame::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    bottom: -1px;
+    left: -1px;
+    right: -1px;
+    border-left: 1px dashed var(--color-text-tertiary);
+    border-top: 1px dashed var(--color-text-tertiary);
+    pointer-events: none;
+  }
+
+  /* Atmosphere Layer */
+  .bg-atmosphere {
+    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+  }
+
+  /* Intro Sequence Animations */
+  @keyframes reveal-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes reveal-down {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes reveal-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scan-reveal {
+    0% { clip-path: inset(0 0 100% 0); }
+    100% { clip-path: inset(0 0 0 0); }
+  }
+  @keyframes sharp-wipe {
+    0% { transform: scaleX(0); transform-origin: left; }
+    100% { transform: scaleX(1); transform-origin: left; }
+  }
+  @keyframes draw-line {
+    0% { height: 0; }
+    100% { height: 100%; }
+  }
+  
+  .animate-reveal-up {
+    opacity: 0;
+    animation: reveal-up var(--duration-slow) var(--ease-out-expo) forwards;
+  }
+  
+  .animate-reveal-down {
+    opacity: 0;
+    animation: reveal-down var(--duration-slow) var(--ease-out-expo) forwards;
+  }
+  
+  .animate-reveal-fade {
+    opacity: 0;
+    animation: reveal-fade var(--duration-slow) var(--ease-standard) forwards;
+  }
+
+  .animate-scan {
+    animation: scan-reveal var(--duration-slow) var(--ease-out-expo) forwards;
+  }
+  
+  /* Stagger delays */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+  .delay-600 { animation-delay: 600ms; }
+  .delay-700 { animation-delay: 700ms; }
+  .delay-1000 { animation-delay: 1000ms; }
+
+  /* Accessibility: Prefers Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    
+    .animate-reveal-up,
+    .animate-reveal-down,
+    .animate-reveal-fade,
+    .animate-scan {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+      clip-path: none !important;
+    }
   }
 }
