@@ -1,0 +1,998 @@
+"use client";
+
+import * as React from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion } from "motion/react";
+import { cn } from "@/lib/utils";
+import { ArrowRight, Mail, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import * as SeparatorPrimitive from "@radix-ui/react-separator";
+import * as d3 from "d3";
+import { feature } from "topojson-client";
+import type {
+  Topology,
+  GeometryCollection,
+  GeometryObject,
+} from "topojson-specification";
+import type { GeoPermissibleObjects } from "d3";
+
+const smoothEase = [0.25, 0.1, 0.25, 1] as const;
+
+function GithubIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+      <path d="M9 18c-4.51 2-5-2-7-2" />
+    </svg>
+  );
+}
+
+function LinkedinIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect width="4" height="12" x="2" y="9" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
+export interface ContactLinkItem {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  href: string;
+}
+
+const DEFAULT_CONTACT_LINKS: ContactLinkItem[] = [
+  {
+    icon: Mail,
+    label: "shivamsinghabc439@gmail.com",
+    href: "mailto:shivamsinghabc439@gmail.com",
+  },
+  {
+    icon: LinkedinIcon,
+    label: "linkedin.com/in/shivam2105-",
+    href: "https://www.linkedin.com/in/shivam2105-",
+  },
+  {
+    icon: GithubIcon,
+    label: "github.com/shivamsinghsp",
+    href: "https://github.com/shivamsinghsp",
+  },
+];
+
+interface GlobeWireframeProps {
+  width?: number;
+  height?: number;
+  className?: string;
+  strokeColor?: string;
+  strokeWidth?: number;
+  graticuleColor?: string;
+  graticuleOpacity?: number;
+  sphereOutlineColor?: string;
+  sphereOutlineWidth?: number;
+  autoRotate?: boolean;
+  autoRotateSpeed?: number;
+  rotateToLocation?: string | [number, number];
+  rotateCities?: string[];
+  rotationSpeed?: number;
+  initialRotation?: [number, number];
+  enableInteraction?: boolean;
+  showGraticule?: boolean;
+  animationDuration?: number;
+  startAsGlobe?: boolean;
+  countryFillColor?: string;
+  countryHoverColor?: string;
+  variant?: "wireframe" | "wireframesolid" | "solid";
+  scale?: number;
+  backgroundColor?: string;
+}
+
+interface GeoFeature {
+  type: string;
+  geometry: GeometryObject;
+  properties: Record<string, unknown>;
+}
+
+interface WorldAtlasTopology extends Topology {
+  objects: {
+    countries: GeometryCollection;
+  };
+}
+
+interface CustomProjection extends d3.GeoProjection {
+  alpha(value: number): CustomProjection;
+  alpha(): number;
+}
+
+const cityCoordinates: Record<string, [number, number]> = {
+  "san francisco": [37.7749, -122.4194],
+  "new york": [40.7128, -74.006],
+  london: [51.5074, -0.1278],
+  tokyo: [35.6762, 139.6503],
+  paris: [48.8566, 2.3522],
+  moscow: [55.7558, 37.6176],
+  dubai: [25.2048, 55.2708],
+  singapore: [1.3521, 103.8198],
+  sydney: [-33.8688, 151.2093],
+  mumbai: [19.076, 72.8777],
+  "los angeles": [34.0522, -118.2437],
+  chicago: [41.8781, -87.6298],
+};
+
+function orthographicRaw(x: number, y: number): [number, number] {
+  const cosy = Math.cos(y);
+  return [cosy * Math.sin(x), Math.sin(y)];
+}
+
+function equirectangularRaw(lambda: number, phi: number): [number, number] {
+  return [lambda, phi];
+}
+
+function interpolateProjection(
+  raw0: (lambda: number, phi: number) => [number, number],
+  raw1: (lambda: number, phi: number) => [number, number],
+): CustomProjection {
+  let t = 0;
+
+  const createRawProjection = (
+    alpha: number,
+  ): ((lambda: number, phi: number) => [number, number]) => {
+    return (lambda: number, phi: number): [number, number] => {
+      const [x0, y0] = raw0(lambda, phi);
+      const [x1, y1] = raw1(lambda, phi);
+      return [x0 + alpha * (x1 - x0), y0 + alpha * (y1 - y0)];
+    };
+  };
+
+  const projection = d3.geoProjection(
+    createRawProjection(t),
+  ) as unknown as CustomProjection;
+
+  const alphaMethod = ((value?: number): CustomProjection | number => {
+    if (value !== undefined) {
+      t = +value;
+      const newProjection = d3.geoProjection(
+        createRawProjection(t),
+      ) as unknown as CustomProjection;
+
+      if (projection.scale()) newProjection.scale(projection.scale());
+      if (projection.translate())
+        newProjection.translate(projection.translate());
+      if (projection.rotate()) newProjection.rotate(projection.rotate());
+      if (projection.precision())
+        newProjection.precision(projection.precision());
+
+      newProjection.alpha = alphaMethod as CustomProjection["alpha"];
+
+      return newProjection;
+    }
+    return t;
+  }) as CustomProjection["alpha"];
+
+  projection.alpha = alphaMethod;
+
+  return projection;
+}
+
+function GlobeWireframe({
+  width,
+  height,
+  className = "aspect-square w-full max-w-150",
+  strokeColor = "currentColor",
+  strokeWidth = 1.0,
+  graticuleColor = "currentColor",
+  graticuleOpacity = 0.2,
+  sphereOutlineColor = "currentColor",
+  sphereOutlineWidth = 1,
+  autoRotate = true,
+  autoRotateSpeed = 0.5,
+  rotateToLocation,
+  rotateCities = [],
+  rotationSpeed = 3000,
+  initialRotation = [0, 0],
+  enableInteraction = true,
+  showGraticule = true,
+  startAsGlobe = true,
+  countryFillColor,
+  countryHoverColor,
+  variant = "wireframe",
+  scale = 1,
+  backgroundColor,
+}: GlobeWireframeProps) {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [progress] = useState(startAsGlobe ? 0 : 100);
+  const [worldData, setWorldData] = useState<GeoFeature[]>([]);
+  const [rotation, setRotation] = useState<[number, number]>(initialRotation);
+  const [isDragging, setIsDragging] = useState(false);
+  const [lastMouse, setLastMouse] = useState([0, 0]);
+  const [isVisible, setIsVisible] = useState(true);
+  const rotationInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+  const rotationAnimFrame = useRef<number | null>(null);
+  const rotationStartTime = useRef<number | null>(null);
+  const rotationFrom = useRef<[number, number]>([0, 0]);
+  const rotationTo = useRef<[number, number]>([0, 0]);
+  const animationFrame = useRef<number | null>(null);
+  const [currentCityIndex, setCurrentCityIndex] = useState(0);
+  const [dimensions, setDimensions] = useState({ width: 320, height: 320 });
+  const resizeObserver = useRef<ResizeObserver | null>(null);
+  const rotationRef = useRef(rotation);
+
+  useEffect(() => {
+    rotationRef.current = rotation;
+  }, [rotation]);
+
+  const useResponsive = !width && !height;
+  const finalWidth = useResponsive ? (dimensions.width || 320) : width || 800;
+  const finalHeight = useResponsive ? (dimensions.height || 320) : height || 500;
+
+  const defaultStrokeColor = strokeColor || "currentColor";
+  const defaultGraticuleColor = graticuleColor || "currentColor";
+  const defaultSphereOutlineColor = sphereOutlineColor || "currentColor";
+  const defaultCountryFillColor =
+    countryFillColor || (variant === "solid" ? "currentColor" : "none");
+  const defaultBackgroundColor = backgroundColor || "transparent";
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const container = containerRef.current;
+
+    const updateDimensions = () => {
+      if (container && useResponsive) {
+        const width = container.clientWidth || container.offsetWidth || 320;
+        const height = container.clientHeight || container.offsetHeight || 320;
+        setDimensions({ width, height });
+      }
+    };
+
+    updateDimensions();
+
+    if (useResponsive) {
+      resizeObserver.current = new ResizeObserver(updateDimensions);
+      resizeObserver.current.observe(container);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 },
+    );
+
+    observer.observe(container);
+
+    return () => {
+      if (resizeObserver.current) {
+        resizeObserver.current.disconnect();
+      }
+      observer.unobserve(container);
+    };
+  }, [useResponsive]);
+
+  useEffect(() => {
+    const loadWorldData = async () => {
+      try {
+        const response = await fetch(
+          "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json",
+        );
+        const world = (await response.json()) as WorldAtlasTopology;
+        const countries = feature(world, world.objects.countries)
+          .features as GeoFeature[];
+        setWorldData(countries);
+      } catch {
+        const fallbackData: GeoFeature[] = [
+          {
+            type: "Feature",
+            geometry: {
+              type: "Polygon",
+              coordinates: [
+                [
+                  [-180, -90],
+                  [180, -90],
+                  [180, 90],
+                  [-180, 90],
+                  [-180, -90],
+                ],
+              ],
+            } as unknown as GeometryObject,
+            properties: {},
+          },
+        ];
+        setWorldData(fallbackData);
+      }
+    };
+    loadWorldData();
+  }, []);
+
+  useEffect(() => {
+    if (!autoRotate || !isVisible || isDragging || rotateCities.length > 0) {
+      if (animationFrame.current) {
+        cancelAnimationFrame(animationFrame.current);
+        animationFrame.current = null;
+      }
+      return;
+    }
+
+    const rotate = () => {
+      setRotation((prev) => [(prev[0] + autoRotateSpeed) % 360, prev[1]]);
+      animationFrame.current = requestAnimationFrame(rotate);
+    };
+
+    animationFrame.current = requestAnimationFrame(rotate);
+
+    return () => {
+      if (animationFrame.current) {
+        cancelAnimationFrame(animationFrame.current);
+      }
+    };
+  }, [autoRotate, autoRotateSpeed, isVisible, isDragging, rotateCities.length]);
+
+  const animateRotationTo = useCallback(
+    (target: [number, number], duration = 1200) => {
+      if (rotationAnimFrame.current) {
+        cancelAnimationFrame(rotationAnimFrame.current);
+      }
+
+      rotationFrom.current = rotationRef.current;
+      rotationTo.current = target;
+      rotationStartTime.current = performance.now();
+
+      const animate = (time: number) => {
+        const elapsed = time - (rotationStartTime.current || 0);
+        const t = Math.min(elapsed / duration, 1);
+
+        const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+        const lon =
+          rotationFrom.current[0] +
+          (rotationTo.current[0] - rotationFrom.current[0]) * eased;
+
+        const lat =
+          rotationFrom.current[1] +
+          (rotationTo.current[1] - rotationFrom.current[1]) * eased;
+
+        setRotation([lon, lat]);
+
+        if (t < 1) {
+          rotationAnimFrame.current = requestAnimationFrame(animate);
+        }
+      };
+
+      rotationAnimFrame.current = requestAnimationFrame(animate);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (rotateCities.length === 0 || !isVisible) return;
+
+    const rotateToNextCity = () => {
+      const nextIndex = (currentCityIndex + 1) % rotateCities.length;
+      const city = rotateCities[nextIndex].toLowerCase();
+      const coordinates = cityCoordinates[city];
+
+      if (coordinates) {
+        animateRotationTo(
+          [-coordinates[1], -coordinates[0]],
+          rotationSpeed * 0.6,
+        );
+        setCurrentCityIndex(nextIndex);
+      }
+    };
+
+    const city = rotateCities[currentCityIndex].toLowerCase();
+    const coordinates = cityCoordinates[city];
+
+    if (coordinates) {
+      animateRotationTo(
+        [-coordinates[1], -coordinates[0]],
+        rotationSpeed * 0.6,
+      );
+    }
+
+    rotationInterval.current = setInterval(rotateToNextCity, rotationSpeed);
+
+    return () => {
+      if (rotationInterval.current) clearInterval(rotationInterval.current);
+    };
+  }, [
+    rotateCities,
+    currentCityIndex,
+    rotationSpeed,
+    isVisible,
+    animateRotationTo,
+  ]);
+
+  useEffect(() => {
+    if (!rotateToLocation) return;
+
+    let coordinates: [number, number];
+    if (typeof rotateToLocation === "string") {
+      const city = rotateToLocation.toLowerCase();
+      coordinates = cityCoordinates[city] || [0, 0];
+    } else {
+      coordinates = rotateToLocation;
+    }
+
+    setRotation([-coordinates[1], -coordinates[0]]);
+  }, [rotateToLocation]);
+
+  const handleMouseDown = (event: React.MouseEvent) => {
+    if (!enableInteraction) return;
+    setIsDragging(true);
+    const rect = svgRef.current?.getBoundingClientRect();
+    if (rect) {
+      setLastMouse([event.clientX - rect.left, event.clientY - rect.top]);
+    }
+  };
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    if (!isDragging || !enableInteraction) return;
+    const rect = svgRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const currentMouse = [event.clientX - rect.left, event.clientY - rect.top];
+    const dx = currentMouse[0] - lastMouse[0];
+    const dy = currentMouse[1] - lastMouse[1];
+
+    const t = progress / 100;
+    let sensitivity: number;
+
+    if (variant === "wireframe") {
+      sensitivity = t < 0.5 ? 0.5 : 0.25;
+    } else {
+      sensitivity = 0.5;
+    }
+
+    setRotation((prev) => [
+      prev[0] + dx * sensitivity,
+      Math.max(-90, Math.min(90, prev[1] - dy * sensitivity)),
+    ]);
+
+    setLastMouse(currentMouse);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (!svgRef.current || worldData.length === 0 || !isVisible) return;
+    if (useResponsive && dimensions.width === 0) return;
+
+    const svg = d3.select(svgRef.current);
+    svg.selectAll("*").remove();
+
+    let finalCountryFill = "none";
+    let finalStrokeWidth = strokeWidth;
+    let finalOpacity = 1.0;
+    let renderGraticule = showGraticule;
+    let finalGraticuleOpacity = graticuleOpacity;
+    let finalSphereOutlineWidth = sphereOutlineWidth;
+
+    if (variant === "wireframe") {
+      finalCountryFill = "none";
+      finalStrokeWidth = strokeWidth;
+      finalOpacity = 1.0;
+      renderGraticule = showGraticule;
+      finalGraticuleOpacity = graticuleOpacity;
+      finalSphereOutlineWidth = sphereOutlineWidth;
+    } else if (variant === "wireframesolid") {
+      finalCountryFill = "none";
+      finalStrokeWidth = strokeWidth;
+      finalOpacity = 1.0;
+      renderGraticule = false;
+      finalGraticuleOpacity = 0;
+      finalSphereOutlineWidth = 1.5;
+    } else if (variant === "solid") {
+      finalCountryFill = defaultCountryFillColor;
+      finalStrokeWidth = strokeWidth * 0.5;
+      finalOpacity = 0.3;
+      renderGraticule = false;
+      finalGraticuleOpacity = 0;
+      finalSphereOutlineWidth = 1.5;
+    }
+
+    if (defaultBackgroundColor !== "transparent") {
+      const radius = (Math.min(finalWidth, finalHeight) / 2) * scale * 0.8;
+      svg
+        .append("circle")
+        .attr("cx", finalWidth / 2)
+        .attr("cy", finalHeight / 2)
+        .attr("r", radius)
+        .attr("fill", defaultBackgroundColor);
+    }
+
+    let projection: d3.GeoProjection | CustomProjection;
+    const path = d3.geoPath();
+
+    if (variant === "wireframe") {
+      const t = progress / 100;
+      const alpha = Math.pow(t, 0.5);
+
+      const baseScale = (Math.min(finalWidth, finalHeight) / 2) * scale * 0.8;
+      const scaleRange = d3
+        .scaleLinear()
+        .domain([0, 1])
+        .range([baseScale, baseScale * 0.6]);
+      const baseRotate = d3.scaleLinear().domain([0, 1]).range([0, 0]);
+
+      projection = interpolateProjection(orthographicRaw, equirectangularRaw)
+        .scale(scaleRange(alpha))
+        .translate([finalWidth / 2, finalHeight / 2])
+        .rotate([baseRotate(alpha) + rotation[0], rotation[1]])
+        .precision(0.1);
+
+      (projection as CustomProjection).alpha(alpha);
+      path.projection(projection);
+    } else {
+      projection = d3
+        .geoOrthographic()
+        .scale((Math.min(finalWidth, finalHeight) / 2) * scale * 0.8)
+        .translate([finalWidth / 2, finalHeight / 2])
+        .rotate([rotation[0], rotation[1]])
+        .precision(0.1);
+
+      path.projection(projection);
+    }
+
+    if (renderGraticule && finalGraticuleOpacity > 0) {
+      try {
+        const graticule = d3.geoGraticule();
+        const graticulePath = path(graticule());
+        if (graticulePath) {
+          svg
+            .append("path")
+            .datum(graticule())
+            .attr("d", graticulePath)
+            .attr("fill", "none")
+            .attr("stroke", defaultGraticuleColor)
+            .attr("stroke-width", 1)
+            .attr("opacity", finalGraticuleOpacity);
+        }
+      } catch (error) {
+        console.error("Error creating graticule:", error);
+      }
+    }
+
+    svg
+      .selectAll(".country")
+      .data(worldData)
+      .enter()
+      .append("path")
+      .attr("class", "country")
+      .attr("d", (d: GeoFeature) => {
+        try {
+          const pathString = path(d as unknown as GeoPermissibleObjects);
+          if (!pathString) return "";
+          if (
+            typeof pathString === "string" &&
+            (pathString.includes("NaN") || pathString.includes("Infinity"))
+          ) {
+            return "";
+          }
+          return pathString;
+        } catch {
+          return "";
+        }
+      })
+      .attr("fill", finalCountryFill)
+      .attr("stroke", defaultStrokeColor)
+      .attr("stroke-width", finalStrokeWidth)
+      .attr("opacity", finalOpacity)
+      .style("visibility", function (this: SVGPathElement) {
+        const pathData = d3.select(this).attr("d");
+        return pathData && pathData.length > 0 && !pathData.includes("NaN")
+          ? "visible"
+          : "hidden";
+      })
+      .on("mouseenter", function (this: SVGPathElement) {
+        if (countryHoverColor && variant === "solid") {
+          d3.select(this).attr("fill", countryHoverColor);
+        }
+      })
+      .on("mouseleave", function (this: SVGPathElement) {
+        if (variant === "solid") {
+          d3.select(this).attr("fill", finalCountryFill);
+        }
+      });
+
+    try {
+      const sphereOutline = path({ type: "Sphere" });
+      if (sphereOutline) {
+        svg
+          .append("path")
+          .datum({ type: "Sphere" })
+          .attr("d", sphereOutline)
+          .attr("fill", "none")
+          .attr("stroke", defaultSphereOutlineColor)
+          .attr("stroke-width", finalSphereOutlineWidth)
+          .attr("opacity", variant === "wireframe" ? 1.0 : 0.8);
+      }
+    } catch (error) {
+      console.error("Error creating sphere outline:", error);
+    }
+  }, [
+    worldData,
+    progress,
+    rotation,
+    isVisible,
+    finalWidth,
+    finalHeight,
+    defaultStrokeColor,
+    strokeWidth,
+    defaultGraticuleColor,
+    graticuleOpacity,
+    defaultSphereOutlineColor,
+    sphereOutlineWidth,
+    showGraticule,
+    defaultCountryFillColor,
+    countryHoverColor,
+    variant,
+    scale,
+    defaultBackgroundColor,
+    useResponsive,
+    dimensions.width,
+  ]);
+
+  return (
+    <div ref={containerRef} className={`relative ${className}`}>
+      <svg
+        ref={svgRef}
+        width={finalWidth}
+        height={finalHeight}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+        className={
+          useResponsive
+            ? "w-full h-full transition-opacity duration-500"
+            : ""
+        }
+        style={{
+          cursor: enableInteraction
+            ? isDragging
+              ? "grabbing"
+              : "grab"
+            : "default",
+          opacity: 1,
+        }}
+      />
+    </div>
+  );
+}
+
+const FormDots = React.forwardRef<
+  React.ComponentRef<typeof SeparatorPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>
+>(
+  (
+    { className, orientation = "horizontal", decorative = true, ...props },
+    ref,
+  ) => {
+    const isHorizontal = orientation === "horizontal";
+    return (
+      <SeparatorPrimitive.Root
+        ref={ref}
+        decorative={decorative}
+        orientation={orientation}
+        className={cn(
+          "shrink-0 flex items-center justify-center overflow-hidden",
+          isHorizontal ? "w-full" : "h-full",
+          className,
+        )}
+        {...props}
+      >
+        <div
+          className={cn("relative", isHorizontal ? "w-full h-4" : "h-full w-4")}
+        >
+          <div
+            className={cn(
+              "absolute inset-0 bg-repeat",
+              "text-neutral-400 dark:text-white/20",
+            )}
+            style={{
+              backgroundImage:
+                "radial-gradient(circle, currentColor 0.8px, transparent 0.8px)",
+              backgroundSize: isHorizontal ? "6px 100%" : "100% 6px",
+              maskImage: isHorizontal
+                ? "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)"
+                : "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
+            }}
+          />
+        </div>
+      </SeparatorPrimitive.Root>
+    );
+  },
+);
+FormDots.displayName = "FormDots";
+
+export interface ContactWithGlobeProps {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  className?: string;
+  contactLinks?: ContactLinkItem[];
+}
+
+export default function ContactWithGlobe({
+  title = "Contact us",
+  subtitle = "Contact",
+  description = "We are always looking for ways to improve our products and services. Contact us and let us know how we can help you.",
+  className,
+  contactLinks = DEFAULT_CONTACT_LINKS,
+}: ContactWithGlobeProps) {
+  const [formData, setFormData] = useState({
+    name: "",
+    company: "",
+    email: "",
+    message: "",
+  });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) return;
+
+    setStatus("loading");
+    setErrorMessage("");
+
+    try {
+      const fullMessage = formData.company.trim()
+        ? `[Company: ${formData.company.trim()}]\n\n${formData.message.trim()}`
+        : formData.message.trim();
+
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          message: fullMessage,
+        }),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setFormData({ name: "", company: "", email: "", message: "" });
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        setErrorMessage(errorData.error || "Failed to deliver message. Please try again.");
+        setStatus("error");
+      }
+    } catch {
+      setErrorMessage("Network error. Please try again or reach out directly.");
+      setStatus("error");
+    }
+  };
+
+  return (
+    <section
+      className={cn(
+        "relative w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white overflow-hidden py-20",
+        className,
+      )}
+    >
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="flex flex-col items-center text-center gap-4 mb-12">
+          {/* LCP-Safe Initial Rendering: starts at non-zero opacity so Lighthouse registers LCP cleanly */}
+          <motion.div
+            initial={{ opacity: 0.99, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: smoothEase }}
+            className="inline-flex items-center px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-400/30"
+          >
+            <span className="text-sm text-rose-500 font-medium">
+              {subtitle}
+            </span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0.99, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: smoothEase }}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-zinc-900 dark:text-white tracking-tight"
+          >
+            {title}
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0.99, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: smoothEase }}
+            className="text-base text-zinc-500 dark:text-zinc-400 max-w-md"
+          >
+            {description}
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl mx-auto items-start">
+          <motion.div
+            initial={{ opacity: 0.99, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.15, ease: smoothEase }}
+            className="flex flex-col gap-6"
+          >
+            <div className="flex flex-col gap-1">
+              <h3 className="text-xl font-semibold text-zinc-900 dark:text-white">
+                Get in touch
+              </h3>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-xs">
+                Reach out via any channel below. I typically reply within one
+                business day.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              {contactLinks.map(({ icon: Icon, label, href }, i) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  initial={{ opacity: 0.99, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.2 + i * 0.08,
+                    ease: smoothEase,
+                  }}
+                  className="group flex items-center gap-3 w-fit text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors duration-200"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 group-hover:border-rose-300 dark:group-hover:border-rose-500/40 group-hover:bg-rose-50 dark:group-hover:bg-rose-500/10 flex items-center justify-center shrink-0 transition-all duration-200 shadow-sm">
+                    <Icon className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-colors duration-200" />
+                  </div>
+                  <span className="font-medium text-sm">{label}</span>
+                </motion.a>
+              ))}
+            </div>
+
+            {/* 3D Interactive World Globe Card */}
+            <div className="relative overflow-hidden h-72 sm:h-80 md:h-[350px] rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-100/40 dark:bg-zinc-900/40 flex flex-col items-center justify-center p-3 shadow-inner group">
+              <div className="absolute top-3.5 left-4 z-20 flex items-center gap-2 pointer-events-none">
+                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                <span className="text-[10px] font-mono tracking-widest text-zinc-500 dark:text-zinc-400 uppercase font-medium">
+                  GLOBAL NETWORK // DRAG TO ROTATE
+                </span>
+              </div>
+              <GlobeWireframe
+                className="w-full h-full flex items-center justify-center"
+                variant="wireframesolid"
+                autoRotate
+                autoRotateSpeed={0.45}
+                strokeWidth={0.7}
+                graticuleOpacity={0.14}
+                sphereOutlineColor="currentColor"
+              />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-zinc-100/80 dark:from-zinc-950 to-transparent" />
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0.99, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: smoothEase }}
+            className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 flex flex-col gap-5 shadow-xl"
+          >
+            <div>
+              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-0.5">
+                Send a message
+              </h3>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                Fill out the form and we&apos;ll get back to you promptly.
+              </p>
+            </div>
+
+            <FormDots />
+
+            {/* Submission feedback */}
+            {status === "success" && (
+              <div className="p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 text-xs flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+                <span>Thank you! Your message has been sent successfully.</span>
+              </div>
+            )}
+
+            {status === "error" && (
+              <div className="p-3.5 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-300 text-xs flex items-center gap-2.5">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="globe-form-name" className="text-xs font-semibold tracking-widest uppercase text-zinc-400 dark:text-zinc-500">
+                    Full Name <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    id="globe-form-name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Ahdeetai"
+                    disabled={status === "loading"}
+                    className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-rose-400 dark:focus:border-rose-500/50 focus:ring-2 focus:ring-rose-500/10 transition-all duration-200"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="globe-form-company" className="text-xs font-semibold tracking-widest uppercase text-zinc-400 dark:text-zinc-500">
+                    Company
+                  </label>
+                  <input
+                    id="globe-form-company"
+                    type="text"
+                    value={formData.company}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    placeholder="ScrollX UI"
+                    disabled={status === "loading"}
+                    className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-rose-400 dark:focus:border-rose-500/50 focus:ring-2 focus:ring-rose-500/10 transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="globe-form-email" className="text-xs font-semibold tracking-widest uppercase text-zinc-400 dark:text-zinc-500">
+                  Email Address <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  id="globe-form-email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="support@scrollxui.com"
+                  disabled={status === "loading"}
+                  className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-rose-400 dark:focus:border-rose-500/50 focus:ring-2 focus:ring-rose-500/10 transition-all duration-200"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="globe-form-message" className="text-xs font-semibold tracking-widest uppercase text-zinc-400 dark:text-zinc-500">
+                  Message <span className="text-rose-500">*</span>
+                </label>
+                <textarea
+                  id="globe-form-message"
+                  required
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  placeholder="Type your message here"
+                  rows={4}
+                  disabled={status === "loading"}
+                  className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-rose-400 dark:focus:border-rose-500/50 focus:ring-2 focus:ring-rose-500/10 resize-none transition-all duration-200"
+                />
+              </div>
+
+              <Button 
+                type="submit"
+                disabled={status === "loading"}
+                className="w-fit h-11 px-8 rounded-xl font-semibold text-sm bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-900 group shadow-md"
+              >
+                {status === "loading" ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Submit</span>
+                    <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
+                  </>
+                )}
+              </Button>
+            </form>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}

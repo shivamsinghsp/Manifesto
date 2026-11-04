@@ -5,11 +5,11 @@ import NextLink from "next/link"
 import { searchPortfolio, SearchResult } from "@/lib/search"
 
 const SUGGESTIONS = [
+  "What is his primary tech stack?",
   "What did he build with MongoDB?",
   "Which project used geofencing?",
-  "What did he build at KAA?",
-  "Which projects did he build solo?",
-  "How does Shynr attendance work?"
+  "What automated systems has he built?",
+  "Which projects did he build solo?"
 ]
 
 export function WorkAssistant() {
@@ -45,14 +45,16 @@ export function WorkAssistant() {
   }
 
   return (
-    <div className="w-full max-w-3xl border border-border bg-surface relative corner-marks p-6 md:p-10">
-      <div className="mb-8">
-        <h3 className="text-mono-label text-text-tertiary mb-2 uppercase tracking-widest flex items-center gap-2">
-          <span className="w-2 h-2 bg-accent inline-block animate-pulse"></span>
-          ASK SHIVAM&apos;S WORK
-        </h3>
-        <p className="text-body-small text-text-secondary">
-          A deterministic knowledge system querying verified portfolio data.
+    <div className="w-full max-w-3xl rounded-2xl border border-white/10 bg-[#0E1322]/85 backdrop-blur-xl p-6 md:p-10 shadow-2xl">
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 inline-block animate-pulse"></span>
+          <h3 className="text-xs font-mono font-medium text-cyan-400 uppercase tracking-widest">
+            ASK SHIVAM&apos;S WORK
+          </h3>
+        </div>
+        <p className="text-sm text-slate-300">
+          A deterministic knowledge system querying verified portfolio data, architectural patterns, and production systems.
         </p>
       </div>
 
@@ -63,60 +65,65 @@ export function WorkAssistant() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Ask about projects, technologies, or architecture..."
-          className="w-full bg-surface-alt border border-border text-text px-4 py-4 pr-24 font-mono text-sm focus:outline-none focus:border-accent transition-colors placeholder:text-text-tertiary"
+          className="w-full bg-white/[0.04] border border-white/10 text-white rounded-xl px-4 py-3.5 pr-28 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all placeholder:text-slate-500"
           aria-label="Search query"
         />
         <button
           type="submit"
           disabled={!query.trim()}
-          className="absolute right-2 top-2 bottom-2 px-4 bg-text text-bg font-mono text-[10px] uppercase tracking-wider hover:bg-accent hover:text-bg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="absolute right-2 top-2 bottom-2 px-4 rounded-lg bg-cyan-400 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider hover:bg-cyan-300 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
         >
           SEARCH
         </button>
       </form>
 
       {!hasSearched ? (
-        <div className="flex flex-wrap gap-2">
-          {SUGGESTIONS.map((suggestion, i) => (
-            <button
-              key={i}
-              onClick={() => handleSuggestionClick(suggestion)}
-              className="text-[10px] font-mono border border-border-muted text-text-secondary px-3 py-1 hover:border-accent hover:text-accent transition-colors"
-            >
-              {suggestion}
-            </button>
-          ))}
+        <div>
+          <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block mb-2.5">
+            Suggested Queries:
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {SUGGESTIONS.map((suggestion, i) => (
+              <button
+                key={i}
+                onClick={() => handleSuggestionClick(suggestion)}
+                className="text-xs font-mono rounded-full border border-white/10 bg-white/[0.02] text-slate-300 px-3.5 py-1.5 hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-all"
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
         </div>
       ) : (
-        <div className="mt-8 pt-8 border-t border-border-muted animate-reveal-up" style={{ animationDuration: '300ms' }}>
-          <div className="flex justify-between items-center mb-6">
-            <h4 className="text-mono-label text-text-secondary">RESULTS</h4>
+        <div className="mt-8 pt-6 border-t border-white/[0.08] animate-reveal-up" style={{ animationDuration: '300ms' }}>
+          <div className="flex justify-between items-center mb-5">
+            <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400">VERIFIED ANSWER</h4>
             <button 
               onClick={handleReset}
-              className="text-[10px] font-mono text-text-tertiary hover:text-text transition-colors"
+              className="text-xs font-mono text-cyan-400 hover:text-white transition-colors"
             >
-              [ CLEAR ]
+              [ CLEAR SEARCH ]
             </button>
           </div>
 
           {results.length > 0 ? (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {results.slice(0, 2).map((result, i) => (
-                <div key={i} className="bg-surface-alt border border-border p-5 border-l-2 border-l-accent">
-                  <p className="text-body text-text mb-4 leading-relaxed">{result.answer}</p>
+                <div key={i} className="bg-white/[0.03] border border-white/10 rounded-xl p-5 border-l-4 border-l-cyan-400 shadow-lg">
+                  <p className="text-sm text-slate-200 mb-4 leading-relaxed">{result.answer}</p>
                   
                   {result.projectSlug && (
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-4 pt-4 border-t border-border-muted">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3.5 border-t border-white/[0.08]">
                       <div className="flex flex-col">
-                        <span className="text-[9px] text-text-tertiary font-mono uppercase">SOURCE</span>
-                        <span className="text-mono-label text-text-secondary">
+                        <span className="text-[10px] text-slate-500 font-mono uppercase">VERIFIED IN</span>
+                        <span className="text-xs font-mono text-cyan-300">
                           {result.projectSlug.replace(/-/g, ' ').toUpperCase()}
                           {result.sourceSection && ` / ${result.sourceSection}`}
                         </span>
                       </div>
                       <NextLink 
                         href={`/work/${result.projectSlug}`}
-                        className="inline-flex items-center gap-1 text-[10px] font-mono text-accent hover:text-white transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-white transition-colors"
                       >
                         VIEW CASE STUDY ↗
                       </NextLink>
@@ -126,21 +133,30 @@ export function WorkAssistant() {
               ))}
               
               {results.length > 2 && (
-                <p className="text-mono text-xs text-text-tertiary">
+                <p className="text-mono text-xs text-slate-400">
                   + {results.length - 2} other potential matches found.
                 </p>
               )}
             </div>
           ) : (
-            <div className="bg-surface-alt border border-border p-6 text-center">
-              <span className="text-mono-label text-text-tertiary block mb-4">NO VERIFIED MATCH</span>
-              <p className="text-body-small text-text-secondary mb-4">
-                I don&apos;t have verified portfolio data for that.
+            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-6 text-left border-l-4 border-l-slate-600">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 inline-block"></span>
+                <span className="text-xs font-mono uppercase tracking-wider text-slate-400">CORE TECH STACK CONTEXT</span>
+              </div>
+              <p className="text-sm text-slate-300 mb-4 leading-relaxed">
+                No direct case study match found for &ldquo;<span className="text-cyan-300 font-mono">{query}</span>&rdquo;. Shivam&apos;s verified production stack is heavily specialized in <strong className="text-white">TypeScript, Next.js, React, Node.js, and MongoDB</strong> for full-stack engineering and enterprise platforms.
               </p>
-              <div className="flex flex-wrap justify-center gap-2">
-                <button onClick={() => handleSuggestionClick("Shynr")} className="text-[10px] font-mono border border-border-muted text-text-secondary px-3 py-1 hover:border-accent hover:text-accent transition-colors">&quot;Shynr&quot;</button>
-                <button onClick={() => handleSuggestionClick("MongoDB")} className="text-[10px] font-mono border border-border-muted text-text-secondary px-3 py-1 hover:border-accent hover:text-accent transition-colors">&quot;MongoDB&quot;</button>
-                <button onClick={() => handleSuggestionClick("geofencing")} className="text-[10px] font-mono border border-border-muted text-text-secondary px-3 py-1 hover:border-accent hover:text-accent transition-colors">&quot;geofencing&quot;</button>
+              <p className="text-[11px] text-slate-400 font-mono mb-3 uppercase tracking-wider">
+                EXPLORE VERIFIED TOPICS:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => handleSuggestionClick("TypeScript")} className="text-xs font-mono rounded-full border border-white/10 bg-white/[0.02] text-slate-300 px-3 py-1 hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-colors">&quot;TypeScript&quot;</button>
+                <button onClick={() => handleSuggestionClick("Next.js")} className="text-xs font-mono rounded-full border border-white/10 bg-white/[0.02] text-slate-300 px-3 py-1 hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-colors">&quot;Next.js&quot;</button>
+                <button onClick={() => handleSuggestionClick("MongoDB")} className="text-xs font-mono rounded-full border border-white/10 bg-white/[0.02] text-slate-300 px-3 py-1 hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-colors">&quot;MongoDB&quot;</button>
+                <button onClick={() => handleSuggestionClick("Automation")} className="text-xs font-mono rounded-full border border-white/10 bg-white/[0.02] text-slate-300 px-3 py-1 hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-colors">&quot;Automation&quot;</button>
+                <button onClick={() => handleSuggestionClick("Geofencing")} className="text-xs font-mono rounded-full border border-white/10 bg-white/[0.02] text-slate-300 px-3 py-1 hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-colors">&quot;Geofencing&quot;</button>
+                <button onClick={() => handleSuggestionClick("Experience")} className="text-xs font-mono rounded-full border border-white/10 bg-white/[0.02] text-slate-300 px-3 py-1 hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-colors">&quot;Experience&quot;</button>
               </div>
             </div>
           )}

@@ -4,7 +4,7 @@ import { projects } from "@/data/projects"
 import { ProjectCard } from "@/components/ui/ProjectCard"
 
 export const metadata: Metadata = {
-  title: "Work — Shivam Singh",
+  title: "Work",
   description: "Full-stack applications, enterprise platforms, and production-grade products by Shivam Singh.",
 }
 
@@ -14,7 +14,7 @@ export default function WorkPage() {
 
   return (
     <>
-      <section className="pt-32 pb-24 md:pt-48 md:pb-32 border-b border-border bg-blueprint bg-fixed">
+      <section className="py-16 md:py-20 lg:py-24 border-b border-border bg-blueprint bg-fixed">
         <div className="grid-container">
           <div className="col-span-full lg:col-span-8">
             <span className="text-mono-label text-text-tertiary mb-6 block">{`// 01. ARCHIVE`}</span>
@@ -26,7 +26,7 @@ export default function WorkPage() {
         </div>
       </section>
 
-      <section className="py-24 md:py-32 border-b border-border">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
         <div className="grid-container">
           <div className="col-span-full lg:col-span-12 mb-16 border-b border-border-muted pb-4">
             <h2 className="text-mono-label text-text-tertiary">FEATURED CASE STUDY</h2>
@@ -48,7 +48,7 @@ export default function WorkPage() {
         </div>
       </section>
 
-      <section className="py-24 md:py-32 border-b border-border">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
         <div className="grid-container">
           <div className="col-span-full lg:col-span-12 mb-16 border-b border-border-muted pb-4">
             <h2 className="text-mono-label text-text-tertiary">INDEX</h2>

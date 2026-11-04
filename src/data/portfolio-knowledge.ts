@@ -107,5 +107,82 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
     id: "role-solo",
     keywords: ["solo", "alone", "ownership", "end-to-end", "lead"],
     answer: "Shivam was the sole end-to-end developer for Shynr (33 commits), KAA (100% ownership over 3.5 months), and Aao Seekhe (34 commits). He handled architecture, frontend, backend, and deployment for these systems.",
+  },
+  {
+    id: "topic-automation",
+    keywords: ["automation", "automated", "workflow", "workflows", "pipeline", "pipelines", "process", "scripts"],
+    answer: "Shivam has engineered several automated systems across his projects, including automated GPS geofenced attendance verification in Shynr, automated serverless form validation and transactional email dispatch in Aao Seekhe, and automated ISR cache revalidation (revalidatePath) triggered on CMS publishing in KAA.",
+  },
+  {
+    id: "topic-ai-ml",
+    keywords: ["ai", "artificial intelligence", "ml", "machine learning", "llm", "genai", "gpt", "openai", "deep learning", "nlp"],
+    answer: "Shivam's primary documented work is centered on full-stack web engineering, distributed application architecture, and enterprise platforms (Next.js, TypeScript, MongoDB, SharePoint). While he uses AI-assisted workflows in software engineering, his featured production case studies emphasize high-performance web systems, custom CMS architectures, and geospatial engines rather than dedicated AI/ML model training.",
+  },
+  {
+    id: "tech-python",
+    keywords: ["python", "django", "flask", "fastapi", "pandas", "numpy", "py"],
+    answer: "Shivam does not use Python for his primary development. His production stack is heavily specialized in TypeScript, Next.js, React, Node.js, and MongoDB for building scalable full-stack web applications, custom CMS platforms, and enterprise solutions.",
+    sourceSection: "CORE STACK FOCUS",
+  },
+  {
+    id: "tech-typescript",
+    keywords: ["typescript", "ts", "javascript", "js", "frontend", "programming language"],
+    answer: "TypeScript is Shivam's primary programming language across the entire stack. He uses it end-to-end for type-safe Next.js App Router applications, REST API contracts with Zod validation, Mongoose schemas, and SharePoint SPFx enterprise components.",
+    sourceSection: "PRIMARY LANGUAGE",
+  },
+  {
+    id: "tech-backend",
+    keywords: ["backend", "server", "api", "apis", "rest", "serverless", "node", "nodejs", "express"],
+    answer: "Shivam designs backend architectures using Next.js Serverless Route Handlers, Node.js, and MongoDB. His backend systems feature Zod schema validation, secure authentication via NextAuth.js and RBAC, transactional email dispatch via Nodemailer, and MongoDB aggregation pipelines.",
+    sourceSection: "BACKEND ARCHITECTURE",
+  },
+  {
+    id: "tech-databases",
+    keywords: ["sql", "database", "databases", "postgresql", "mysql", "nosql", "postgres", "sqlite", "prisma"],
+    answer: "Shivam's primary database specialization is MongoDB / NoSQL, utilizing Mongoose for schema modeling, indexing strategies (including 2dsphere for geospatial queries), and relationship referencing. In enterprise settings, he has also worked extensively with SharePoint Lists and CAML querying.",
+    sourceSection: "DATA STORAGE & MODELING",
+  },
+  {
+    id: "tech-cloud-devops",
+    keywords: ["cloud", "devops", "docker", "aws", "kubernetes", "deploy", "deployment", "hosting", "vercel", "ci/cd", "git"],
+    answer: "Shivam deploys and hosts his full-stack applications primarily on Vercel, utilizing edge/serverless runtimes and Cloudinary for media asset delivery pipelines. He manages source control, versioning, and release workflows using Git and GitHub.",
+    sourceSection: "DEPLOYMENT & INFRASTRUCTURE",
+  },
+  {
+    id: "profile-experience",
+    keywords: ["experience", "background", "career", "jobs", "internship", "internships", "companies", "company", "work history"],
+    answer: "Shivam has served as a Software Engineering Intern at Rapsora Technologies (building Shynr HRMS and Aao Seekhe as the solo developer) and as a Web Developer Intern at Androcoders (developing 15+ pages with Sitecore CMS for Crowe Oman).",
+    sourceSection: "WORK EXPERIENCE",
+  },
+  {
+    id: "profile-education",
+    keywords: ["education", "college", "degree", "university", "btech", "csjm", "academics", "gpa"],
+    answer: "Shivam is pursuing his Bachelor of Technology (B.Tech) in Information Technology at Chhatrapati Shahu Ji Maharaj University (CSJM), Kanpur (2022–2026), building strong foundations in software engineering, data structures, algorithms, and system design.",
+    sourceSection: "ACADEMIC BACKGROUND",
+  },
+  {
+    id: "profile-hire",
+    keywords: ["hire", "hiring", "available", "availability", "job", "full-time", "contract", "open to work", "opportunities", "contact"],
+    answer: "Shivam is currently open to new software engineering and full-stack developer opportunities. He can be contacted directly via the contact form on this website or by email for discussions regarding roles and collaborations.",
+    sourceSection: "STATUS & AVAILABILITY",
+  },
+  {
+    id: "topic-voice-ai",
+    keywords: ["voice", "voice assistant", "hume", "evi", "emotion", "empathic", "websocket", "audio", "microphone", "streaming"],
+    answer: "Shivam built a Real-Time AI Voice Assistant as a Tier 3 experiment using Hume AI's Empathic Voice Interface (EVI) API. The project enables real-time bidirectional voice interaction, live transcription, and emotional-cue detection through WebSocket streaming, built with React.js and TypeScript.",
+    sourceSection: "ENGINEERING PLAYGROUND",
+  },
+  {
+    id: "profile-achievements",
+    keywords: ["achievements", "awards", "recognition", "hackathon", "conference", "competition", "winner"],
+    answer: "Shivam's recognitions include: Winner of the Framework 1.0 Hackathon (Flutter Kanpur), Best Oral Presentation at the International Conference on Smart Computing and Intelligent Systems (ICSCIS), and placing in the top 10% among 500+ participants in the CodeQuezt Coding Challenge.",
+    sourceSection: "RECOGNITION",
+  },
+  {
+    id: "topic-testing-qa",
+    keywords: ["testing", "qa", "quality assurance", "functional testing", "regression testing", "pledge", "government"],
+    answer: "At Rapsora Technologies, Shivam performed functional and regression testing on the PLEDGE Portal (Government of Uttar Pradesh), reproducing, documenting, and retesting defects across application workflows, forms, and end-to-end user scenarios.",
+    sourceSection: "WORK EXPERIENCE",
   }
 ]
+

@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { ArrowRight } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Resume — Shivam Singh",
+  title: "Resume",
   description: "Download my professional resume.",
 }
 

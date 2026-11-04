@@ -27,44 +27,55 @@ export function ProjectCard({
 }: ProjectCardProps) {
   if (featured) {
     return (
-      <NextLink href={href} className={cn("group block focus:outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-text", className)}>
-        <article className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="col-span-full lg:col-span-8 order-2 lg:order-1 relative" style={{ perspective: "var(--perspective-standard)" }}>
-            {/* Layered artifact depth */}
-            <div className="absolute inset-0 bg-surface border border-border transition-all duration-300 ease-out-expo group-hover:translate-x-3 group-hover:translate-y-3 opacity-0 group-hover:opacity-100 z-0" />
-            
-            <div className="relative z-10 overflow-hidden bg-surface border border-border transition-all duration-300 ease-out-expo group-hover:-translate-y-1 group-hover:-translate-x-1 group-hover:border-text-secondary corner-marks">
-              <div className="relative w-full aspect-[16/9] lg:aspect-[21/9] animate-scan">
-                {imageSrc ? (
-                  <Image
-                    src={imageSrc}
-                    alt={imageAlt || title}
-                    fill
-                    className="object-cover filter grayscale opacity-80 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-surface flex items-center justify-center border border-border-muted overflow-hidden">
-                    <div className="w-full flex items-center justify-center p-6">
-                      <span className="font-mono text-[10px] tracking-[0.2em] text-text-tertiary/70 uppercase border border-border-muted px-4 py-2 bg-surface-alt group-hover:text-text-secondary transition-colors duration-300">
-                        [ ASSET RESERVED ]
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
+      <NextLink 
+        href={href} 
+        className={cn(
+          "group block rounded-2xl border border-white/10 bg-surface/70 backdrop-blur-xl p-6 sm:p-8 md:p-10 shadow-xl hover:border-cyan-500/40 hover:shadow-[0_16px_40px_-8px_rgba(0,184,212,0.18)] transition-all duration-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-cyan-400",
+          className
+        )}
+      >
+        <article className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="col-span-full lg:col-span-7 order-2 lg:order-1">
+            <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-xl overflow-hidden border border-white/10 shadow-lg bg-surface-alt">
+              {imageSrc ? (
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt || title}
+                  fill
+                  priority={featured}
+                  sizes="(max-width: 1024px) 100vw, 55vw"
+                  className="object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.03]"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-surface-alt flex items-center justify-center">
+                  <span className="font-mono text-xs tracking-widest text-slate-400 uppercase border border-white/10 px-4 py-2 rounded-lg bg-white/[0.03]">
+                    [ LIVE ARCHITECTURE ]
+                  </span>
+                </div>
+              )}
+              {/* Subtle gradient vignette */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E17]/60 via-transparent to-transparent opacity-80 pointer-events-none" />
             </div>
           </div>
-          <div className="col-span-full lg:col-span-4 order-1 lg:order-2 flex flex-col h-full justify-between">
+          
+          <div className="col-span-full lg:col-span-5 order-1 lg:order-2 flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                <span className="w-8 h-[1px] bg-text-tertiary hidden lg:block transition-colors duration-300 group-hover:bg-text-secondary"></span>
-                <span className="text-mono-label text-text-secondary group-hover:text-text transition-colors duration-300">{category}</span>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="w-6 h-[2px] bg-cyan-400 rounded-full"></span>
+                <span className="text-xs font-mono tracking-widest uppercase text-cyan-400 font-medium">
+                  {category}
+                </span>
               </div>
-              <h3 className="text-headline mb-4 transition-colors duration-300 font-display italic group-hover:text-text-secondary">{title}</h3>
-              <p className="text-body-large text-text-secondary mb-8 leading-relaxed">{description}</p>
+              <h3 className="text-3xl sm:text-4xl font-display font-medium text-white mb-4 leading-tight group-hover:text-cyan-300 transition-colors duration-300">
+                {title}
+              </h3>
+              <p className="text-slate-300 text-base leading-relaxed mb-8">
+                {description}
+              </p>
             </div>
-            <div className="inline-flex items-center gap-2 text-mono-label text-text transition-all duration-300 group-hover:text-text-secondary w-fit">
-              VIEW CASE STUDY 
+            
+            <div className="inline-flex items-center gap-2 text-xs font-mono font-medium text-cyan-400 uppercase tracking-widest group-hover:text-cyan-300 transition-colors">
+              <span>EXPLORE CASE STUDY</span>
               <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
             </div>
           </div>
@@ -74,44 +85,51 @@ export function ProjectCard({
   }
 
   return (
-    <NextLink href={href} className={cn("group block h-full focus:outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-text", className)}>
+    <NextLink 
+      href={href} 
+      className={cn(
+        "group flex flex-col h-full rounded-2xl border border-white/10 bg-surface/70 backdrop-blur-xl p-5 sm:p-6 shadow-lg hover:border-cyan-500/40 hover:shadow-[0_12px_32px_-6px_rgba(0,184,212,0.15)] transition-all duration-300 hover:-translate-y-1 focus:outline-none focus-visible:outline-2 focus-visible:outline-cyan-400", 
+        className
+      )}
+    >
       <article className="flex flex-col h-full">
-        <div className="relative mb-6" style={{ perspective: "var(--perspective-standard)" }}>
-          {/* Layered artifact depth */}
-          <div className="absolute inset-0 bg-surface border border-border transition-all duration-300 ease-out-expo group-hover:translate-x-2 group-hover:translate-y-2 opacity-0 group-hover:opacity-100 z-0" />
-          
-          <div className="relative z-10 overflow-hidden bg-surface border border-border transition-all duration-300 ease-out-expo group-hover:-translate-y-1 group-hover:-translate-x-1 group-hover:border-text-secondary corner-marks">
-            <div className="relative w-full aspect-[4/3] animate-scan">
-              {imageSrc ? (
-                <Image
-                  src={imageSrc}
-                  alt={imageAlt || title}
-                  fill
-                  className="object-cover filter grayscale opacity-80 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-surface flex items-center justify-center border border-border-muted overflow-hidden">
-                  <span className="font-mono text-[10px] tracking-[0.2em] text-text-tertiary/70 uppercase group-hover:text-text-secondary transition-colors duration-300">
-                    [ SCHEMA ]
-                  </span>
-                </div>
-              )}
+        <div className="relative mb-5 w-full aspect-[16/10] rounded-xl overflow-hidden border border-white/10 bg-surface-alt">
+          {imageSrc ? (
+            <Image
+              src={imageSrc}
+              alt={imageAlt || title}
+              fill
+              className="object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.04]"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-surface-alt flex items-center justify-center">
+              <span className="font-mono text-[10px] tracking-widest text-slate-400 uppercase border border-white/10 px-3 py-1.5 rounded bg-white/[0.03]">
+                [ SYSTEM SCHEMA ]
+              </span>
             </div>
-          </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E17]/60 via-transparent to-transparent opacity-80 pointer-events-none" />
         </div>
         
         <div className="flex flex-col flex-grow">
-          <div className="flex justify-between items-start mb-3">
-            <h3 className="text-subheading font-display group-hover:text-text-secondary transition-colors duration-300">{title}</h3>
-            <span className="text-mono-label text-text-tertiary pt-1 group-hover:text-text transition-colors duration-300">{category.split(':')[0]}</span>
+          <div className="flex justify-between items-start gap-2 mb-2.5">
+            <h3 className="text-xl font-display font-medium text-white group-hover:text-cyan-300 transition-colors duration-200">
+              {title}
+            </h3>
+            <span className="text-[11px] font-mono tracking-wider text-slate-400 shrink-0 pt-0.5">
+              {category.split(':')[0]}
+            </span>
           </div>
-          <p className="text-body-small text-text-secondary line-clamp-2 mb-6 flex-grow leading-relaxed">
+          
+          <p className="text-sm text-slate-400 line-clamp-3 mb-6 flex-grow leading-relaxed">
             {description}
           </p>
           
-          <div className="pt-4 border-t border-border-muted flex justify-between items-center mt-auto">
-            <span className="text-mono-label text-text-tertiary transition-colors group-hover:text-text-secondary">Details</span>
-            <ArrowRight className="w-4 h-4 text-text-tertiary transition-all duration-300 group-hover:translate-x-1 group-hover:text-text-secondary" />
+          <div className="pt-4 border-t border-white/[0.08] flex justify-between items-center mt-auto">
+            <span className="text-xs font-mono text-slate-400 group-hover:text-cyan-300 transition-colors">
+              View Architecture
+            </span>
+            <ArrowRight className="w-4 h-4 text-slate-400 transition-all duration-300 group-hover:translate-x-1 group-hover:text-cyan-400" />
           </div>
         </div>
       </article>

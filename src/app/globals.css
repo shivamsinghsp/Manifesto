@@ -4,29 +4,34 @@
 
 @layer base {
   :root {
-    /* Premium Obsidian Backgrounds */
-    --color-bg: #0A0A0C;
-    --color-surface: #0F0F12;
-    --color-surface-alt: #16161A;
+    /* Backgrounds - Rich obsidian & deep midnight surfaces instead of flat pitch black */
+    --color-bg: #0A0E17;
+    --color-surface: #111728;
+    --color-surface-alt: #162036;
     
-    /* Text - High contrast but soft */
-    --color-text: #EDEDED;
-    --color-text-secondary: #8A8A8A;
-    --color-text-tertiary: #6B6B6B;
+    /* Text */
+    --color-text: #F1F3F7;
+    --color-text-secondary: #A0A7B8;
+    --color-text-tertiary: #646E82;
     
-    /* Accent (Used extremely sparingly) */
+    /* Accent (Cyan — vibrant, luminous) */
     --color-accent: #00B8D4;
     --color-accent-hover: #00E5FF;
-    --color-accent-muted: rgba(0, 184, 212, 0.08);
+    --color-accent-muted: rgba(0, 184, 212, 0.15);
     
-    /* CTA Button - Stark contrast */
-    --color-cta-bg: #EDEDED;
-    --color-cta-text: #0A0A0C;
+    /* CTA Button */
+    --color-cta-bg: #F1F3F7;
+    --color-cta-text: #0A0E17;
     --color-cta-hover: #FFFFFF;
     
+    /* Semantic */
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-error: #EF4444;
+
     /* Structural / Architectural Lines */
-    --color-border: #222225;
-    --color-border-muted: #1A1A1D;
+    --color-border: rgba(255, 255, 255, 0.1);
+    --color-border-muted: rgba(255, 255, 255, 0.05);
 
     /* Spacing Scale */
     --space-0:    0px;
@@ -49,24 +54,24 @@
 
     /* Grid System */
     --grid-cols: 12;
-    --grid-gap: clamp(1rem, 2vw, 1.5rem); /* Tighter gap for editorial precision */
-    --container-max: 1440px;
+    --grid-gap: clamp(1.5rem, 3vw, 2rem);
+    --container-max: 1280px;
 
-    /* Border Radius - Brutalist/Editorial (Zero) */
-    --radius-button:  0px;
-    --radius-input:   0px;
-    --radius-card:    0px;
-    --radius-image:   0px;
-    --radius-subtle:  0px;
+    /* Border Radius - Smooth modern contours instead of rigid boxes */
+    --radius-button:  10px;
+    --radius-input:   10px;
+    --radius-card:    18px;
+    --radius-image:   12px;
+    --radius-subtle:  8px;
 
     /* Borders */
     --border-width:   1px;
 
-    /* Shadows - Disabled for flat architectural look */
-    --shadow-sm:  none;
-    --shadow-md:  none;
-    --shadow-lg:  none;
-    --shadow-xl:  none;
+    /* Elevated Modern Shadows & Lighting */
+    --shadow-sm:  0 2px 8px -2px rgba(0, 0, 0, 0.5), 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-md:  0 4px 20px -4px rgba(0, 0, 0, 0.6), 0 2px 8px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg:  0 12px 32px -8px rgba(0, 0, 0, 0.7), 0 4px 16px -4px rgba(0, 0, 0, 0.5);
+    --shadow-xl:  0 20px 48px -12px rgba(0, 0, 0, 0.8), 0 8px 24px -4px rgba(0, 0, 0, 0.6);
 
     /* Depth System */
     --z-atmosphere: -10;
@@ -74,14 +79,14 @@
     --z-interface: 10;
     
     /* Motion System */
+    --ease-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
+    --ease-smooth: ease-in-out;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    
     --duration-fast: 150ms;
     --duration-standard: 300ms;
-    --duration-slow: 600ms;
-    --duration-ambient: 3000ms;
-    
-    --ease-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
-    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-linear: linear;
+    --duration-slow: 400ms;
+    --duration-reveal: 600ms;
     
     --perspective-standard: 1000px;
 
@@ -98,6 +103,11 @@
 
   body {
     background-color: var(--color-bg);
+    background-image: 
+      radial-gradient(ellipse 90% 55% at 50% -10%, rgba(0, 184, 212, 0.12), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 85% 50%, rgba(59, 130, 246, 0.06), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 15% 85%, rgba(99, 102, 241, 0.05), transparent 60%);
+    background-attachment: fixed;
     color: var(--color-text);
     font-family: var(--font-body);
     font-size: 16px;
@@ -223,7 +233,7 @@
     gap: var(--grid-gap);
     max-width: var(--container-max);
     margin: 0 auto;
-    padding: 0 clamp(1.5rem, 5vw, 4rem);
+    padding: 0 var(--grid-gap);
   }
   
   /* Architectural drafting background pattern */
@@ -235,37 +245,45 @@
     background-position: center top;
   }
   
-  /* Technical Corner Marks (+) */
+  /* Softened corner marks - refined subtle accents rather than harsh wireframe crosshairs */
   .corner-marks {
     position: relative;
   }
   .corner-marks::before,
   .corner-marks::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 10;
-  }
-  .corner-marks::before {
-    top: -4px;
-    left: -4px;
-    width: calc(100% + 8px);
-    height: calc(100% + 8px);
-    background: 
-      linear-gradient(to right, var(--color-text-secondary) 1px, transparent 1px) 0 0,
-      linear-gradient(to right, var(--color-text-secondary) 1px, transparent 1px) 100% 0,
-      linear-gradient(to bottom, var(--color-text-secondary) 1px, transparent 1px) 0 0,
-      linear-gradient(to bottom, var(--color-text-secondary) 1px, transparent 1px) 0 100%;
-    background-size: 8px 8px;
-    background-repeat: no-repeat;
+    display: none;
   }
   
+  /* Glassmorphism Card System */
+  .glass-card {
+    background: rgba(17, 23, 40, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-card);
+    transition: all var(--duration-standard) var(--ease-standard);
+  }
+  .glass-card:hover {
+    border-color: rgba(0, 184, 212, 0.35);
+    box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.65), 0 0 25px -4px rgba(0, 184, 212, 0.18), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .glass-panel {
+    background: rgba(14, 19, 32, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+    border-radius: var(--radius-card);
+  }
+
   /* Architecture Diagram Ticks */
   .tech-frame {
     position: relative;
     border: 1px solid var(--color-border);
+    border-radius: var(--radius-subtle);
   }
   .tech-frame::after {
     content: '';
@@ -274,14 +292,17 @@
     bottom: -1px;
     left: -1px;
     right: -1px;
-    border-left: 1px dashed var(--color-text-tertiary);
-    border-top: 1px dashed var(--color-text-tertiary);
+    border-left: 1px dashed rgba(255, 255, 255, 0.12);
+    border-top: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-subtle);
     pointer-events: none;
   }
 
-  /* Atmosphere Layer */
+  /* Atmosphere Layer - Rich multi-point ambient glow */
   .bg-atmosphere {
-    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+    background: 
+      radial-gradient(ellipse 85% 60% at 50% 0%, rgba(0, 184, 212, 0.15) 0%, rgba(59, 130, 246, 0.06) 45%, transparent 80%),
+      radial-gradient(ellipse 50% 40% at 85% 65%, rgba(99, 102, 241, 0.06) 0%, transparent 60%);
   }
 
   /* Intro Sequence Animations */
@@ -311,22 +332,19 @@
   }
   
   .animate-reveal-up {
-    opacity: 0;
-    animation: reveal-up var(--duration-slow) var(--ease-out-expo) forwards;
+    animation: reveal-up var(--duration-reveal, 600ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   
   .animate-reveal-down {
-    opacity: 0;
-    animation: reveal-down var(--duration-slow) var(--ease-out-expo) forwards;
+    animation: reveal-down var(--duration-reveal, 600ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   
   .animate-reveal-fade {
-    opacity: 0;
-    animation: reveal-fade var(--duration-slow) var(--ease-standard) forwards;
+    animation: reveal-fade var(--duration-reveal, 600ms) var(--ease-standard, ease-out) both;
   }
 
   .animate-scan {
-    animation: scan-reveal var(--duration-slow) var(--ease-out-expo) forwards;
+    animation: scan-reveal var(--duration-reveal, 600ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   
   /* Stagger delays */

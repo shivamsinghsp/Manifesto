@@ -2,14 +2,14 @@ import { Metadata } from "next"
 import { Reveal } from "@/components/ui/Reveal"
 
 export const metadata: Metadata = {
-  title: "Manifesto — Shivam Singh",
+  title: "Manifesto",
   description: "My background, philosophy, and approach to software engineering.",
 }
 
 export default function AboutPage() {
   return (
     <>
-      <section className="pt-32 pb-24 md:pt-48 md:pb-32 border-b border-border bg-atmosphere relative">
+      <section className="py-16 md:py-20 lg:py-24 border-b border-border bg-atmosphere relative">
         <div className="grid-container relative z-10">
           <div className="col-span-full lg:col-span-10">
             <Reveal delay={100} direction="up">
@@ -32,8 +32,8 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-blueprint opacity-20 pointer-events-none" />
       </section>
 
-      <section className="py-24 md:py-32 border-b border-border">
-        <div className="grid-container grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 lg:gap-8">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
+        <div className="grid-container gap-y-12 md:gap-y-0">
           <div className="col-span-full md:col-span-4 lg:col-span-3">
             <Reveal direction="none">
               <div className="md:sticky top-24 md:border-t border-b md:border-b-0 border-border md:pt-4 pb-4 md:pb-0 mb-8 md:mb-0">
@@ -57,8 +57,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-24 md:py-32 border-b border-border bg-surface">
-        <div className="grid-container grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 lg:gap-8">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-surface">
+        <div className="grid-container gap-y-12 md:gap-y-0">
           <div className="col-span-full md:col-span-4 lg:col-span-3">
             <Reveal direction="none">
               <div className="md:sticky top-24 md:border-t border-b md:border-b-0 border-border md:pt-4 pb-4 md:pb-0 mb-8 md:mb-0">

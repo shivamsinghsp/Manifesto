@@ -18,9 +18,11 @@ export function Reveal({
   direction = "up"
 }: RevealProps) {
   const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.1 })
+  const [mounted, setMounted] = React.useState(false)
   const [hasRevealed, setHasRevealed] = React.useState(false)
 
   React.useEffect(() => {
+    setMounted(true)
     if (isIntersecting && !hasRevealed) {
       setHasRevealed(true)
     }
@@ -39,9 +41,12 @@ export function Reveal({
     <div
       ref={ref}
       className={cn(
-        "transition-all opacity-0",
-        directionClasses[direction],
-        hasRevealed && "opacity-100 translate-y-0 translate-x-0",
+        "transition-all",
+        !mounted 
+          ? "opacity-100 translate-y-0 translate-x-0" 
+          : hasRevealed 
+            ? "opacity-100 translate-y-0 translate-x-0" 
+            : cn("opacity-0", directionClasses[direction]),
         className
       )}
       style={{ 

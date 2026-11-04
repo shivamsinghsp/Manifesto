@@ -4,7 +4,7 @@ import { experiences } from "@/data/experience"
 import { ProjectCard } from "@/components/ui/ProjectCard"
 import { Timeline } from "@/components/ui/Timeline"
 import { Link } from "@/components/ui/Link"
-import { buttonBaseStyles, buttonVariants, buttonSizes } from "@/components/ui/Button"
+import { buttonBaseStyles, buttonVariants, buttonSizes } from "@/components/ui/button"
 import { HeroSystem } from "@/components/ui/HeroSystem"
 import { WorkAssistant } from "@/components/engineering/WorkAssistant"
 import { cn } from "@/lib/utils"
@@ -21,18 +21,18 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="pt-32 pb-24 md:pt-48 md:pb-32 border-b border-border bg-atmosphere relative animate-reveal-fade">
-        <div className="grid-container grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8 items-center">
-          <div className="col-span-full md:col-span-7 flex flex-col items-start relative z-10">
-            <h1 className="text-display mb-8 leading-[1.05] tracking-tight">
-              <span className="block animate-reveal-up delay-200">Engineering</span>
-              <span className="block italic text-text-secondary animate-reveal-up delay-300">systems that</span>
-              <span className="block animate-reveal-up delay-400">ship.</span>
+      <section className="py-16 md:py-20 lg:py-24 border-b border-border bg-atmosphere relative">
+        <div className="grid-container items-center gap-y-12 lg:gap-y-0">
+          <div className="col-span-full lg:col-span-7 flex flex-col items-start relative z-10">
+            <h1 className="text-display mb-6 leading-[1.05] tracking-tight text-text">
+              <span className="block">Engineering</span>
+              <span className="block italic text-text-secondary">systems that</span>
+              <span className="block">ship.</span>
             </h1>
-            <p className="text-body-large text-text-secondary max-w-md mb-12 animate-reveal-up delay-500">
+            <p className="text-body-large text-text-secondary max-w-md mb-8">
               Hi, I&apos;m Shivam. I build full-stack web applications, enterprise platforms, and interactive digital products — from architecture to deployment.
             </p>
-            <div className="flex flex-wrap gap-4 animate-reveal-up delay-600">
+            <div className="flex flex-wrap gap-4">
               <NextLink 
                 href="/work"
                 className={cn(buttonBaseStyles, buttonVariants.primary, buttonSizes.md)}
@@ -47,14 +47,14 @@ export default function Home() {
               </NextLink>
             </div>
           </div>
-          <div className="col-span-full md:col-span-5 relative h-[300px] md:h-[500px] border border-border bg-surface-alt/50 backdrop-blur-sm overflow-hidden animate-reveal-fade delay-700 corner-marks">
+          <div className="col-span-full lg:col-span-5 relative h-[300px] md:h-[420px] rounded-2xl border border-white/10 bg-[#0E1322]/80 backdrop-blur-xl shadow-2xl overflow-hidden">
              <HeroSystem />
           </div>
         </div>
       </section>
 
       {/* Featured Work Section */}
-      <section className="py-24 border-b border-border">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
         <div className="grid-container">
           <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6 flex items-end justify-between">
             <div>
@@ -81,7 +81,7 @@ export default function Home() {
       </section>
 
       {/* Ask Shivam's Work */}
-      <section className="py-24 border-b border-border bg-bg relative overflow-hidden">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-bg relative overflow-hidden">
         <div className="absolute inset-0 bg-blueprint opacity-10 pointer-events-none" />
         <div className="grid-container relative z-10">
           <div className="col-span-full lg:col-span-12 mb-12">
@@ -95,7 +95,7 @@ export default function Home() {
       </section>
 
       {/* Other Projects Section */}
-      <section className="py-24 border-b border-border bg-surface">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-surface">
         <div className="grid-container">
           <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6">
             <h2 className="text-mono-label text-text-tertiary mb-3">{`// 03. RECENT`}</h2>
@@ -103,7 +103,7 @@ export default function Home() {
           </div>
           
           {otherProjects.map((project) => (
-            <div key={project.slug} className="col-span-full md:col-span-6 lg:col-span-4 mb-8 md:mb-0">
+            <div key={project.slug} className="col-span-full md:col-span-4 lg:col-span-4 mb-8 md:mb-0">
               <ProjectCard
                 title={project.title}
                 description={project.shortDescription}
@@ -119,7 +119,7 @@ export default function Home() {
       </section>
 
       {/* Engineering Playground Teaser */}
-      <section className="py-24 border-b border-border bg-bg relative overflow-hidden">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-bg relative overflow-hidden">
         <div className="grid-container relative z-10">
           <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6 flex items-end justify-between">
             <div>
@@ -130,33 +130,35 @@ export default function Home() {
           </div>
           
           <div className="col-span-full lg:col-span-12">
-            <div className="border border-border bg-surface p-8 md:p-12 corner-marks group">
+            <div className="rounded-2xl border border-white/10 bg-surface/70 backdrop-blur-xl p-8 md:p-12 shadow-2xl group hover:border-cyan-500/30 transition-all duration-300">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                 <div>
                   <div className="flex items-center gap-3 mb-6">
-                    <span className="w-8 h-[1px] bg-accent"></span>
-                    <span className="text-mono-label text-accent">INTERACTIVE MODEL</span>
+                    <span className="w-8 h-[2px] bg-cyan-400 rounded-full"></span>
+                    <span className="text-xs font-mono tracking-widest text-cyan-400 uppercase font-medium">INTERACTIVE MODEL</span>
                   </div>
-                  <h4 className="text-headline mb-4 font-display italic group-hover:text-text-secondary transition-colors duration-300">Geospatial Validation</h4>
-                  <p className="text-body-large text-text-secondary mb-8 leading-relaxed">
-                    Explore a lightweight, interactive 2D model demonstrating the Haversine distance algorithm and geofencing logic used in the Shynr HRMS attendance system.
+                  <h4 className="text-3xl font-display font-medium text-white mb-4 group-hover:text-cyan-300 transition-colors duration-300">Geospatial Validation</h4>
+                  <p className="text-base text-slate-300 mb-8 leading-relaxed">
+                    Explore a high-precision, interactive 2D model demonstrating the Haversine distance algorithm and geofencing validation engine developed for the Shynr HRMS platform.
                   </p>
                   <NextLink 
                     href="/playground"
                     className={cn(buttonBaseStyles, buttonVariants.secondary, buttonSizes.md)}
                   >
-                    Open Geofencing Lab
+                    Open Geofencing Lab ↗
                   </NextLink>
                 </div>
-                <div className="relative aspect-video border border-border-muted bg-surface-alt flex items-center justify-center filter grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden">
-                  <div className="absolute inset-0 bg-blueprint opacity-20" />
-                  {/* Abstract representation of the lab */}
+                <div className="relative aspect-video rounded-xl border border-white/10 bg-[#070A12] flex items-center justify-center transition-all duration-500 overflow-hidden shadow-inner group-hover:border-cyan-500/40">
+                  <div className="absolute inset-0 bg-blueprint opacity-20 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
+                  {/* Radar animation representation */}
                   <svg viewBox="0 0 100 100" className="w-1/2 h-1/2 relative z-10">
-                    <circle cx="50" cy="50" r="30" fill="transparent" stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="4 4" className="animate-[spin_20s_linear_infinite]" />
-                    <circle cx="50" cy="50" r="2" fill="var(--color-text)" />
-                    <line x1="50" y1="50" x2="70" y2="70" stroke="var(--color-text-tertiary)" strokeWidth="0.5" />
-                    <circle cx="70" cy="70" r="4" fill="var(--color-bg)" stroke="var(--color-accent)" strokeWidth="1" />
-                    <circle cx="70" cy="70" r="1.5" fill="var(--color-accent)" />
+                    <circle cx="50" cy="50" r="30" fill="none" stroke="#00B8D4" strokeWidth="0.8" strokeDasharray="3 3" className="animate-[spin_20s_linear_infinite]" opacity="0.8" />
+                    <circle cx="50" cy="50" r="18" fill="rgba(0,184,212,0.08)" stroke="#00B8D4" strokeWidth="0.5" />
+                    <circle cx="50" cy="50" r="2" fill="#FFFFFF" />
+                    <line x1="50" y1="50" x2="68" y2="68" stroke="rgba(255,255,255,0.4)" strokeWidth="0.5" strokeDasharray="1 1" />
+                    <circle cx="68" cy="68" r="4" fill="#070A12" stroke="#00B8D4" strokeWidth="1" />
+                    <circle cx="68" cy="68" r="1.5" fill="#00B8D4" className="animate-ping" />
                   </svg>
                 </div>
               </div>
@@ -166,8 +168,8 @@ export default function Home() {
       </section>
 
       {/* Experience Snapshot */}
-      <section className="py-24 border-b border-border">
-        <div className="grid-container grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
+        <div className="grid-container gap-y-16 lg:gap-y-0">
           <div className="col-span-full lg:col-span-4 border-t lg:border-t-0 lg:border-r border-border pt-8 lg:pt-0 lg:pr-8">
             <h2 className="text-mono-label text-text-tertiary mb-3">{`// 05. BACKGROUND`}</h2>
             <h3 className="text-display-secondary mb-8">Where I&apos;ve Been</h3>
@@ -183,7 +185,7 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-24 md:py-40 relative overflow-hidden bg-bg text-center border-b border-border">
+      <section className="py-16 md:py-24 lg:py-32 relative overflow-hidden bg-bg text-center border-b border-border">
         <div className="relative z-10 grid-container">
           <div className="col-span-full flex flex-col items-center">
             <h2 className="text-display mb-8">

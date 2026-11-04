@@ -19,7 +19,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
           href={href}
           ref={ref}
           className={cn(
-            "group inline-flex items-center gap-2 text-label text-text transition-all duration-300 hover:text-text-secondary focus:outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-text",
+            "group inline-flex items-center gap-2 text-label text-accent transition-colors duration-200 hover:text-accent-hover focus:outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-text",
             className
           )}
           {...props}
@@ -35,7 +35,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
         href={href}
         ref={ref}
         className={cn(
-          "text-text underline decoration-border underline-offset-4 transition-colors duration-200 hover:text-text-secondary hover:decoration-text-secondary focus:outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-text",
+          "text-accent underline decoration-accent/30 underline-offset-4 transition-colors duration-200 hover:text-accent-hover hover:decoration-accent-hover focus:outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-text",
           className
         )}
         {...props}

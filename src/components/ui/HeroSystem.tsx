@@ -53,7 +53,7 @@ const nodes: HeroNode[] = [
 ]
 
 export function HeroSystem() {
-  const [activeNode, setActiveNode] = useState<string | null>(null)
+  const [activeNode, setActiveNode] = useState<string | null>("architecture")
 
   const handleActivate = useCallback((id: string) => setActiveNode(id), [])
   const handleDeactivate = useCallback(() => setActiveNode(null), [])

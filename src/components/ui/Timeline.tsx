@@ -4,10 +4,16 @@ import React from "react"
 import { cn } from "@/lib/utils"
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer"
 
+export interface TimelineItemProject {
+  title: string
+  description: string
+}
+
 export interface TimelineItem {
   date?: string
   title: string
   description: string
+  projects?: TimelineItemProject[]
 }
 
 export interface TimelineProps {
@@ -59,6 +65,20 @@ function TimelineNode({ item, isLast }: { item: TimelineItem; isLast: boolean })
       <p className="text-body-large text-text-secondary mt-2 leading-relaxed max-w-2xl">
         {item.description}
       </p>
+
+      {/* Project subsections */}
+      {item.projects && item.projects.length > 0 && (
+        <div className="mt-6 flex flex-col gap-4">
+          {item.projects.map((project, i) => (
+            <div key={i} className="border-l border-border-muted pl-6 py-3">
+              <h5 className="text-mono-label text-accent mb-2">{project.title}</h5>
+              <p className="text-body-small text-text-secondary leading-relaxed">
+                {project.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -16,15 +16,16 @@ export function Header() {
   const pathname = usePathname()
 
   return (
-    <header className="sticky top-0 z-[900] h-16 bg-bg border-b border-border flex items-center justify-between px-4 sm:px-6 md:px-8 animate-reveal-fade delay-100">
+    <header className="sticky top-0 z-[900] h-[72px] bg-[#0A0E17]/80 backdrop-blur-md border-b border-white/[0.08] flex items-center justify-between px-4 sm:px-6 md:px-8 animate-reveal-fade delay-100">
       <NextLink 
         href="/" 
-        className="font-display font-medium text-[18px] text-text hover:text-text-secondary transition-colors focus:outline-none focus-visible:outline-1 focus-visible:outline-text focus-visible:outline-offset-4"
+        className="font-display font-medium text-[20px] tracking-tight text-white hover:text-cyan-400 transition-colors focus:outline-none focus-visible:outline-2 focus-visible:outline-cyan-400 flex items-center gap-2"
       >
+        <span className="w-2 h-2 rounded-full bg-cyan-400 inline-block"></span>
         SHIVAM
       </NextLink>
       
-      <nav className="hidden md:flex items-center gap-8">
+      <nav className="hidden md:flex items-center gap-2">
         {NAV_LINKS.map((link) => {
           const isActive = pathname.startsWith(link.href)
           
@@ -33,17 +34,13 @@ export function Header() {
               key={link.href}
               href={link.href}
               className={cn(
-                "relative text-mono-label transition-colors duration-200 focus:outline-none focus-visible:outline-1 focus-visible:outline-text focus-visible:outline-offset-4 group py-2",
-                isActive ? "text-text" : "text-text-secondary hover:text-text"
+                "relative text-xs font-mono px-3.5 py-1.5 rounded-lg transition-all duration-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-cyan-400",
+                isActive 
+                  ? "text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 font-medium" 
+                  : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
               )}
             >
-              {isActive ? `[ ${link.label} ]` : link.label}
-              
-              {/* Active / Hover Underline */}
-              <span className={cn(
-                "absolute bottom-0 left-0 h-[1px] bg-accent transition-all duration-300 ease-out-expo",
-                isActive ? "w-full" : "w-0 group-hover:w-full group-hover:bg-text-secondary"
-              )} />
+              {link.label}
             </NextLink>
           )
         })}

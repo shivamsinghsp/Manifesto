@@ -46,7 +46,7 @@ export default function CaseStudyPage({ params }: PageProps) {
   return (
     <article className="pb-24">
       {/* Case Study Header */}
-      <header className="pt-32 pb-24 md:pt-48 md:pb-32 border-b border-border bg-blueprint bg-fixed">
+      <header className="py-16 md:py-20 lg:py-24 border-b border-border bg-blueprint bg-fixed">
         <div className="grid-container">
           <div className="col-span-full lg:col-span-8 mb-16">
             <span className="text-mono-label text-text-tertiary mb-6 block uppercase">{`// CASE_STUDY: ${project.category}`}</span>
@@ -122,8 +122,8 @@ export default function CaseStudyPage({ params }: PageProps) {
       </div>
 
       {/* Project Overview */}
-      <section className="py-24 md:py-32 border-b border-border">
-        <div className="grid-container grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
+        <div className="grid-container gap-y-12 lg:gap-y-0">
           <div className="col-span-full md:col-span-4 lg:col-span-3">
             <div className="md:sticky top-24 md:border-t border-b md:border-b-0 border-border md:pt-4 pb-4 md:pb-0 mb-8 md:mb-0">
               <h2 className="text-mono-label text-text-tertiary">01. OVERVIEW</h2>
@@ -163,7 +163,7 @@ export default function CaseStudyPage({ params }: PageProps) {
 
       {/* Key Metrics */}
       {project.metrics && (
-        <section className="py-24 md:py-32 border-b border-border bg-surface">
+        <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-surface">
           <div className="grid-container">
             <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-0 border border-border">
               {project.metrics.map((metric, i) => (
@@ -182,8 +182,8 @@ export default function CaseStudyPage({ params }: PageProps) {
       {project.caseStudy && (
         <div className="case-study-content">
           {project.caseStudy.map((section, index) => (
-            <section key={index} className="py-24 md:py-32 border-b border-border">
-              <div className="grid-container grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8">
+            <section key={index} className="py-16 md:py-24 lg:py-32 border-b border-border">
+              <div className="grid-container gap-y-12 lg:gap-y-0">
                 
                 {/* Left Column: Section Title */}
                 <div className="col-span-full md:col-span-4 lg:col-span-3">
@@ -213,9 +213,8 @@ export default function CaseStudyPage({ params }: PageProps) {
                       {/* 1. Real Screenshot */}
                       {section.image && (
                         <figure className="w-full relative group">
-                          <div className="absolute inset-0 bg-surface border border-border transition-all duration-[600ms] ease-out-expo translate-x-2 translate-y-2 opacity-100 z-0" />
-                          <div className="relative z-10 border border-border bg-surface p-2 corner-marks">
-                            <div className="relative aspect-[16/9] w-full overflow-hidden text-text-tertiary flex items-center justify-center bg-surface-alt">
+                          <div className="relative z-10 rounded-2xl border border-white/10 bg-surface/70 backdrop-blur-xl p-2.5 shadow-2xl overflow-hidden">
+                            <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden text-text-tertiary flex items-center justify-center bg-surface-alt">
                               {section.image.src ? (
                                 <Image
                                   src={section.image.src}
@@ -337,21 +336,20 @@ export default function CaseStudyPage({ params }: PageProps) {
                         </div>
                       )}
                       <figure className="w-full relative group">
-                        <div className="absolute inset-0 bg-surface border border-border transition-all duration-[600ms] ease-out-expo translate-x-3 translate-y-3 opacity-100 z-0" />
-                        <div className="relative z-10 border border-border bg-surface p-2 corner-marks">
-                          <div className="relative aspect-[16/9] flex items-center justify-center text-text-tertiary overflow-hidden filter grayscale opacity-90 transition-all duration-700 hover:grayscale-0 hover:opacity-100 animate-scan">
+                        <div className="relative z-10 rounded-2xl border border-white/10 bg-surface/70 backdrop-blur-xl p-2.5 shadow-2xl overflow-hidden">
+                          <div className="relative aspect-[16/9] flex items-center justify-center text-text-tertiary rounded-xl overflow-hidden animate-scan">
                             {section.image.src ? (
                               <Image
                                 src={section.image.src}
                                 alt={section.image.alt}
                                 fill
-                                className="object-cover"
+                                className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                               />
                             ) : (
                               <div className="absolute inset-0 bg-surface flex items-center justify-center border border-border-muted">
                                 <span className="font-mono text-[10px] tracking-[0.2em] text-text-tertiary/70 uppercase">
                                   [ INTERFACE PLATE RESERVED ]
-                               </span>
+                                </span>
                               </div>
                             )}
                           </div>

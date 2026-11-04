@@ -1,11 +1,17 @@
+export interface ExperienceProject {
+  title: string;
+  description: string;
+}
+
 export interface Experience {
   id: string;
-  type: "Work" | "Education";
+  type: "Work" | "Education" | "Recognition";
   title: string;
   organization: string;
   dateRange?: string; // Optional to safely omit dates
   description: string;
   skills: string[];
+  projects?: ExperienceProject[];
 }
 
 export const experiences: Experience[] = [
@@ -16,7 +22,13 @@ export const experiences: Experience[] = [
     organization: "Rapsora Technologies Private Limited",
     dateRange: "January 2026 – June 2026",
     description: "Built Shynr — a full-stack HRMS and job portal (Next.js 15, React 19, MongoDB, NextAuth.js) as the sole developer, including GPS-based geofencing attendance with Haversine distance validation and a role-based access control system. Also contributed to AaoSeekhe.in as a solo full-stack developer, building responsive interfaces, animated components, serverless API routes with Zod validation, XSS sanitization, and SMTP email workflows.",
-    skills: ["Next.js", "React", "TypeScript", "MongoDB", "NextAuth.js", "REST APIs", "Geofencing"]
+    skills: ["Next.js", "React", "TypeScript", "MongoDB", "NextAuth.js", "REST APIs", "Geofencing"],
+    projects: [
+      {
+        title: "PLEDGE Portal — Government of Uttar Pradesh",
+        description: "Performed functional and regression testing on the PLEDGE Portal, reproducing, documenting, and retesting defects across application workflows, forms, and end-to-end user scenarios."
+      }
+    ]
   },
   {
     id: "exp-02",
@@ -35,5 +47,29 @@ export const experiences: Experience[] = [
     dateRange: "October 2022 – July 2026",
     description: "Degree in Information Technology. Built foundational knowledge in software engineering, algorithms, and data structures. Developed full-stack applications as capstone projects.",
     skills: ["Information Technology", "Computer Science Fundamentals", "Data Structures", "Algorithms"]
+  },
+  {
+    id: "rec-01",
+    type: "Recognition",
+    title: "Winner — Framework 1.0 Hackathon",
+    organization: "Flutter Kanpur",
+    description: "Won the Framework 1.0 Hackathon organized by Flutter Kanpur.",
+    skills: []
+  },
+  {
+    id: "rec-02",
+    type: "Recognition",
+    title: "Best Oral Presentation — ICSCIS",
+    organization: "International Conference on Smart Computing and Intelligent Systems",
+    description: "Awarded Best Oral Presentation at the International Conference on Smart Computing and Intelligent Systems (ICSCIS).",
+    skills: []
+  },
+  {
+    id: "rec-03",
+    type: "Recognition",
+    title: "Top 10% — CodeQuezt Coding Challenge",
+    organization: "CodeQuezt",
+    description: "Placed in the top 10% among 500+ participants in the CodeQuezt Coding Challenge.",
+    skills: []
   }
 ];
