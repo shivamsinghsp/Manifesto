@@ -29,8 +29,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 function getOwnershipLabel(role: string): string {
   const lower = role.toLowerCase()
-  if (lower.includes("solo")) return "End-to-end / Solo"
-  if (lower.includes("lead")) return "Lead / Primary"
+  if (lower.includes("client project") || lower.includes("independent full-stack")) {
+    return "Independent Client Delivery"
+  }
+  if (lower.includes("primary feature")) {
+    return "Primary Feature Developer"
+  }
+  if (lower.includes("independent project") || lower.includes("full-stack web developer")) {
+    return "Independent Project"
+  }
+  if (lower.includes("enterprise") || lower.includes("spfx")) {
+    return "Enterprise Contributor"
+  }
+  if (lower.includes("qa") || lower.includes("verification")) {
+    return "QA & Verification Engineer"
+  }
   return "Core Contributor"
 }
 

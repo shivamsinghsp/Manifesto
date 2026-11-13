@@ -40,9 +40,21 @@ export default function ExperiencePage() {
           <div className="col-span-full lg:col-span-8">
             <span className="text-mono-label text-text-tertiary mb-6 block">{`// 02. TIMELINE`}</span>
             <h1 className="text-display mb-8">Experience</h1>
-            <p className="text-body-large text-text-secondary max-w-2xl leading-relaxed">
+            <p className="text-body-large text-text-secondary max-w-2xl leading-relaxed mb-8">
               A chronological ledger of my professional journey, highlighting the teams I&apos;ve worked with and the systems we&apos;ve built.
             </p>
+            <div className="flex flex-wrap gap-4">
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs font-mono text-white hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-all shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+              >
+                <span>DOWNLOAD RESUME (PDF)</span>
+                <span className="text-cyan-400">↗</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>

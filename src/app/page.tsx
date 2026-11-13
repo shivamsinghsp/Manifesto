@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
 
 export default function Home() {
   const featuredProject = projects.find(p => p.slug === "shynr")
-  const otherProjects = projects.filter(p => p.slug !== "shynr").slice(0, 3)
+  const otherProjects = projects.filter(p => p.slug !== "shynr")
   const recentExperience = experiences.slice(0, 2).map(exp => ({
     date: exp.dateRange,
     title: `${exp.title} — ${exp.organization}`,
@@ -101,13 +101,16 @@ export default function Home() {
       {/* Other Projects Section */}
       <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-surface scroll-mt-20">
         <div className="grid-container">
-          <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6">
-            <h2 className="text-mono-label text-text-tertiary mb-3">{`// 03. RECENT`}</h2>
-            <h3 className="text-display-secondary">Other Projects</h3>
+          <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6 flex items-end justify-between">
+            <div>
+              <h2 className="text-mono-label text-text-tertiary mb-3">{`// 03. RECENT`}</h2>
+              <h3 className="text-display-secondary">Engineered Systems</h3>
+            </div>
+            <Link href="/work" variant="cta">View All Archive</Link>
           </div>
           
           {otherProjects.map((project) => (
-            <div key={project.slug} className="col-span-full md:col-span-4 lg:col-span-4 mb-8 md:mb-0">
+            <div key={project.slug} className="col-span-full md:col-span-6 lg:col-span-6 mb-8">
               <ProjectCard
                 title={project.title}
                 description={project.shortDescription}

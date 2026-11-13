@@ -57,7 +57,7 @@ export default function PlaygroundPage() {
                 </div>
                 <div>
                   <span className="text-[10px] font-mono text-slate-400 block mb-1">ROLE</span>
-                  <span className="text-sm font-medium text-white">Solo Developer</span>
+                  <span className="text-sm font-medium text-white">Independent Developer</span>
                 </div>
                 <div>
                   <span className="text-[10px] font-mono text-slate-400 block mb-1">PROTOCOL</span>

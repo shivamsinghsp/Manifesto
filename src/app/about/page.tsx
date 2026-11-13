@@ -49,9 +49,23 @@ export default function AboutPage() {
               </p>
             </Reveal>
             <Reveal delay={300} direction="up">
-              <p className="text-[1.1rem] md:text-[1.25rem] text-text-secondary leading-[1.8] mb-12 font-light">
+              <p className="text-[1.1rem] md:text-[1.25rem] text-text-secondary leading-[1.8] mb-8 font-light">
                 I approach engineering with a systems mindset: understand the problem first, simplify where possible, and build solutions that are maintainable rather than merely functional. I’m particularly interested in backend architecture, APIs, developer tooling, and products that solve real operational problems.
               </p>
+            </Reveal>
+            <Reveal delay={400} direction="up">
+              <div className="flex flex-wrap gap-4 mb-12">
+                <a
+                  href="/resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs font-mono text-white hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-all shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                >
+                  <span>DOWNLOAD VERIFIED RESUME (PDF)</span>
+                  <span className="text-cyan-400">↗</span>
+                </a>
+              </div>
             </Reveal>
           </div>
         </div>

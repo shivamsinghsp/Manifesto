@@ -9,7 +9,8 @@ const SUGGESTIONS = [
   "What did he build with MongoDB?",
   "Which project used geofencing?",
   "What automated systems has he built?",
-  "Which projects did he build solo?"
+  "What was his QA role on PLEDGE?",
+  "What are his project roles and ownership?"
 ]
 
 export function WorkAssistant() {

@@ -52,18 +52,18 @@ export const projects: Project[] = [
     slug: "shynr",
     title: "Shynr — HRMS & Job Portal",
     category: "Tier 1: Product",
-    role: "Lead Full-Stack Developer — Solo Developer",
-    timeline: "Jan 15 – Feb 9, 2026 (~4 weeks)",
+    role: "Full-Stack Engineering Intern — Primary Feature Developer",
+    timeline: "Jan 15 – Feb 9, 2026 (4-week core product sprint during Rapsora internship)",
     shortDescription:
       "A monolithic Next.js application combining an internal HRMS with a public job portal — featuring GPS-based geofencing attendance, RBAC, and an ATS workflow.",
     longDescription: [
-      "Shynr is a production-deployed platform that merges two distinct systems into a single Next.js 15 application: a public job portal with listings, applications, and an ATS pipeline, and an internal HRMS handling attendance, leave management, employee administration, and activity logging.",
-      "I built the entire platform end-to-end as the sole developer — 33 commits covering architecture, frontend, backend, database, authentication, authorization, geofencing, and deployment. The most technically interesting subsystem is the GPS-based attendance validation, which uses the Haversine formula to verify employee proximity to company locations before allowing check-in.",
+      "Shynr is a production-deployed platform that merges two distinct business domains into a unified Next.js 15 application: a public job portal with listings, applications, and an ATS pipeline, and an internal HRMS handling attendance, leave management, employee administration, and activity logging.",
+      "Developed during my software engineering internship at Rapsora Technologies. As the primary developer on the project, I implemented the foundational platform across 33 commits during an intensive 4-week product delivery sprint (January 15 – February 9, 2026)—translating technical specifications into working architecture, Next.js App Router frontend, MongoDB schemas, NextAuth.js authentication, role-based access control, and GPS-based geofencing attendance validation under senior engineering review.",
     ],
     metrics: [
-      { label: "Development Time", value: "4 Weeks" },
+      { label: "Core Product Sprint", value: "4 Weeks" },
       { label: "Database Models", value: "6" },
-      { label: "Git Commits", value: "33" },
+      { label: "Verified Commits", value: "33" },
     ],
     tags: [
       "Next.js 15",
@@ -148,7 +148,7 @@ export const projects: Project[] = [
       {
         type: "product-feature",
         title: "GEOSPATIAL ATTENDANCE",
-        content: "The attendance flow validates the employee's browser location against active company locations.",
+        content: "The attendance flow validates the employee's browser location against active company locations using Haversine spherical trigonometric calculation.",
         image: {
           src: "/images/projects/shynr/11-admin-attendance-locations.png",
           alt: "Admin Attendance Locations Configuration",
@@ -173,7 +173,7 @@ export const projects: Project[] = [
       {
         type: "text",
         title: "ENGINEERING CHALLENGES",
-        content: "01\nGPS accuracy varies by device.\n→ Configurable attendance radius.\n\n02\nAttendance rules depend on local time.\n→ UTC storage + Asia/Kolkata conversion.\n\n03\nHRMS and Job Portal share one application.\n→ Shared authentication and authorization model."
+        content: "01\nGPS accuracy varies by device.\n→ Configurable attendance radius with graceful error thresholds.\n\n02\nAttendance rules depend on local time.\n→ UTC storage + Asia/Kolkata timezone conversion.\n\n03\nHRMS and Job Portal share one application.\n→ Unified authentication with hierarchical role-based authorization."
       }
     ],
   },
@@ -185,13 +185,13 @@ export const projects: Project[] = [
     slug: "kanpur-architects-association",
     title: "Kanpur Architects Association",
     category: "Tier 1: Product",
-    role: "Lead Full-Stack Developer — Solo Developer",
+    role: "Independent Full-Stack Developer — Client Project",
     timeline: "~3.5 months (mid-May – early Sep 2026)",
     shortDescription:
       "A comprehensive platform combining a public architect directory, event management, membership, custom CMS, admin portal with ad/banner management, and geo-spatial architect search.",
     longDescription: [
       "The Kanpur Architects Association platform is a multi-surface web application serving three distinct audiences: public visitors searching for architects and browsing events, registered architects managing their profiles and membership, and administrators controlling content, members, events, advertisements, and SEO metadata through a dedicated admin portal.",
-      "I built the entire platform as the sole developer over approximately 3.5 months. The system includes a custom CMS backed by MongoDB, a geo-spatial architect directory using 2dsphere indexing, a banner/ad engine with click tracking and scheduling, phone OTP authentication for architects, and ISR cache invalidation to keep admin updates visible without full rebuilds.",
+      "Delivered as an independent full-stack project for the client over approximately 3.5 months, managing direct stakeholder requirements, database architecture, and deployment. The system includes a custom CMS backed by MongoDB, a geo-spatial architect directory using 2dsphere indexing, an advertisement engine with click tracking and scheduling, phone OTP authentication for architects, and ISR cache invalidation to keep admin updates visible without full rebuilds.",
     ],
     tags: [
       "Next.js 16",
@@ -296,16 +296,17 @@ export const projects: Project[] = [
     slug: "aao-seekhe",
     title: "Aao Seekhe.in",
     category: "Tier 1: Product",
-    role: "Full-Stack Developer — Solo Developer",
+    role: "Full-Stack Web Developer — Independent Project",
     timeline: "~2 months",
     shortDescription:
       "A multi-page educational platform with rich interactive UI, animated components, reusable forms, and serverless API routes handling validation, XSS sanitization, and SMTP email workflows.",
     longDescription: [
-      "Aao Seekhe is a multi-page web application for an educational services company, covering test preparation (GRE, GMAT, SAT, IELTS), global admissions, academic collaboration, training, and consultation booking. I built the entire application from scratch as the sole developer — 34 commits, 100% ownership.",
-      "The frontend emphasizes interactive, animated experiences: a HeroSlider, HeroWelcomePopup with frosted-glass UI, animated grids, and an Embla carousel. The backend uses Next.js serverless API routes for form submissions — each route validates input with Zod, sanitizes against XSS, and sends HTML email notifications to both administrators and users via Nodemailer/SMTP.",
+      "Aao Seekhe is a multi-page web application for an educational services company, covering test preparation (GRE, GMAT, SAT, IELTS), global admissions, academic collaboration, training, and consultation booking.",
+      "Responsible for full-stack implementation across 34 commits—building the responsive frontend with Framer Motion, designing serverless API route handlers with Zod validation and XSS protection, and configuring SMTP email pipelines with Nodemailer.",
     ],
     metrics: [
-      { label: "Git Commits", value: "34" },
+      { label: "Verified Commits", value: "34" },
+      { label: "Serverless Endpoints", value: "4" },
     ],
     tags: [
       "Next.js",
@@ -383,13 +384,13 @@ export const projects: Project[] = [
     slug: "sharepoint-knowledge-hub",
     title: "Enterprise Knowledge Hub",
     category: "Tier 2: System",
-    role: "SPFx Developer / Frontend React Engineer",
+    role: "Enterprise Frontend Engineer — SPFx / React",
     timeline: "~4 months (2026)",
     shortDescription:
       "A SharePoint Online knowledge platform with metadata-driven document discovery, an SME directory integrated with Microsoft Graph, and custom admin configuration.",
     longDescription: [
-      "The Enterprise Knowledge Hub is a SharePoint Online application built with SPFx web parts to solve knowledge fragmentation within a large organization. Information was scattered across OneDrive, Teams, and email — making it difficult to find templates, correct document versions, and subject-matter experts.",
-      "I built custom SPFx web parts, React interfaces with Fluent UI, a metadata-driven knowledge library with real-time filtering, an SME Finder integrated with Microsoft Graph for user profiles and presence, and an admin configuration experience for non-technical site owners. The entire platform runs within SharePoint Online — no external databases, no external application backends.",
+      "The Enterprise Knowledge Hub is a SharePoint Online application built with SPFx web parts to solve knowledge fragmentation within a large organization. Information was scattered across OneDrive, Teams, and email—making it difficult to find templates, correct document versions, and subject-matter experts.",
+      "As an enterprise frontend contributor, I built custom SPFx web parts, React interfaces with Fluent UI, a metadata-driven knowledge library with real-time filtering, an SME Finder integrated with Microsoft Graph for user profiles and presence, and an admin configuration experience for non-technical site owners. The entire platform runs strictly within SharePoint Online—leveraging existing M365 security without external application backends.",
     ],
     tags: [
       "SharePoint Online",
@@ -465,6 +466,89 @@ export const projects: Project[] = [
         type: "text",
         title: "ENGINEERING CHALLENGES",
         content: "01\nSharePoint API throttling and pagination limits.\n→ Optimized PnPjs queries with robust error handling and caching.\n\n02\nCombining disparate API structures (REST, Graph, CAML).\n→ Unified data layer abstraction smoothing out response formats."
+      }
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // PROJECT 5: PLEDGE PORTAL — QA & VERIFICATION
+  // ─────────────────────────────────────────────
+  {
+    slug: "pledge-portal-qa",
+    title: "PLEDGE Portal — QA & Verification Engineering",
+    category: "Tier 2: System",
+    role: "QA & Verification Engineer",
+    timeline: "March 2026 – May 2026 (During Rapsora Internship)",
+    shortDescription:
+      "Functional testing, workflow validation, defect documentation and regression verification for the Government of Uttar Pradesh's PLEDGE portal.",
+    longDescription: [
+      "The PLEDGE Portal (Government of Uttar Pradesh) is a large-scale governmental platform managing industrial infrastructure, applicant submissions, and departmental approval chains. With sensitive multi-tier government workflows, ensuring rock-solid data integrity, precise role-based boundaries, and defect-free application state transitions was critical prior to staging and production milestones.",
+      "During my software engineering internship at Rapsora Technologies, I performed rigorous functional and regression testing across key portal surfaces. My responsibilities centered on manual QA verification: executing test scenarios across multi-tier user roles (Citizen Applicant, Department Approver, Department Admin), performing boundary and payload verification on complex application forms, documenting reproducible defect logs with exact steps to replicate, and executing regression test cycles following developer fixes to ensure zero unintended side effects.",
+    ],
+    metrics: [
+      { label: "Workflow Roles Tested", value: "3 Roles" },
+      { label: "Testing Methodology", value: "Functional & Regression QA" },
+      { label: "Defect Tracking", value: "Reproducible Bug Logs" },
+    ],
+    tags: [
+      "Functional Testing",
+      "Regression Testing",
+      "Manual QA",
+      "Workflow Verification",
+      "Defect Lifecycle",
+      "Form Boundary Testing",
+      "RBAC Validation",
+      "Government Systems",
+    ],
+    heroImage: {
+      src: "/diagrams/projects/pledge/qa-workflow.svg",
+      alt: "PLEDGE Portal QA Verification Architecture",
+    },
+    explorerTabs: [
+      { label: "QA PROTOCOL", sectionTitle: "QA PROTOCOL" },
+      { label: "ROLE VALIDATION", sectionTitle: "ROLE VALIDATION" }
+    ],
+    caseStudy: [
+      {
+        type: "product-feature",
+        title: "QA PROTOCOL & VERIFICATION LIFECYCLE",
+        content: "A disciplined testing lifecycle was established to catch defects early and verify fixes without regressions. Each release cycle encompassed five distinct stages: intake requirement analysis, cross-role functional test execution, structured defect documentation with exact replication steps, developer fix handoff, and regression re-testing before staging sign-off.",
+        diagram: {
+          src: "/diagrams/projects/pledge/qa-workflow.svg",
+          alt: "PLEDGE QA Protocol Lifecycle",
+          caption: "Structured 5-stage testing workflow from requirement analysis to staging release sign-off."
+        },
+        implementation: [
+          "Requirement & Acceptance Criteria Intake",
+          "Test Scenario Matrix Planning",
+          "Functional Test Case Execution",
+          "Step-by-Step Defect Reproduction Documentation",
+          "Regression Testing Following Fixes",
+          "Staging Verification Sign-Off"
+        ]
+      },
+      {
+        type: "product-feature",
+        title: "MULTI-TIER ROLE & STATE TRANSITION TESTING",
+        content: "The portal requires strict role segregation across Citizen Applicants submitting documentation, Department Approvers verifying attachments and issuing remarks, and Department Administrators monitoring high-level governance. Testing focused on boundary checks, state machine transitions, and verifying that users could never access or execute actions outside their designated tier.",
+        diagram: {
+          src: "/diagrams/projects/pledge/multi-role-testing.svg",
+          alt: "Multi-Tier Role Validation Matrix",
+          caption: "Validation pipeline across Citizen Applicant, Department Approver, and Department Admin."
+        },
+        implementation: [
+          "Citizen Submission Form Validation",
+          "File Attachment Format & Size Limits",
+          "State Machine Verification (Draft → Submitted → Under Review → Approved/Rejected)",
+          "Remark Logging & Audit Trail Inspection",
+          "Access Control & Session Invalidation Checks",
+          "Cross-Browser Rendering & Form Stability"
+        ]
+      },
+      {
+        type: "text",
+        title: "ENGINEERING CHALLENGES & QA METHODOLOGY",
+        content: "01\nFunctional Testing vs. Regression Testing vs. Automated Testing:\nThis engagement was dedicated to manual functional and regression testing. Functional testing verified that each module operated in exact alignment with government specifications and business rules. Regression testing re-executed critical test suites across previously passing modules after bug fixes were merged to guarantee that new changes caused zero collateral breakage.\n\n02\nSecurity & Government Data Confidentiality:\nAll test procedures respected strict data protection guidelines. Only synthetic dummy data was used during test execution; no confidential government records, internal IPs, restricted citizen data, or production credentials are ever stored or disclosed."
       }
     ],
   },

@@ -724,9 +724,9 @@ export interface ContactWithGlobeProps {
 }
 
 export default function ContactWithGlobe({
-  title = "Contact us",
-  subtitle = "Contact",
-  description = "We are always looking for ways to improve our products and services. Contact us and let us know how we can help you.",
+  title = "Let's build systems.",
+  subtitle = "// 04. CONTACT",
+  description = "I am open to software engineering opportunities and technical collaborations. Whether you have an engineering challenge, an open role, or want to discuss full-stack architecture, send a note and I'll get back to you within 24 hours.",
   className,
   contactLinks = DEFAULT_CONTACT_LINKS,
 }: ContactWithGlobeProps) {
@@ -919,23 +919,23 @@ export default function ContactWithGlobe({
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Ahdeetai"
+                    placeholder="e.g. Alex Morgan"
                     disabled={status === "loading"}
-                    className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-rose-400 dark:focus:border-rose-500/50 focus:ring-2 focus:ring-rose-500/10 transition-all duration-200"
+                    className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-cyan-400 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all duration-200"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="globe-form-company" className="text-xs font-semibold tracking-widest uppercase text-zinc-400 dark:text-zinc-500">
-                    Company
+                    Company / Team
                   </label>
                   <input
                     id="globe-form-company"
                     type="text"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    placeholder="ScrollX UI"
+                    placeholder="e.g. Acme Corp / Engineering Team"
                     disabled={status === "loading"}
-                    className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-rose-400 dark:focus:border-rose-500/50 focus:ring-2 focus:ring-rose-500/10 transition-all duration-200"
+                    className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-cyan-400 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -950,9 +950,9 @@ export default function ContactWithGlobe({
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="support@scrollxui.com"
+                  placeholder="e.g. alex@company.com"
                   disabled={status === "loading"}
-                  className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-rose-400 dark:focus:border-rose-500/50 focus:ring-2 focus:ring-rose-500/10 transition-all duration-200"
+                  className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-cyan-400 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all duration-200"
                 />
               </div>
 
@@ -965,10 +965,10 @@ export default function ContactWithGlobe({
                   required
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Type your message here"
+                  placeholder="Tell me about your engineering project, team, or opportunity..."
                   rows={4}
                   disabled={status === "loading"}
-                  className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-rose-400 dark:focus:border-rose-500/50 focus:ring-2 focus:ring-rose-500/10 resize-none transition-all duration-200"
+                  className="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 outline-none focus:border-cyan-400 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 resize-none transition-all duration-200"
                 />
               </div>
 

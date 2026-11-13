@@ -53,9 +53,16 @@ export function Footer() {
           <ul className="flex flex-col gap-3">
             {FOOTER_LINKS.Resources.map((link) => (
               <li key={link.label}>
-                <NextLink href={link.href} className="text-body-small text-text-secondary hover:text-accent transition-colors duration-200 focus:outline-none focus-visible:underline">
-                  {link.label}
-                </NextLink>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="text-body-small text-text-secondary hover:text-accent transition-colors duration-200 focus:outline-none focus-visible:underline inline-flex items-center gap-1"
+                >
+                  <span>{link.label}</span>
+                  <span className="text-[10px] font-mono text-cyan-400">↗</span>
+                </a>
               </li>
             ))}
           </ul>
