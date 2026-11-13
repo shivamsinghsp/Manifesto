@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import ContactWithGlobe from "@/components/ui/contact-with-globe"
+import { ContactForm } from "./ContactForm"
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function ContactPage() {
-  return <ContactWithGlobe />
+  return <ContactForm />
 }
