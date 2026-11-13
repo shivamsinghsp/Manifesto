@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import Image from "next/image"
+import NextLink from "next/link"
 import { notFound } from "next/navigation"
 import { projects } from "@/data/projects"
 import { ProjectExplorer } from "@/components/engineering/ProjectExplorer"
@@ -48,6 +49,16 @@ export default function CaseStudyPage({ params }: PageProps) {
       {/* Case Study Header */}
       <header className="py-16 md:py-20 lg:py-24 border-b border-border bg-blueprint bg-fixed">
         <div className="grid-container">
+          <div className="col-span-full mb-8">
+            <NextLink
+              href="/work"
+              className="inline-flex items-center gap-2 text-xs font-mono text-slate-400 hover:text-cyan-400 transition-colors focus:outline-none focus:underline"
+            >
+              <span>←</span>
+              <span>Back to Selected Work</span>
+            </NextLink>
+          </div>
+
           <div className="col-span-full lg:col-span-8 mb-16">
             <span className="text-mono-label text-text-tertiary mb-6 block uppercase">{`// CASE_STUDY: ${project.category}`}</span>
             <h1 className="text-display mb-8">{project.title}</h1>
@@ -369,6 +380,28 @@ export default function CaseStudyPage({ params }: PageProps) {
           ))}
         </div>
       )}
+
+      {/* Case Study Bottom Navigation */}
+      <section className="py-16 border-t border-border bg-surface mt-16">
+        <div className="grid-container">
+          <div className="col-span-full flex flex-col sm:flex-row items-center justify-between gap-6">
+            <NextLink
+              href="/work"
+              className="inline-flex items-center gap-2 text-sm font-mono text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              <span>←</span>
+              <span>All Selected Work</span>
+            </NextLink>
+            <NextLink
+              href="/playground"
+              className="inline-flex items-center gap-2 text-sm font-mono text-slate-400 hover:text-white transition-colors"
+            >
+              <span>Explore Engineering Playground</span>
+              <span>→</span>
+            </NextLink>
+          </div>
+        </div>
+      </section>
     </article>
   )
 }

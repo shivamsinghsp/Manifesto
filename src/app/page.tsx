@@ -25,7 +25,7 @@ export default function Home() {
       <WavingLandingModal />
 
       {/* Hero Section */}
-      <section className="py-16 md:py-20 lg:py-24 border-b border-border bg-atmosphere relative">
+      <section id="hero" className="py-16 md:py-20 lg:py-24 border-b border-border bg-atmosphere relative scroll-mt-20">
         <div className="grid-container items-center gap-y-12 lg:gap-y-0">
           <div className="col-span-full lg:col-span-7 flex flex-col items-start relative z-10">
             <h1 className="text-display mb-6 leading-[1.05] tracking-tight text-text">
@@ -58,7 +58,7 @@ export default function Home() {
       </section>
 
       {/* Featured Work Section */}
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
+      <section id="work" className="py-16 md:py-24 lg:py-32 border-b border-border scroll-mt-20">
         <div className="grid-container">
           <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6 flex items-end justify-between">
             <div>
@@ -85,7 +85,7 @@ export default function Home() {
       </section>
 
       {/* Ask Shivam's Work */}
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-bg relative overflow-hidden">
+      <section id="explore" className="py-16 md:py-24 lg:py-32 border-b border-border bg-bg relative overflow-hidden scroll-mt-20">
         <div className="absolute inset-0 bg-blueprint opacity-10 pointer-events-none" />
         <div className="grid-container relative z-10">
           <div className="col-span-full lg:col-span-12 mb-12">
@@ -99,7 +99,7 @@ export default function Home() {
       </section>
 
       {/* Other Projects Section */}
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-surface">
+      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-surface scroll-mt-20">
         <div className="grid-container">
           <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6">
             <h2 className="text-mono-label text-text-tertiary mb-3">{`// 03. RECENT`}</h2>
@@ -123,7 +123,7 @@ export default function Home() {
       </section>
 
       {/* Engineering Playground Teaser */}
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-bg relative overflow-hidden">
+      <section id="labs" className="py-16 md:py-24 lg:py-32 border-b border-border bg-bg relative overflow-hidden scroll-mt-20">
         <div className="grid-container relative z-10">
           <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6 flex items-end justify-between">
             <div>
@@ -172,7 +172,7 @@ export default function Home() {
       </section>
 
       {/* Experience Snapshot */}
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
+      <section id="experience" className="py-16 md:py-24 lg:py-32 border-b border-border scroll-mt-20">
         <div className="grid-container gap-y-16 lg:gap-y-0">
           <div className="col-span-full lg:col-span-4 border-t lg:border-t-0 lg:border-r border-border pt-8 lg:pt-0 lg:pr-8">
             <h2 className="text-mono-label text-text-tertiary mb-3">{`// 05. BACKGROUND`}</h2>
@@ -189,7 +189,7 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 md:py-24 lg:py-32 relative overflow-hidden bg-bg text-center border-b border-border">
+      <section id="contact" className="py-16 md:py-24 lg:py-32 relative overflow-hidden bg-bg text-center border-b border-border scroll-mt-20">
         <div className="relative z-10 grid-container">
           <div className="col-span-full flex flex-col items-center">
             <h2 className="text-display mb-8">

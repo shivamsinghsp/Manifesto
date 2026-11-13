@@ -81,6 +81,7 @@ export function WavingLandingModal({
   
   const backdropRef = useRef<HTMLDivElement>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
+  const posterCardRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const launcherRef = useRef<HTMLButtonElement>(null)
   const previousActiveElement = useRef<HTMLElement | null>(null)
@@ -90,11 +91,21 @@ export function WavingLandingModal({
 
   useEffect(() => {
     if (autoOpen) {
-      setIsOpen(true)
+      try {
+        const hasSeenIntro = sessionStorage.getItem("has_seen_intro_poster")
+        if (!hasSeenIntro) {
+          setIsOpen(true)
+        }
+      } catch {
+        setIsOpen(true)
+      }
     }
   }, [autoOpen])
 
   const handleClose = useCallback(() => {
+    try {
+      sessionStorage.setItem("has_seen_intro_poster", "true")
+    } catch {}
     setIsClosing(true)
     setTimeout(() => {
       setIsOpen(false)
@@ -163,53 +174,15 @@ export function WavingLandingModal({
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [isOpen, handleClose])
 
-  // Helper to set the `inert` property without triggering no-explicit-any.
-  // The `inert` attribute is standard on HTMLElement in modern browsers but
-  // older TypeScript DOM libs may not include it.
-  const setInert = (el: HTMLElement, value: boolean) => {
-    if ("inert" in el) {
-      el.inert = value
-    }
-  }
-
-  // Prevent background body scroll & mark background siblings inert while modal is open.
-  // The modal itself lives inside <main> (via page.tsx), so we must NOT make <main> inert.
-  // Instead, we mark all sibling elements of the backdrop as inert, plus <header>/<footer>
-  // which are siblings of <main> in the layout.
+  // Lock body scroll while modal is open
   useEffect(() => {
-    if (!isOpen) return
-
-    document.body.style.overflow = "hidden"
-    const inertedElements: HTMLElement[] = []
-
-    // Mark <header> and <footer> inert (siblings of <main> in layout.tsx)
-    document.querySelectorAll<HTMLElement>("body > header, body > footer").forEach((el) => {
-      el.setAttribute("aria-hidden", "true")
-      setInert(el, true)
-      inertedElements.push(el)
-    })
-
-    // Mark sibling content inside <main> inert, excluding the modal's own backdrop
-    const mainEl = document.querySelector("main")
-    if (mainEl) {
-      Array.from(mainEl.children).forEach((child) => {
-        const el = child as HTMLElement
-        // Skip the modal overlay itself (the fixed backdrop)
-        if (el === backdropRef.current) return
-        // Skip the launcher button (it's conditionally rendered and not present when open)
-        if (el === launcherRef.current) return
-        el.setAttribute("aria-hidden", "true")
-        setInert(el, true)
-        inertedElements.push(el)
-      })
-    }
-
-    return () => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+      return () => {
+        document.body.style.overflow = ""
+      }
+    } else {
       document.body.style.overflow = ""
-      inertedElements.forEach((el) => {
-        el.removeAttribute("aria-hidden")
-        setInert(el, false)
-      })
     }
   }, [isOpen])
 
@@ -240,8 +213,12 @@ export function WavingLandingModal({
         <div
           ref={backdropRef}
           onPointerDown={(e) => {
-            // "when clicked outside it then the portfolio should open"
-            if (e.target === backdropRef.current) {
+            // If the click is on the backdrop or anywhere outside the poster card, enter portfolio
+            if (
+              posterCardRef.current &&
+              !posterCardRef.current.contains(e.target as Node) &&
+              !(e.target as Element).closest("button")
+            ) {
               handleClose()
             }
           }}
@@ -300,6 +277,7 @@ export function WavingLandingModal({
 
             {/* Poster Container Card */}
             <div 
+              ref={posterCardRef}
               className={`relative w-full h-[82vh] max-h-[740px] rounded-2xl overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.8)] border transition-all duration-300 ${
                 isClosing ? "scale-95 opacity-0" : "scale-100 opacity-100"
               }`}
@@ -329,11 +307,15 @@ export function WavingLandingModal({
               />
             </div>
 
-            {/* Bottom Hint */}
+            {/* Bottom Hint Action */}
             <div className="mt-2 text-center select-none">
-              <span className="text-[10px] font-mono text-white/50">
-                Click anywhere outside the poster or press ESC to enter portfolio
-              </span>
+              <button
+                type="button"
+                onClick={handleClose}
+                className="text-[11px] font-mono text-white/50 hover:text-white transition-colors cursor-pointer focus:outline-none focus:underline"
+              >
+                Click anywhere outside the poster or press ESC to enter portfolio ↓
+              </button>
             </div>
           </div>
         </div>
