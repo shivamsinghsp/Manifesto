@@ -7,6 +7,7 @@ import { Link } from "@/components/ui/Link"
 import { buttonBaseStyles, buttonVariants, buttonSizes } from "@/components/ui/button"
 import { HeroSystem } from "@/components/ui/HeroSystem"
 import { WorkAssistant } from "@/components/engineering/WorkAssistant"
+import { WavingLandingModal } from "@/components/ui/WavingLandingModal"
 import { cn } from "@/lib/utils"
 
 export default function Home() {
@@ -20,6 +21,9 @@ export default function Home() {
 
   return (
     <>
+      {/* Interactive Waving Landing Poster Overlay / Pop-up */}
+      <WavingLandingModal />
+
       {/* Hero Section */}
       <section className="py-16 md:py-20 lg:py-24 border-b border-border bg-atmosphere relative">
         <div className="grid-container items-center gap-y-12 lg:gap-y-0">
