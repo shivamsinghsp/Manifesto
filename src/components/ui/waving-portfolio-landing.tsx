@@ -313,10 +313,13 @@ export default function WavingPortfolioLanding({
     const sync = () => setReduced(mq.matches)
     sync()
     mq.addEventListener("change", sync)
+    // Capture ref values so the cleanup function sees the same array/id
+    const timersCurrent = timers.current
+    const frameCurrent = frame
     return () => {
       mq.removeEventListener("change", sync)
-      timers.current.forEach(clearTimeout)
-      cancelAnimationFrame(frame.current)
+      timersCurrent.forEach(clearTimeout)
+      cancelAnimationFrame(frameCurrent.current)
     }
   }, [])
 

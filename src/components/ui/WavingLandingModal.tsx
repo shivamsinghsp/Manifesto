@@ -163,6 +163,15 @@ export function WavingLandingModal({
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [isOpen, handleClose])
 
+  // Helper to set the `inert` property without triggering no-explicit-any.
+  // The `inert` attribute is standard on HTMLElement in modern browsers but
+  // older TypeScript DOM libs may not include it.
+  const setInert = (el: HTMLElement, value: boolean) => {
+    if ("inert" in el) {
+      el.inert = value
+    }
+  }
+
   // Prevent background body scroll & mark background siblings inert while modal is open.
   // The modal itself lives inside <main> (via page.tsx), so we must NOT make <main> inert.
   // Instead, we mark all sibling elements of the backdrop as inert, plus <header>/<footer>
@@ -176,9 +185,7 @@ export function WavingLandingModal({
     // Mark <header> and <footer> inert (siblings of <main> in layout.tsx)
     document.querySelectorAll<HTMLElement>("body > header, body > footer").forEach((el) => {
       el.setAttribute("aria-hidden", "true")
-      if ("inert" in el) {
-        ;(el as any).inert = true
-      }
+      setInert(el, true)
       inertedElements.push(el)
     })
 
@@ -192,9 +199,7 @@ export function WavingLandingModal({
         // Skip the launcher button (it's conditionally rendered and not present when open)
         if (el === launcherRef.current) return
         el.setAttribute("aria-hidden", "true")
-        if ("inert" in el) {
-          ;(el as any).inert = true
-        }
+        setInert(el, true)
         inertedElements.push(el)
       })
     }
@@ -203,9 +208,7 @@ export function WavingLandingModal({
       document.body.style.overflow = ""
       inertedElements.forEach((el) => {
         el.removeAttribute("aria-hidden")
-        if ("inert" in el) {
-          ;(el as any).inert = false
-        }
+        setInert(el, false)
       })
     }
   }, [isOpen])
