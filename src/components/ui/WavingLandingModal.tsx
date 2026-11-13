@@ -84,6 +84,7 @@ export function WavingLandingModal({
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const launcherRef = useRef<HTMLButtonElement>(null)
   const previousActiveElement = useRef<HTMLElement | null>(null)
+  const wasOpenRef = useRef(false) // tracks previous isOpen for open→closed transitions
 
   const currentTheme = POSTER_THEMES[selectedTheme]
 
@@ -101,17 +102,19 @@ export function WavingLandingModal({
     }, 280)
   }, [])
 
-  // Focus management: Trap focus inside dialog, auto-focus on open, restore on close
+  // Focus management: auto-focus on open, restore on genuine close only
   useEffect(() => {
     if (isOpen) {
       previousActiveElement.current = document.activeElement as HTMLElement
+      wasOpenRef.current = true
       // Move focus into dialog on open (onto the Enter Portfolio action)
       const timer = setTimeout(() => {
         closeButtonRef.current?.focus()
       }, 50)
       return () => clearTimeout(timer)
-    } else {
-      // Restore focus to launcher button or previous element
+    } else if (wasOpenRef.current) {
+      // Only restore focus on a genuine open → closed transition
+      wasOpenRef.current = false
       if (launcherRef.current) {
         launcherRef.current.focus()
       } else if (previousActiveElement.current) {
@@ -160,31 +163,50 @@ export function WavingLandingModal({
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [isOpen, handleClose])
 
-  // Prevent background body scroll & mark background inert while modal is open
+  // Prevent background body scroll & mark background siblings inert while modal is open.
+  // The modal itself lives inside <main> (via page.tsx), so we must NOT make <main> inert.
+  // Instead, we mark all sibling elements of the backdrop as inert, plus <header>/<footer>
+  // which are siblings of <main> in the layout.
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
+    if (!isOpen) return
 
-      // Mark main content container inert if present
-      const mainContainer = document.querySelector("main") || document.querySelector("article")
-      if (mainContainer) {
-        mainContainer.setAttribute("aria-hidden", "true")
-        if ("inert" in mainContainer) {
-          ;(mainContainer as any).inert = true
-        }
-      }
+    document.body.style.overflow = "hidden"
+    const inertedElements: HTMLElement[] = []
 
-      return () => {
-        document.body.style.overflow = ""
-        if (mainContainer) {
-          mainContainer.removeAttribute("aria-hidden")
-          if ("inert" in mainContainer) {
-            ;(mainContainer as any).inert = false
-          }
-        }
+    // Mark <header> and <footer> inert (siblings of <main> in layout.tsx)
+    document.querySelectorAll<HTMLElement>("body > header, body > footer").forEach((el) => {
+      el.setAttribute("aria-hidden", "true")
+      if ("inert" in el) {
+        ;(el as any).inert = true
       }
-    } else {
+      inertedElements.push(el)
+    })
+
+    // Mark sibling content inside <main> inert, excluding the modal's own backdrop
+    const mainEl = document.querySelector("main")
+    if (mainEl) {
+      Array.from(mainEl.children).forEach((child) => {
+        const el = child as HTMLElement
+        // Skip the modal overlay itself (the fixed backdrop)
+        if (el === backdropRef.current) return
+        // Skip the launcher button (it's conditionally rendered and not present when open)
+        if (el === launcherRef.current) return
+        el.setAttribute("aria-hidden", "true")
+        if ("inert" in el) {
+          ;(el as any).inert = true
+        }
+        inertedElements.push(el)
+      })
+    }
+
+    return () => {
       document.body.style.overflow = ""
+      inertedElements.forEach((el) => {
+        el.removeAttribute("aria-hidden")
+        if ("inert" in el) {
+          ;(el as any).inert = false
+        }
+      })
     }
   }, [isOpen])
 
