@@ -1,5 +1,7 @@
-import ContactWithGlobe from "@/components/ui/contact-with-globe";
+"use client"
 
-export default function ContactWithGlobeDemo() {
-  return <ContactWithGlobe />;
+import WavingPortfolioLanding from "@/components/ui/waving-portfolio-landing"
+
+export default function Demo() {
+  return <WavingPortfolioLanding />
 }
