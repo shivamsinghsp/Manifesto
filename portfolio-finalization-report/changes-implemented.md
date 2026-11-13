@@ -74,3 +74,4 @@
   - Added dedicated knowledge Q&A in `portfolio-knowledge.ts` and `WorkAssistant.tsx`.
 - **Resource Download Enhancement (`Footer.tsx`):**
   - Standardized resume download to a native download anchor with `target="_blank" rel="noopener noreferrer" download`.
+

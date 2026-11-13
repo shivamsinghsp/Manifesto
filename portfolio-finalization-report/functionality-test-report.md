@@ -54,3 +54,4 @@ Each legacy / alternative URL was tested against permanent HTTP 308 redirects de
 ## 4. Navigation & Unmount Safety
 - Verified client-side route transitions when leaving `/contact` to `/work`, `/experience`, `/about`, and `/`.
 - Confirmed zero unmount errors or thread blocking.
+

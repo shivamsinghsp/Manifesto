@@ -74,7 +74,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
     id: "sharepoint-overview",
     keywords: ["sharepoint", "spfx", "microsoft", "m365", "fluent ui", "enterprise", "confidential"],
     projectSlug: "sharepoint-knowledge-hub",
-    answer: "As an enterprise frontend contributor, Shivam built SharePoint Online SPFx web parts using React, Fluent UI, and PnPjs, delivering a metadata-driven knowledge library and Microsoft Graph-powered SME directory within M365.",
+    answer: "As an enterprise frontend contributor within the team, Shivam contributed to developing SPFx web parts using React, Fluent UI, and PnPjs—collaborating on the metadata-driven knowledge library and Microsoft Graph-powered SME directory within M365.",
     sourceSection: "CONTEXT",
   },
   {

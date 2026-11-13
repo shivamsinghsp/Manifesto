@@ -390,7 +390,7 @@ export const projects: Project[] = [
       "A SharePoint Online knowledge platform with metadata-driven document discovery, an SME directory integrated with Microsoft Graph, and custom admin configuration.",
     longDescription: [
       "The Enterprise Knowledge Hub is a SharePoint Online application built with SPFx web parts to solve knowledge fragmentation within a large organization. Information was scattered across OneDrive, Teams, and email—making it difficult to find templates, correct document versions, and subject-matter experts.",
-      "As an enterprise frontend contributor, I built custom SPFx web parts, React interfaces with Fluent UI, a metadata-driven knowledge library with real-time filtering, an SME Finder integrated with Microsoft Graph for user profiles and presence, and an admin configuration experience for non-technical site owners. The entire platform runs strictly within SharePoint Online—leveraging existing M365 security without external application backends.",
+      "As an enterprise frontend contributor within the engineering team, I contributed to developing custom SPFx web parts using React and Fluent UI—collaborating on the metadata-driven knowledge library with real-time filtering, integrating the Microsoft Graph API for user profiles and presence in the SME Finder, and building the frontend configuration panel for site administrators. The application operated within SharePoint Online, leveraging the organization's existing M365 security model without external backends.",
     ],
     tags: [
       "SharePoint Online",
@@ -483,7 +483,7 @@ export const projects: Project[] = [
       "Functional testing, workflow validation, defect documentation and regression verification for the Government of Uttar Pradesh's PLEDGE portal.",
     longDescription: [
       "The PLEDGE Portal (Government of Uttar Pradesh) is a large-scale governmental platform managing industrial infrastructure, applicant submissions, and departmental approval chains. With sensitive multi-tier government workflows, ensuring rock-solid data integrity, precise role-based boundaries, and defect-free application state transitions was critical prior to staging and production milestones.",
-      "During my software engineering internship at Rapsora Technologies, I performed rigorous functional and regression testing across key portal surfaces. My responsibilities centered on manual QA verification: executing test scenarios across multi-tier user roles (Citizen Applicant, Department Approver, Department Admin), performing boundary and payload verification on complex application forms, documenting reproducible defect logs with exact steps to replicate, and executing regression test cycles following developer fixes to ensure zero unintended side effects.",
+      "During my software engineering internship at Rapsora Technologies, I performed rigorous functional and regression testing across key portal surfaces. My responsibilities centered on manual QA verification: executing test scenarios across multi-tier user roles (Citizen Applicant, Department Approver, Department Admin), performing boundary and payload verification on complex application forms, documenting reproducible defect logs with exact steps to replicate, and executing regression test cycles following developer fixes to identify and resolve unintended side effects across dependent workflows.",
     ],
     metrics: [
       { label: "Workflow Roles Tested", value: "3 Roles" },
@@ -512,11 +512,11 @@ export const projects: Project[] = [
       {
         type: "product-feature",
         title: "QA PROTOCOL & VERIFICATION LIFECYCLE",
-        content: "A disciplined testing lifecycle was established to catch defects early and verify fixes without regressions. Each release cycle encompassed five distinct stages: intake requirement analysis, cross-role functional test execution, structured defect documentation with exact replication steps, developer fix handoff, and regression re-testing before staging sign-off.",
+        content: "A disciplined testing lifecycle was established to catch defects early and verify fixes before staging deployments. Each release cycle encompassed five distinct stages: intake requirement analysis, cross-role functional test execution, structured defect documentation with exact replication steps, developer fix handoff, and regression re-testing to provide staging verification reports that informed lead engineering sign-off.",
         diagram: {
           src: "/diagrams/projects/pledge/qa-workflow.svg",
           alt: "PLEDGE QA Protocol Lifecycle",
-          caption: "Structured 5-stage testing workflow from requirement analysis to staging release sign-off."
+          caption: "Structured 5-stage testing workflow from requirement analysis to staging deployment verification."
         },
         implementation: [
           "Requirement & Acceptance Criteria Intake",
@@ -524,7 +524,7 @@ export const projects: Project[] = [
           "Functional Test Case Execution",
           "Step-by-Step Defect Reproduction Documentation",
           "Regression Testing Following Fixes",
-          "Staging Verification Sign-Off"
+          "Staging Verification Report Handoff"
         ]
       },
       {
@@ -548,7 +548,7 @@ export const projects: Project[] = [
       {
         type: "text",
         title: "ENGINEERING CHALLENGES & QA METHODOLOGY",
-        content: "01\nFunctional Testing vs. Regression Testing vs. Automated Testing:\nThis engagement was dedicated to manual functional and regression testing. Functional testing verified that each module operated in exact alignment with government specifications and business rules. Regression testing re-executed critical test suites across previously passing modules after bug fixes were merged to guarantee that new changes caused zero collateral breakage.\n\n02\nSecurity & Government Data Confidentiality:\nAll test procedures respected strict data protection guidelines. Only synthetic dummy data was used during test execution; no confidential government records, internal IPs, restricted citizen data, or production credentials are ever stored or disclosed."
+        content: "01\nFunctional Testing vs. Regression Testing vs. Automated Testing:\nThis engagement was dedicated to manual functional and regression testing. Functional testing verified that each module operated in exact alignment with government specifications and business rules. Regression testing re-executed critical test suites across previously passing modules after bug fixes were merged to identify regressions and verify that changes did not introduce defects into stable modules.\n\n02\nSecurity & Government Data Confidentiality:\nAll test procedures respected strict data protection guidelines. Only synthetic dummy data was used during test execution; no confidential government records, internal IPs, restricted citizen data, or production credentials are ever stored or disclosed."
       }
     ],
   },

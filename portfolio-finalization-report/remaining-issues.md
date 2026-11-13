@@ -22,3 +22,4 @@
    - *Current Behavior:* Until configured in Vercel project settings, `/api/contact` returns an honest status 503 instructing visitors to use the direct email link, preventing silent delivery failures.
 2. **Canonical Domain Alignment:**
    - Currently, metadata points to `https://shivamsingh.dev`. If the primary production domain is `https://myportfolio-gilt-xi-63.vercel.app/` or another custom domain, update `metadataBase` in `src/app/layout.tsx` and `baseUrl` in `src/app/sitemap.ts` to match the canonical production URL.
+

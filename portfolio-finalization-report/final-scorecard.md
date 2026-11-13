@@ -41,3 +41,4 @@
    - Authored complete case study with bespoke workflow architecture diagrams, highlighting manual QA rigor and data confidentiality without fabricating test automation.
 5. **Verified Multi-Viewport Integrity:**
    - 100% passing automated Playwright viewport assertions across mobile, tablet, and desktop viewports.
+

@@ -48,3 +48,4 @@ All 19 routes feature dedicated, non-duplicated metadata configurations:
 - **Font Optimization:** IBM Plex Serif and IBM Plex Mono are bundled using `@next/font/google` with `display: "swap"`, eliminating Flash of Unstyled Text (FOUT) while zero external roundtrips are made to `fonts.googleapis.com` at runtime.
 - **Image Delivery:** All case study images utilize Next.js `<Image>` component with responsive `sizes` definitions, CSS `aspect-ratio` bounds, and automated WebP/AVIF transcoding.
 - **Static Generation:** All 19 routes are pre-rendered into static HTML at build time (`○ (Static)` and `● (SSG)`), providing immediate sub-100ms TTFB (Time to First Byte) on CDN edges.
+

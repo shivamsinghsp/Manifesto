@@ -41,3 +41,4 @@
   - Zero internal government IPs, confidential database schemas, citizen identifiers, or production credentials are cited or stored.
 - **Enterprise Knowledge Hub:**
   - Architecture diagrams and case study sections abstract proprietary enterprise list names into standard M365 entities.
+

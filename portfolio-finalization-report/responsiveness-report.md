@@ -33,3 +33,4 @@ The layout of all 7 key application routes (`/`, `/work`, `/work/pledge-portal-q
   - `aria-live="polite"` region alerts screen readers of submission states (success, error, transmitting).
 - **Reduced Motion Considerations:**
   - Transitions utilize CSS easing tokens (`--ease-standard`) that respect system preferences.
+

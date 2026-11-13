@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useState } from "react"
-import { ArrowUpRight, Copy, Check, Mail } from "lucide-react"
+import React, { useState, useRef } from "react"
+import { ArrowUpRight, Copy, Check, Mail, ExternalLink, AlertCircle } from "lucide-react"
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -10,9 +10,17 @@ export function ContactForm() {
     email: "",
     message: "",
   })
+  const [fieldErrors, setFieldErrors] = useState<{
+    name?: string
+    email?: string
+    message?: string
+  }>({})
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
   const [errorMessage, setErrorMessage] = useState("")
   const [copied, setCopied] = useState(false)
+  
+  // Track last submission to guard against duplicate submits
+  const lastSubmissionRef = useRef<{ payload: string; timestamp: number } | null>(null)
 
   const directEmail = "shivamsinghabc439@gmail.com"
 
@@ -22,7 +30,6 @@ export function ContactForm() {
       setCopied(true)
       setTimeout(() => setCopied(false), 2500)
     } catch {
-      // Fallback if clipboard API is blocked
       const textArea = document.createElement("textarea")
       textArea.value = directEmail
       document.body.appendChild(textArea)
@@ -35,14 +42,60 @@ export function ContactForm() {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+    // Clear field-level error on change
+    if (fieldErrors[name as keyof typeof fieldErrors]) {
+      setFieldErrors(prev => ({ ...prev, [name]: undefined }))
+    }
+  }
+
+  const validateForm = (): boolean => {
+    const errors: typeof fieldErrors = {}
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!formData.name.trim()) {
+      errors.name = "Full Name is required."
+    }
+    if (!formData.email.trim()) {
+      errors.email = "Email Address is required."
+    } else if (!emailRegex.test(formData.email.trim())) {
+      errors.email = "Please enter a valid email address (e.g. alex@company.com)."
+    }
+    if (!formData.message.trim()) {
+      errors.message = "Message is required."
+    } else if (formData.message.trim().length < 5) {
+      errors.message = "Message must be at least 5 characters long."
+    }
+
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+    
+    // 1. Client-Side Validation
+    if (!validateForm()) {
       setStatus("error")
-      setErrorMessage("Please fill out all required fields.")
+      setErrorMessage("Please correct the errors highlighted below.")
+      return
+    }
+
+    // 2. Duplicate Submission Guard
+    const currentPayload = JSON.stringify({
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      message: formData.message.trim(),
+    })
+
+    if (
+      lastSubmissionRef.current &&
+      lastSubmissionRef.current.payload === currentPayload &&
+      Date.now() - lastSubmissionRef.current.timestamp < 60000
+    ) {
+      setStatus("error")
+      setErrorMessage("This exact message was already transmitted. Please wait before submitting again or update your text.")
       return
     }
 
@@ -60,19 +113,28 @@ export function ContactForm() {
 
       if (response.ok && data.success && !data.mocked) {
         setStatus("success")
+        lastSubmissionRef.current = { payload: currentPayload, timestamp: Date.now() }
         setFormData({ name: "", company: "", email: "", message: "" })
+        setFieldErrors({})
       } else {
         setStatus("error")
         setErrorMessage(
           data.error ||
-            "Unable to deliver message at this time. Please send an email directly to shivamsinghabc439@gmail.com."
+            "Direct transmission gateway is currently unavailable. Please use the button below to send your note directly via email."
         )
       }
     } catch {
       setStatus("error")
-      setErrorMessage("Network error occurred. Please contact shivamsinghabc439@gmail.com directly.")
+      setErrorMessage("A network error occurred while transmitting. Please send your note directly using your email client.")
     }
   }
+
+  // Pre-formatted mailto link for direct fallback
+  const mailtoSubject = encodeURIComponent(`Portfolio Inquiry from ${formData.name || "Colleague"}`)
+  const mailtoBody = encodeURIComponent(
+    `Hello Shivam,\n\n${formData.message}\n\nFrom,\n${formData.name}\n${formData.company ? `Company: ${formData.company}\n` : ""}${formData.email ? `Email: ${formData.email}` : ""}`
+  )
+  const fallbackMailto = `mailto:${directEmail}?subject=${mailtoSubject}&body=${mailtoBody}`
 
   return (
     <section className="py-16 md:py-20 lg:py-24 relative">
@@ -171,8 +233,19 @@ export function ContactForm() {
                   </div>
                 )}
                 {status === "error" && (
-                  <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-300 font-mono text-xs">
-                    ✕ [ERROR] {errorMessage || "Failed to send message. Please email directly."}
+                  <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-300 font-mono text-xs flex flex-col gap-2">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+                      <span>{errorMessage || "Failed to deliver message. Please email directly."}</span>
+                    </div>
+                    {/* Fallback button if API is unconfigured */}
+                    <a
+                      href={fallbackMailto}
+                      className="mt-2 inline-flex items-center gap-1.5 self-start px-3 py-1.5 rounded-lg border border-cyan-400/40 bg-cyan-500/10 text-cyan-300 text-xs font-mono font-medium hover:bg-cyan-500/20 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Open in Email App with Pre-filled Message ↗</span>
+                    </a>
                   </div>
                 )}
               </div>
@@ -190,9 +263,12 @@ export function ContactForm() {
                     onChange={handleChange}
                     required
                     disabled={status === "loading"}
-                    className="rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all disabled:opacity-50 placeholder:text-slate-600 text-sm font-mono"
+                    className={`rounded-xl bg-white/[0.04] border ${fieldErrors.name ? 'border-rose-500/60 ring-1 ring-rose-500/30' : 'border-white/10'} px-4 py-3 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all disabled:opacity-50 placeholder:text-slate-600 text-sm font-mono`}
                     placeholder="e.g. Alex Morgan"
                   />
+                  {fieldErrors.name && (
+                    <span className="text-[11px] font-mono text-rose-400">{fieldErrors.name}</span>
+                  )}
                 </div>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="company" className="text-xs font-mono tracking-wider text-slate-400">
@@ -223,9 +299,12 @@ export function ContactForm() {
                   onChange={handleChange}
                   required
                   disabled={status === "loading"}
-                  className="rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all disabled:opacity-50 placeholder:text-slate-600 text-sm font-mono"
+                  className={`rounded-xl bg-white/[0.04] border ${fieldErrors.email ? 'border-rose-500/60 ring-1 ring-rose-500/30' : 'border-white/10'} px-4 py-3 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all disabled:opacity-50 placeholder:text-slate-600 text-sm font-mono`}
                   placeholder="e.g. alex@company.com"
                 />
+                {fieldErrors.email && (
+                  <span className="text-[11px] font-mono text-rose-400">{fieldErrors.email}</span>
+                )}
               </div>
 
               <div className="flex flex-col gap-2">
@@ -240,9 +319,12 @@ export function ContactForm() {
                   required
                   disabled={status === "loading"}
                   rows={4}
-                  className="rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all resize-none disabled:opacity-50 placeholder:text-slate-600 text-sm font-mono"
+                  className={`rounded-xl bg-white/[0.04] border ${fieldErrors.message ? 'border-rose-500/60 ring-1 ring-rose-500/30' : 'border-white/10'} px-4 py-3 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all resize-none disabled:opacity-50 placeholder:text-slate-600 text-sm font-mono`}
                   placeholder="Tell me about your engineering project, team, or opportunity..."
                 />
+                {fieldErrors.message && (
+                  <span className="text-[11px] font-mono text-rose-400">{fieldErrors.message}</span>
+                )}
               </div>
               
               <button 

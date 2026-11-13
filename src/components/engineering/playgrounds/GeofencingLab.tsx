@@ -710,7 +710,7 @@ export function GeofencingLab() {
                 <span>Production Security Context</span>
               </div>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                In Shynr HRMS, coordinates are sent with client timestamp signatures to the backend API. The backend re-computes the great-circle Haversine distance against authorized corporate branch polygons, preventing fake GPS mock applications and device spoofing.
+                In Shynr HRMS, client-submitted coordinates are validated on the backend against authorized office locations using the Haversine formula to confirm mathematical proximity. However, distance calculation alone does not prove device authenticity; full anti-spoofing in production requires layered mechanisms such as mock-location flags, cellular/Wi-Fi triangulation, and device integrity verification.
               </p>
             </div>
           </div>
