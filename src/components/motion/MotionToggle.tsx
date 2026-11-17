@@ -3,13 +3,20 @@
 import { setMotionReduced, useReducedMotion } from "@/lib/motion-preference"
 import { cn } from "@/lib/utils"
 
-export function MotionToggle({ className }: { className?: string }) {
+export function MotionToggle({
+  className,
+  compact = false,
+}: {
+  className?: string
+  compact?: boolean
+}) {
   const reduced = useReducedMotion()
   return (
     <button
       type="button"
       role="switch"
       aria-checked={reduced}
+      title="Reduce motion"
       onClick={() => setMotionReduced(!reduced)}
       className={cn(
         "inline-flex min-h-[44px] items-center gap-2 rounded-lg px-3 font-mono text-xs text-text-secondary transition-colors hover:text-text",
@@ -30,7 +37,7 @@ export function MotionToggle({ className }: { className?: string }) {
           )}
         />
       </span>
-      <span>Reduce motion</span>
+      <span className={compact ? "sr-only xl:not-sr-only" : undefined}>Reduce motion</span>
     </button>
   )
 }

@@ -69,7 +69,7 @@ export function Header() {
           </ul>
         </nav>
         <span aria-hidden="true" className="mx-1 h-5 w-px bg-white/10" />
-        <MotionToggle />
+        <MotionToggle compact />
       </div>
 
       <MobileNav />
