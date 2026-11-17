@@ -17,19 +17,38 @@ const RINGS: Record<GroupId, { radius: number; tilt: [number, number, number]; s
   frontend: { radius: 3.5, tilt: [0.9, 0.2, -0.15], speed: -0.06 },
 }
 
-function Ring({ group, selected, reduced, fontFamily }: { group: SkillGroup; selected: GroupId | null; reduced: boolean; fontFamily: string }) {
+function Ring({
+  group,
+  selected,
+  reduced,
+  fontFamily,
+}: {
+  group: SkillGroup
+  selected: GroupId | null
+  reduced: boolean
+  fontFamily: string
+}) {
   const cfg = RINGS[group.id]
   const spin = useRef<THREE.Group>(null)
   const color = useMemo(() => new THREE.Color(group.color), [group.color])
   const labels = useMemo(
-    () => group.items.map((item) => createLabelTexture(item, { font: fontFamily, color: "#F1F3F7", px: 36 })),
+    () =>
+      group.items.map((item) =>
+        createLabelTexture(item, { font: fontFamily, color: "#F1F3F7", px: 36 })
+      ),
     [group.items, fontFamily]
   )
   const ringGeo = useMemo(() => {
     const pts = new THREE.EllipseCurve(0, 0, cfg.radius, cfg.radius, 0, Math.PI * 2).getPoints(160)
     return new THREE.BufferGeometry().setFromPoints(pts.map((p) => new THREE.Vector3(p.x, p.y, 0)))
   }, [cfg.radius])
-  useEffect(() => () => { labels.forEach((l) => l.texture.dispose()); ringGeo.dispose() }, [labels, ringGeo])
+  useEffect(
+    () => () => {
+      labels.forEach((l) => l.texture.dispose())
+      ringGeo.dispose()
+    },
+    [labels, ringGeo]
+  )
 
   const dimmed = selected !== null && selected !== group.id
   const lineMat = useRef<THREE.LineBasicMaterial>(null)
@@ -37,24 +56,45 @@ function Ring({ group, selected, reduced, fontFamily }: { group: SkillGroup; sel
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05)
-    if (spin.current && !reduced) spin.current.rotation.z += dt * cfg.speed * (selected === group.id ? 0.4 : 1)
+    if (spin.current && !reduced)
+      spin.current.rotation.z += dt * cfg.speed * (selected === group.id ? 0.4 : 1)
     const targetLine = dimmed ? 0.08 : selected === group.id ? 0.9 : 0.35
-    if (lineMat.current) lineMat.current.opacity = THREE.MathUtils.damp(lineMat.current.opacity, targetLine, 6, dt)
-    spriteMats.current.forEach((m) => { if (m) m.opacity = THREE.MathUtils.damp(m.opacity, dimmed ? 0.18 : 1, 6, dt) })
+    if (lineMat.current)
+      lineMat.current.opacity = THREE.MathUtils.damp(lineMat.current.opacity, targetLine, 6, dt)
+    spriteMats.current.forEach((m) => {
+      if (m) m.opacity = THREE.MathUtils.damp(m.opacity, dimmed ? 0.18 : 1, 6, dt)
+    })
   })
 
   return (
     <group rotation={cfg.tilt}>
       <group ref={spin}>
         <lineLoop geometry={ringGeo}>
-          <lineBasicMaterial ref={lineMat} color={color} transparent opacity={0.35} depthWrite={false} />
+          <lineBasicMaterial
+            ref={lineMat}
+            color={color}
+            transparent
+            opacity={0.35}
+            depthWrite={false}
+          />
         </lineLoop>
         {labels.map((l, i) => {
           const a = (i / labels.length) * Math.PI * 2
           const h = 0.27
           return (
-            <sprite key={group.items[i]} position={[Math.cos(a) * cfg.radius, Math.sin(a) * cfg.radius, 0]} scale={[h * l.aspect, h, 1]}>
-              <spriteMaterial ref={(m) => { spriteMats.current[i] = m }} map={l.texture} transparent depthWrite={false} />
+            <sprite
+              key={group.items[i]}
+              position={[Math.cos(a) * cfg.radius, Math.sin(a) * cfg.radius, 0]}
+              scale={[h * l.aspect, h, 1]}
+            >
+              <spriteMaterial
+                ref={(m) => {
+                  spriteMats.current[i] = m
+                }}
+                map={l.texture}
+                transparent
+                depthWrite={false}
+              />
             </sprite>
           )
         })}
@@ -74,13 +114,19 @@ function Cluster({ selected, reduced }: { selected: GroupId | null; reduced: boo
   useEffect(() => {
     let alive = true
     document.fonts.ready.then(() => alive && setFontFamily(cssFontFamily("--font-plex-mono")))
-    return () => { alive = false }
+    return () => {
+      alive = false
+    }
   }, [])
 
   // Drag to rotate. Horizontal drags rotate; vertical gestures still scroll the page on touch.
   useEffect(() => {
     const el = gl.domElement
-    const down = (e: PointerEvent) => { drag.current.active = true; drag.current.x = e.clientX; drag.current.y = e.clientY }
+    const down = (e: PointerEvent) => {
+      drag.current.active = true
+      drag.current.x = e.clientX
+      drag.current.y = e.clientY
+    }
     const move = (e: PointerEvent) => {
       const d = drag.current
       if (!d.active) return
@@ -89,7 +135,9 @@ function Cluster({ selected, reduced }: { selected: GroupId | null; reduced: boo
       d.x = e.clientX
       d.y = e.clientY
     }
-    const up = () => { drag.current.active = false }
+    const up = () => {
+      drag.current.active = false
+    }
     el.addEventListener("pointerdown", down)
     window.addEventListener("pointermove", move, { passive: true })
     window.addEventListener("pointerup", up)
@@ -121,14 +169,40 @@ function Cluster({ selected, reduced }: { selected: GroupId | null; reduced: boo
         <meshBasicMaterial color="#00B8D4" wireframe transparent opacity={0.35} />
       </mesh>
       <sprite scale={2.4}>
-        <spriteMaterial map={glow} color="#00E5FF" transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <spriteMaterial
+          map={glow}
+          color="#00E5FF"
+          transparent
+          opacity={0.5}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
       </sprite>
-      {fontFamily && skillGroups.map((g) => <Ring key={g.id} group={g} selected={selected} reduced={reduced} fontFamily={fontFamily} />)}
+      {fontFamily &&
+        skillGroups.map((g) => (
+          <Ring
+            key={g.id}
+            group={g}
+            selected={selected}
+            reduced={reduced}
+            fontFamily={fontFamily}
+          />
+        ))}
     </group>
   )
 }
 
-export default function SkillsScene({ selected, reduced, active, tier }: { selected: GroupId | null; reduced: boolean; active: boolean; tier: PerfTier }) {
+export default function SkillsScene({
+  selected,
+  reduced,
+  active,
+  tier,
+}: {
+  selected: GroupId | null
+  reduced: boolean
+  active: boolean
+  tier: PerfTier
+}) {
   return (
     <Canvas
       dpr={dprFor(tier)}

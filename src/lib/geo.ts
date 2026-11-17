@@ -15,8 +15,7 @@ export function haversineMeters(a: LatLon, b: LatLon): number {
   const phi2 = toRad(b.lat)
   const dPhi = toRad(b.lat - a.lat)
   const dLambda = toRad(b.lon - a.lon)
-  const h =
-    Math.sin(dPhi / 2) ** 2 + Math.cos(phi1) * Math.cos(phi2) * Math.sin(dLambda / 2) ** 2
+  const h = Math.sin(dPhi / 2) ** 2 + Math.cos(phi1) * Math.cos(phi2) * Math.sin(dLambda / 2) ** 2
   return 2 * EARTH_RADIUS_M * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h))
 }
 

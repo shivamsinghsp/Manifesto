@@ -15,14 +15,20 @@ export function Preloader() {
 
   useEffect(() => {
     let seen = false
-    try { seen = sessionStorage.getItem(KEY) === "1"; sessionStorage.setItem(KEY, "1") } catch {}
+    try {
+      seen = sessionStorage.getItem(KEY) === "1"
+      sessionStorage.setItem(KEY, "1")
+    } catch {}
     if (seen || isMotionReduced()) return
 
     let raf = 0
     const start = performance.now()
-    const MIN = 900, MAX = 2200
+    const MIN = 900,
+      MAX = 2200
     let loaded = document.readyState === "complete"
-    const onLoad = () => { loaded = true }
+    const onLoad = () => {
+      loaded = true
+    }
     window.addEventListener("load", onLoad)
 
     const tick = (now: number) => {
@@ -33,7 +39,10 @@ export function Preloader() {
       else setProgress(100)
     }
     raf = requestAnimationFrame(tick)
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("load", onLoad) }
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener("load", onLoad)
+    }
   }, [])
 
   if (progress === null) return null
@@ -44,8 +53,11 @@ export function Preloader() {
       className={`pointer-events-none fixed inset-x-0 top-0 z-[1250] transition-opacity duration-500 ${done ? "opacity-0" : "opacity-100"}`}
       onTransitionEnd={() => done && setProgress(null)}
     >
-      <div className="h-[2px] origin-left bg-accent-hover shadow-[0_0_12px_rgba(0,229,255,0.7)]" style={{ transform: `scaleX(${progress / 100})` }} />
-      <div className="absolute right-4 top-3 rounded-md border border-white/10 bg-bg/80 px-2 py-1 font-mono text-[11px] tracking-widest text-accent-hover backdrop-blur">
+      <div
+        className="h-[2px] origin-left bg-accent-hover shadow-[0_0_12px_rgba(0,229,255,0.7)]"
+        style={{ transform: `scaleX(${progress / 100})` }}
+      />
+      <div className="bg-bg/80 absolute right-4 top-3 rounded-md border border-white/10 px-2 py-1 font-mono text-[11px] tracking-widest text-accent-hover backdrop-blur">
         BOOT {String(Math.round(progress)).padStart(3, "0")}%
       </div>
     </div>

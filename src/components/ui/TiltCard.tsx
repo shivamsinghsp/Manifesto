@@ -9,7 +9,15 @@ import { cn } from "@/lib/utils"
  * `data-depth="20"` (px of translateZ) — e.g. the screenshot layer.
  * Touch and reduced-motion users get a flat, fully functional card.
  */
-export function TiltCard({ children, className, max = 6 }: { children: ReactNode; className?: string; max?: number }) {
+export function TiltCard({
+  children,
+  className,
+  max = 6,
+}: {
+  children: ReactNode
+  className?: string
+  max?: number
+}) {
   const ref = useRef<HTMLDivElement>(null)
   const frame = useRef(0)
 
@@ -34,7 +42,9 @@ export function TiltCard({ children, className, max = 6 }: { children: ReactNode
     cancelAnimationFrame(frame.current)
     const el = ref.current
     if (!el) return
-    ;["--rx", "--ry", "--px", "--py"].forEach((v) => el.style.setProperty(v, v.startsWith("--r") ? "0deg" : "0px"))
+    ;["--rx", "--ry", "--px", "--py"].forEach((v) =>
+      el.style.setProperty(v, v.startsWith("--r") ? "0deg" : "0px")
+    )
   }
 
   return (
@@ -46,7 +56,10 @@ export function TiltCard({ children, className, max = 6 }: { children: ReactNode
         className={cn("tilt-card relative h-full [transform-style:preserve-3d]", className)}
       >
         {children}
-        <span aria-hidden="true" className="tilt-glare pointer-events-none absolute inset-0 rounded-[inherit]" />
+        <span
+          aria-hidden="true"
+          className="tilt-glare pointer-events-none absolute inset-0 rounded-[inherit]"
+        />
       </div>
     </div>
   )

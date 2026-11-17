@@ -41,7 +41,9 @@ function Paragraphs({ content }: { content?: string | string[] }) {
   return (
     <div className="max-w-3xl space-y-5">
       {list.map((p, i) => (
-        <p key={i} className="whitespace-pre-line text-body-large text-text-secondary">{p}</p>
+        <p key={i} className="text-body-large whitespace-pre-line text-text-secondary">
+          {p}
+        </p>
       ))}
     </div>
   )
@@ -50,12 +52,22 @@ function Paragraphs({ content }: { content?: string | string[] }) {
 function Screenshot({ image }: { image: ProjectImage }) {
   return (
     <figure className="w-full" data-reveal>
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-surface/70 p-2 shadow-2xl">
+      <div className="bg-surface/70 relative overflow-hidden rounded-2xl border border-white/10 p-2 shadow-2xl">
         <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-surface-alt">
-          <Image src={image.src} alt={image.alt} fill sizes="(max-width: 768px) 92vw, (max-width: 1280px) 66vw, 860px" className="object-cover object-top" />
+          <Image
+            src={image.src}
+            alt={image.alt}
+            fill
+            sizes="(max-width: 768px) 92vw, (max-width: 1280px) 66vw, 860px"
+            className="object-cover object-top"
+          />
         </div>
       </div>
-      {image.caption && <figcaption className="mt-3 text-right text-mono-label text-text-tertiary">{image.caption}</figcaption>}
+      {image.caption && (
+        <figcaption className="text-mono-label mt-3 text-right text-text-tertiary">
+          {image.caption}
+        </figcaption>
+      )}
     </figure>
   )
 }
@@ -63,13 +75,28 @@ function Screenshot({ image }: { image: ProjectImage }) {
 function Implementation({ steps }: { steps: string[] }) {
   return (
     <div className="relative overflow-hidden rounded-xl border border-border bg-surface-alt p-6 md:p-8">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-blueprint opacity-10" />
-      <h3 className="relative mb-5 inline-block border-b border-border-muted pb-2 text-mono-label text-text-tertiary">Implementation flow</h3>
-      <ol className="relative flex flex-col font-mono text-[13px] leading-relaxed text-text-secondary" data-reveal-stagger>
+      <div
+        aria-hidden="true"
+        className="bg-blueprint pointer-events-none absolute inset-0 opacity-10"
+      />
+      <h3 className="text-mono-label relative mb-5 inline-block border-b border-border-muted pb-2 text-text-tertiary">
+        Implementation flow
+      </h3>
+      <ol
+        className="relative flex flex-col font-mono text-[13px] leading-relaxed text-text-secondary"
+        data-reveal-stagger
+      >
         {steps.map((step, i) => (
           <li key={i} className="flex flex-col">
-            <span className="flex gap-3"><span className="text-text-tertiary">{pad(i + 1)}</span>{step}</span>
-            {i < steps.length - 1 && <span aria-hidden="true" className="my-1.5 pl-7 text-accent">↓</span>}
+            <span className="flex gap-3">
+              <span className="text-text-tertiary">{pad(i + 1)}</span>
+              {step}
+            </span>
+            {i < steps.length - 1 && (
+              <span aria-hidden="true" className="my-1.5 pl-7 text-accent">
+                ↓
+              </span>
+            )}
           </li>
         ))}
       </ol>
@@ -78,12 +105,18 @@ function Implementation({ steps }: { steps: string[] }) {
 }
 
 function SectionBody({ section }: { section: CaseStudySection }) {
-  if (section.type === "text" && typeof section.content === "string" && /^\d{2}\n/.test(section.content)) {
+  if (
+    section.type === "text" &&
+    typeof section.content === "string" &&
+    /^\d{2}\n/.test(section.content)
+  ) {
     return <Challenges content={section.content} />
   }
   return (
     <div className="flex flex-col gap-10">
-      {section.type === "image" || section.type === "product-feature" ? section.image && <Screenshot image={section.image} /> : null}
+      {section.type === "image" || section.type === "product-feature"
+        ? section.image && <Screenshot image={section.image} />
+        : null}
       <Paragraphs content={section.content} />
       {section.type === "two-column" && (
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -94,21 +127,45 @@ function SectionBody({ section }: { section: CaseStudySection }) {
       {section.diagram && (
         <figure className="w-full">
           <ArchitectureDiagram {...section.diagram} />
-          <figcaption className="mt-3 text-right text-mono-label text-text-tertiary">{section.diagram.caption}</figcaption>
+          <figcaption className="text-mono-label mt-3 text-right text-text-tertiary">
+            {section.diagram.caption}
+          </figcaption>
         </figure>
       )}
-      {section.implementation && section.implementation.length > 0 && <Implementation steps={section.implementation} />}
+      {section.implementation && section.implementation.length > 0 && (
+        <Implementation steps={section.implementation} />
+      )}
     </div>
   )
 }
 
-function Block({ id, index, title, children, alt }: { id: string; index: string; title: string; children: ReactNode; alt?: boolean }) {
+function Block({
+  id,
+  index,
+  title,
+  children,
+  alt,
+}: {
+  id: string
+  index: string
+  title: string
+  children: ReactNode
+  alt?: boolean
+}) {
   return (
-    <section id={id} aria-labelledby={`${id}-h`} className={`section-y scroll-mt-32 border-b border-border ${alt ? "bg-surface/60" : ""}`}>
+    <section
+      id={id}
+      aria-labelledby={`${id}-h`}
+      className={`section-y scroll-mt-32 border-b border-border ${alt ? "bg-surface/60" : ""}`}
+    >
       <div className="grid-container gap-y-8">
         <div className="col-span-full md:col-span-3">
           <div className="border-b border-border pb-3 md:sticky md:top-32 md:border-b-0 md:border-t md:pt-4">
-            <h2 id={`${id}-h`} tabIndex={-1} className="text-mono-label text-text-tertiary outline-none">
+            <h2
+              id={`${id}-h`}
+              tabIndex={-1}
+              className="text-mono-label text-text-tertiary outline-none"
+            >
               <span className="text-accent-hover">{index}.</span> {title}
             </h2>
           </div>
@@ -133,7 +190,9 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
     { id: "outcomes", label: "Outcomes", index: "02" },
     ...(project.caseStudy ?? []).map((s, i) => ({
       id: slugify(s.title || s.category || `section-${i + 3}`),
-      label: (s.title || s.category || "Section").toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase()),
+      label: (s.title || s.category || "Section")
+        .toLowerCase()
+        .replace(/(^|\s)\S/g, (c) => c.toUpperCase()),
       index: pad(i + 3),
       section: s,
     })),
@@ -150,32 +209,46 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
     <article id="case-study" className="pb-8">
       <ReadingProgress targetId="case-study" />
 
-      <header className="border-b border-border bg-blueprint pb-12 pt-12 md:pb-16 md:pt-16">
+      <header className="bg-blueprint border-b border-border pb-12 pt-12 md:pb-16 md:pt-16">
         <div className="grid-container">
           <div className="col-span-full mb-8">
-            <NextLink href="/work" className="inline-flex min-h-[44px] items-center gap-2 font-mono text-xs text-text-secondary transition-colors hover:text-accent-hover">
+            <NextLink
+              href="/work"
+              className="inline-flex min-h-[44px] items-center gap-2 font-mono text-xs text-text-secondary transition-colors hover:text-accent-hover"
+            >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" /> All selected work
             </NextLink>
           </div>
           <div className="col-span-full mb-12 lg:col-span-9">
-            <p className="mb-5 text-mono-label text-text-tertiary animate-reveal-up">{`// CASE STUDY · ${project.category}`}</p>
-            <h1 className="mb-6 text-display">{project.title}</h1>
-            <p className="max-w-3xl text-body-large text-text-secondary">{project.shortDescription}</p>
+            <p className="text-mono-label animate-reveal-up mb-5 text-text-tertiary">{`// CASE STUDY · ${project.category}`}</p>
+            <h1 className="text-display mb-6">{project.title}</h1>
+            <p className="text-body-large max-w-3xl text-text-secondary">
+              {project.shortDescription}
+            </p>
           </div>
 
           <dl className="col-span-full grid grid-cols-1 gap-x-8 gap-y-6 border-t border-border pt-8 xs:grid-cols-2 lg:grid-cols-4">
             {facts.map((f) => (
               <div key={f.label}>
-                <dt className="mb-2 border-b border-border-muted pb-2 text-mono-label text-text-tertiary">{f.label}</dt>
+                <dt className="text-mono-label mb-2 border-b border-border-muted pb-2 text-text-tertiary">
+                  {f.label}
+                </dt>
                 <dd className="text-body-small text-text">{f.value}</dd>
               </div>
             ))}
             <div className="xs:col-span-2 lg:col-span-4">
-              <dt className="mb-2 border-b border-border-muted pb-2 text-mono-label text-text-tertiary">Technologies</dt>
+              <dt className="text-mono-label mb-2 border-b border-border-muted pb-2 text-text-tertiary">
+                Technologies
+              </dt>
               <dd>
                 <ul className="flex flex-wrap gap-2">
                   {project.tags.map((t) => (
-                    <li key={t} className="rounded border border-border bg-surface px-2 py-1 text-mono-label normal-case tracking-normal text-text">{t}</li>
+                    <li
+                      key={t}
+                      className="text-mono-label rounded border border-border bg-surface px-2 py-1 normal-case tracking-normal text-text"
+                    >
+                      {t}
+                    </li>
                   ))}
                 </ul>
               </dd>
@@ -190,7 +263,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border px-4 text-mono-label text-text transition-colors hover:border-accent hover:text-accent-hover"
+                  className="text-mono-label inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border px-4 text-text transition-colors hover:border-accent hover:text-accent-hover"
                 >
                   {link.label}
                   <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
@@ -203,9 +276,22 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
       </header>
 
       <div className="mx-auto w-full max-w-[1440px] border-b border-border">
-        <div className="relative aspect-[16/9] overflow-hidden bg-surface md:aspect-[21/9]" style={{ viewTransitionName: `project-${project.slug}` }}>
-          <Image src={project.heroImage.src} alt={project.heroImage.alt} fill priority sizes="(max-width: 1440px) 100vw, 1440px" className="object-cover object-top" />
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/70 via-transparent to-transparent" />
+        <div
+          className="relative aspect-[16/9] overflow-hidden bg-surface md:aspect-[21/9]"
+          style={{ viewTransitionName: `project-${project.slug}` }}
+        >
+          <Image
+            src={project.heroImage.src}
+            alt={project.heroImage.alt}
+            fill
+            priority
+            sizes="(max-width: 1440px) 100vw, 1440px"
+            className="object-cover object-top"
+          />
+          <div
+            aria-hidden="true"
+            className="from-bg/70 pointer-events-none absolute inset-0 bg-gradient-to-t via-transparent to-transparent"
+          />
         </div>
       </div>
 
@@ -230,18 +316,36 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
       <nav aria-label="More case studies" className="border-b border-border bg-surface">
         <div className="grid-container py-10 md:py-14">
           <div className="col-span-full grid grid-cols-1 gap-4 md:grid-cols-2">
-            <NextLink href={`/work/${prev.slug}`} className="group flex min-h-[44px] flex-col gap-2 rounded-xl border border-border p-6 transition-colors hover:border-accent/50">
-              <span className="inline-flex items-center gap-2 text-mono-label text-text-tertiary"><ArrowLeft className="h-4 w-4" aria-hidden="true" /> Previous</span>
-              <span className="text-subheading text-text group-hover:text-accent-hover">{prev.title}</span>
+            <NextLink
+              href={`/work/${prev.slug}`}
+              className="hover:border-accent/50 group flex min-h-[44px] flex-col gap-2 rounded-xl border border-border p-6 transition-colors"
+            >
+              <span className="text-mono-label inline-flex items-center gap-2 text-text-tertiary">
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Previous
+              </span>
+              <span className="text-subheading text-text group-hover:text-accent-hover">
+                {prev.title}
+              </span>
             </NextLink>
-            <NextLink href={`/work/${next.slug}`} className="group flex min-h-[44px] flex-col items-end gap-2 rounded-xl border border-border p-6 text-right transition-colors hover:border-accent/50">
-              <span className="inline-flex items-center gap-2 text-mono-label text-text-tertiary">Next <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
-              <span className="text-subheading text-text group-hover:text-accent-hover">{next.title}</span>
+            <NextLink
+              href={`/work/${next.slug}`}
+              className="hover:border-accent/50 group flex min-h-[44px] flex-col items-end gap-2 rounded-xl border border-border p-6 text-right transition-colors"
+            >
+              <span className="text-mono-label inline-flex items-center gap-2 text-text-tertiary">
+                Next <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </span>
+              <span className="text-subheading text-text group-hover:text-accent-hover">
+                {next.title}
+              </span>
             </NextLink>
           </div>
           <div className="col-span-full mt-6 flex justify-center">
-            <NextLink href="/playground" className="inline-flex min-h-[44px] items-center gap-2 font-mono text-sm text-text-secondary hover:text-accent-hover">
-              Explore the Engineering Playground <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <NextLink
+              href="/playground"
+              className="inline-flex min-h-[44px] items-center gap-2 font-mono text-sm text-text-secondary hover:text-accent-hover"
+            >
+              Explore the Engineering Playground{" "}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </NextLink>
           </div>
         </div>

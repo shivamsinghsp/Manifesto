@@ -17,15 +17,28 @@ function onFirstInteraction() {
 
 /** Resolves on the visitor's first interaction, or after `fallbackMs` of idle time. */
 function whenEngaged(cb: () => void, fallbackMs: number) {
-  if (interacted) { cb(); return () => {} }
-  if (waiters.size === 0) EVENTS.forEach((e) => window.addEventListener(e, onFirstInteraction, { passive: true, once: true }))
+  if (interacted) {
+    cb()
+    return () => {}
+  }
+  if (waiters.size === 0)
+    EVENTS.forEach((e) =>
+      window.addEventListener(e, onFirstInteraction, { passive: true, once: true })
+    )
   waiters.add(cb)
   const t = window.setTimeout(() => {
-    const ric = (window as Window & { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number }).requestIdleCallback
+    const ric = (
+      window as Window & {
+        requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number
+      }
+    ).requestIdleCallback
     if (ric) ric(onFirstInteraction, { timeout: 2000 })
     else onFirstInteraction()
   }, fallbackMs)
-  return () => { waiters.delete(cb); clearTimeout(t) }
+  return () => {
+    waiters.delete(cb)
+    clearTimeout(t)
+  }
 }
 
 /**

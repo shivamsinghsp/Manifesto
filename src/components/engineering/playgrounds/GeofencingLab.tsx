@@ -4,15 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react"
 import NextLink from "next/link"
 import { haversineDistance } from "@/lib/haversine"
 import { cn } from "@/lib/utils"
-import { 
-  ShieldCheck, 
-  ShieldAlert, 
-  AlertTriangle,
-  Crosshair, 
-  Play, 
-  Pause, 
-  Info
-} from "lucide-react"
+import { ShieldCheck, ShieldAlert, AlertTriangle, Crosshair, Play, Pause, Info } from "lucide-react"
 
 export function GeofencingLab() {
   // Center is Kanpur coordinates, scaled to internal SVG system (0-100)
@@ -33,48 +25,54 @@ export function GeofencingLab() {
   const [userY, setUserY] = useState(58)
   const [isDragging, setIsDragging] = useState(false)
   const [isSimulatingWalk, setIsSimulatingWalk] = useState(false)
-  
+
   const svgRef = useRef<SVGSVGElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const walkAngleRef = useRef(0)
 
   // Converts SVG units (0-100) to precise Kanpur coordinates
-  const getSimulatedCoordinates = useCallback((x: number, y: number) => {
-    const dxMeters = (x - COMPANY_X) * METERS_PER_UNIT
-    const dyMeters = (COMPANY_Y - y) * METERS_PER_UNIT // Y is inverted in SVG (down = South)
-    
-    const lat = OFFICE_LAT + (dyMeters / METERS_PER_DEG_LAT)
-    const lon = OFFICE_LON + (dxMeters / METERS_PER_DEG_LON)
-    
-    return { lat, lon }
-  }, [METERS_PER_DEG_LAT, METERS_PER_DEG_LON])
+  const getSimulatedCoordinates = useCallback(
+    (x: number, y: number) => {
+      const dxMeters = (x - COMPANY_X) * METERS_PER_UNIT
+      const dyMeters = (COMPANY_Y - y) * METERS_PER_UNIT // Y is inverted in SVG (down = South)
+
+      const lat = OFFICE_LAT + dyMeters / METERS_PER_DEG_LAT
+      const lon = OFFICE_LON + dxMeters / METERS_PER_DEG_LON
+
+      return { lat, lon }
+    },
+    [METERS_PER_DEG_LAT, METERS_PER_DEG_LON]
+  )
 
   const companyCoords = getSimulatedCoordinates(COMPANY_X, COMPANY_Y)
   const userCoords = getSimulatedCoordinates(userX, userY)
-  
-  const distance = haversineDistance(companyCoords.lat, companyCoords.lon, userCoords.lat, userCoords.lon)
-  
+
+  const distance = haversineDistance(
+    companyCoords.lat,
+    companyCoords.lon,
+    userCoords.lat,
+    userCoords.lon
+  )
+
   // 3-tier Geofence Validation Model:
   // 1. in_range: Safely within boundary
   // 2. near_edge: Within ~18% or 20m of boundary (caution zone for GPS jitter)
   // 3. outside: Completely past configured radius
   const isOutside = distance > radiusMeters
-  const isNearEdge = !isOutside && (distance >= radiusMeters * 0.82 || (radiusMeters - distance) <= 20)
-  const status: "in_range" | "near_edge" | "outside" = isOutside 
-    ? "outside" 
-    : isNearEdge 
-      ? "near_edge" 
+  const isNearEdge =
+    !isOutside && (distance >= radiusMeters * 0.82 || radiusMeters - distance <= 20)
+  const status: "in_range" | "near_edge" | "outside" = isOutside
+    ? "outside"
+    : isNearEdge
+      ? "near_edge"
       : "in_range"
 
   const delta = distance - radiusMeters
   const marginInside = radiusMeters - distance
 
   // Dynamic Theme Colors
-  const statusColor = status === "in_range" 
-    ? "#00E5FF" 
-    : status === "near_edge" 
-      ? "#F59E0B" 
-      : "#F43F5E"
+  const statusColor =
+    status === "in_range" ? "#00E5FF" : status === "near_edge" ? "#F59E0B" : "#F43F5E"
 
   // SVG radius in units: 1 unit = 10 meters => svgRadius = radiusMeters / 10
   const svgRadius = radiusMeters / METERS_PER_UNIT
@@ -85,15 +83,15 @@ export function GeofencingLab() {
     const svg = svgRef.current
     const rect = svg.getBoundingClientRect()
     if (rect.width === 0 || rect.height === 0) return
-    
+
     // Calculate 0-100 coordinate based on SVG bounding box
     const xPct = ((clientX - rect.left) / rect.width) * 100
     const yPct = ((clientY - rect.top) / rect.height) * 100
-    
+
     // Constrain smoothly to 6 - 94 to keep marker within viewbox
     const clampedX = Math.max(6, Math.min(94, Number(xPct.toFixed(1))))
     const clampedY = Math.max(6, Math.min(94, Number(yPct.toFixed(1))))
-    
+
     setUserX(clampedX)
     setUserY(clampedY)
   }, [])
@@ -125,17 +123,17 @@ export function GeofencingLab() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     setIsSimulatingWalk(false)
     const step = 2
-    if (e.key === "ArrowUp") setUserY(prev => Math.max(6, prev - step))
-    if (e.key === "ArrowDown") setUserY(prev => Math.min(94, prev + step))
-    if (e.key === "ArrowLeft") setUserX(prev => Math.max(6, prev - step))
-    if (e.key === "ArrowRight") setUserX(prev => Math.min(94, prev + step))
+    if (e.key === "ArrowUp") setUserY((prev) => Math.max(6, prev - step))
+    if (e.key === "ArrowDown") setUserY((prev) => Math.min(94, prev + step))
+    if (e.key === "ArrowLeft") setUserX((prev) => Math.max(6, prev - step))
+    if (e.key === "ArrowRight") setUserX((prev) => Math.min(94, prev + step))
   }
 
   // Adaptive presets dynamically sized according to current radiusMeters
   const handlePresetByType = (type: "center" | "in_range" | "near_edge" | "outside") => {
     setIsSimulatingWalk(false)
     const baseRadiusUnits = radiusMeters / METERS_PER_UNIT
-    
+
     if (type === "center") {
       setUserX(50)
       setUserY(50)
@@ -169,139 +167,151 @@ export function GeofencingLab() {
   // Smooth 60fps auto-walk simulation loop adapting to configured radius
   useEffect(() => {
     if (!isSimulatingWalk) return
-    
+
     let animationFrameId: number
     let lastTime = performance.now()
-    
+
     const animate = (time: number) => {
       const deltaSec = (time - lastTime) / 1000
       lastTime = time
-      
+
       // Advance angle smoothly
       walkAngleRef.current = (walkAngleRef.current + deltaSec * 0.5) % (2 * Math.PI)
-      
+
       // Oscillate radius between 45% and 125% of current geofence radius
       const baseR = radiusMeters / METERS_PER_UNIT
       const multiplier = 0.85 + 0.45 * Math.sin(walkAngleRef.current * 1.5)
       const currentR = Math.max(7, Math.min(43, baseR * multiplier))
-      
+
       const newX = 50 + currentR * Math.cos(walkAngleRef.current)
       const newY = 50 + currentR * Math.sin(walkAngleRef.current)
-      
+
       setUserX(Number(newX.toFixed(1)))
       setUserY(Number(newY.toFixed(1)))
-      
+
       animationFrameId = requestAnimationFrame(animate)
     }
-    
+
     animationFrameId = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(animationFrameId)
   }, [isSimulatingWalk, radiusMeters])
 
   return (
-    <div className="w-full rounded-2xl border border-white/10 bg-[#0E131F]/90 backdrop-blur-xl shadow-2xl overflow-hidden transition-all duration-300">
+    <div className="w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0E131F]/90 shadow-2xl backdrop-blur-xl transition-all duration-300">
       {/* Header Bar */}
-      <div className="p-5 md:p-7 border-b border-white/[0.08] bg-white/[0.02] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex flex-col items-start justify-between gap-4 border-b border-white/[0.08] bg-white/[0.02] p-5 md:flex-row md:items-center md:p-7">
         <div>
-          <div className="flex items-center gap-2.5 mb-1.5">
-            <span className="flex h-2.5 w-2.5 relative">
-              <span className={cn(
-                "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
-                status === "in_range" && "bg-cyan-400",
-                status === "near_edge" && "bg-amber-400",
-                status === "outside" && "bg-rose-400"
-              )} />
-              <span className={cn(
-                "relative inline-flex rounded-full h-2.5 w-2.5",
-                status === "in_range" && "bg-cyan-400",
-                status === "near_edge" && "bg-amber-400",
-                status === "outside" && "bg-rose-400"
-              )} />
+          <div className="mb-1.5 flex items-center gap-2.5">
+            <span className="relative flex h-2.5 w-2.5">
+              <span
+                className={cn(
+                  "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75",
+                  status === "in_range" && "bg-cyan-400",
+                  status === "near_edge" && "bg-amber-400",
+                  status === "outside" && "bg-rose-400"
+                )}
+              />
+              <span
+                className={cn(
+                  "relative inline-flex h-2.5 w-2.5 rounded-full",
+                  status === "in_range" && "bg-cyan-400",
+                  status === "near_edge" && "bg-amber-400",
+                  status === "outside" && "bg-rose-400"
+                )}
+              />
             </span>
-            <span className={cn(
-              "text-[11px] font-mono tracking-widest uppercase font-medium",
-              status === "in_range" && "text-cyan-400",
-              status === "near_edge" && "text-amber-400",
-              status === "outside" && "text-rose-400"
-            )}>
+            <span
+              className={cn(
+                "font-mono text-[11px] font-medium uppercase tracking-widest",
+                status === "in_range" && "text-cyan-400",
+                status === "near_edge" && "text-amber-400",
+                status === "outside" && "text-rose-400"
+              )}
+            >
               {status === "in_range" && "PERIMETER SECURE"}
               {status === "near_edge" && "PERIMETER CAUTION (NEAR EDGE)"}
               {status === "outside" && "OUTSIDE PERIMETER"}
             </span>
           </div>
-          <h3 className="text-xl md:text-2xl font-display font-medium text-white tracking-tight">
+          <h3 className="font-display text-xl font-medium tracking-tight text-white md:text-2xl">
             Geofencing Validation Lab
           </h3>
-          <p className="text-xs md:text-sm text-slate-400 mt-0.5">
-            Real-time Haversine perimeter engine modeled on the Shynr HRMS attendance perimeter algorithm.
+          <p className="mt-0.5 text-xs text-slate-400 md:text-sm">
+            Real-time Haversine perimeter engine modeled on the Shynr HRMS attendance perimeter
+            algorithm.
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setIsSimulatingWalk(prev => !prev)}
+            onClick={() => setIsSimulatingWalk((prev) => !prev)}
             className={cn(
-              "inline-flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-lg border transition-all duration-200",
+              "inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-xs transition-all duration-200",
               isSimulatingWalk
-                ? "bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(0,184,212,0.3)]"
-                : "bg-white/[0.04] border-white/10 text-slate-300 hover:text-white hover:bg-white/[0.08]"
+                ? "border-cyan-400 bg-cyan-500/20 text-cyan-300 shadow-[0_0_15px_rgba(0,184,212,0.3)]"
+                : "border-white/10 bg-white/[0.04] text-slate-300 hover:bg-white/[0.08] hover:text-white"
             )}
           >
-            {isSimulatingWalk ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+            {isSimulatingWalk ? (
+              <Pause className="h-3.5 w-3.5" />
+            ) : (
+              <Play className="h-3.5 w-3.5" />
+            )}
             {isSimulatingWalk ? "PAUSE AUTO-WALK" : "AUTO-WALK DEMO"}
           </button>
-          
-          <NextLink 
+
+          <NextLink
             href="/work/shynr"
-            className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-white uppercase tracking-wider border border-cyan-500/30 px-3 py-1.5 rounded-lg hover:bg-cyan-500/10 transition-all duration-200"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/30 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-cyan-400 transition-all duration-200 hover:bg-cyan-500/10 hover:text-white"
           >
             CASE STUDY ↗
           </NextLink>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
+      <div className="grid grid-cols-1 gap-0 lg:grid-cols-12">
         {/* Interactive Radar Box */}
-        <div 
+        <div
           ref={containerRef}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className="lg:col-span-7 p-4 sm:p-6 md:p-8 relative flex flex-col items-center justify-center min-h-[420px] border-b lg:border-b-0 lg:border-r border-white/[0.08] bg-[#070A11] select-none overflow-hidden touch-none cursor-crosshair outline-none"
+          className="relative flex min-h-[420px] cursor-crosshair touch-none select-none flex-col items-center justify-center overflow-hidden border-b border-white/[0.08] bg-[#070A11] p-4 outline-none sm:p-6 md:p-8 lg:col-span-7 lg:border-b-0 lg:border-r"
           style={{ outline: "none" }}
         >
           {/* Ambient Radar Glow */}
-          <div 
-            className="absolute inset-0 pointer-events-none transition-all duration-500 opacity-20"
+          <div
+            className="pointer-events-none absolute inset-0 opacity-20 transition-all duration-500"
             style={{
-              background: status === "in_range"
-                ? "radial-gradient(circle at 50% 50%, rgba(0, 184, 212, 0.25) 0%, transparent 65%)"
-                : status === "near_edge"
-                  ? "radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.25) 0%, transparent 65%)"
-                  : "radial-gradient(circle at 50% 50%, rgba(244, 63, 94, 0.2) 0%, transparent 65%)"
+              background:
+                status === "in_range"
+                  ? "radial-gradient(circle at 50% 50%, rgba(0, 184, 212, 0.25) 0%, transparent 65%)"
+                  : status === "near_edge"
+                    ? "radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.25) 0%, transparent 65%)"
+                    : "radial-gradient(circle at 50% 50%, rgba(244, 63, 94, 0.2) 0%, transparent 65%)",
             }}
           />
 
           {/* Radar Grid Texture */}
-          <div className="absolute inset-0 bg-blueprint opacity-15 pointer-events-none" />
+          <div className="bg-blueprint pointer-events-none absolute inset-0 opacity-15" />
 
           {/* Instructions Banner */}
-          <div className="absolute top-3 left-4 right-4 z-20 flex justify-between items-center pointer-events-none">
-            <span className="text-[10px] font-mono text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-white/10 backdrop-blur-md flex items-center gap-1.5">
-              <Crosshair className="w-3 h-3 text-cyan-400" />
+          <div className="pointer-events-none absolute left-4 right-4 top-3 z-20 flex items-center justify-between">
+            <span className="flex items-center gap-1.5 rounded border border-white/10 bg-slate-900/80 px-2 py-0.5 font-mono text-[10px] text-slate-400 backdrop-blur-md">
+              <Crosshair className="h-3 w-3 text-cyan-400" />
               <span>Click or drag to move marker</span>
             </span>
-            <span className="text-[9px] font-mono text-slate-500 hidden sm:inline-block">
+            <span className="hidden font-mono text-[9px] text-slate-500 sm:inline-block">
               Kanpur (26.4499°N, 80.3319°E)
             </span>
           </div>
 
           {/* SVG Map Canvas */}
-          <svg 
+          <svg
             ref={svgRef}
-            viewBox="0 0 100 100" 
-            className="w-full max-w-[420px] aspect-square relative z-10 overflow-visible touch-none outline-none"
+            viewBox="0 0 100 100"
+            className="relative z-10 aspect-square w-full max-w-[420px] touch-none overflow-visible outline-none"
             style={{ outline: "none" }}
             role="application"
             aria-label="Interactive geofencing radar. Click and drag anywhere to move user marker."
@@ -309,90 +319,185 @@ export function GeofencingLab() {
             <defs>
               {/* Geofence dynamic gradient */}
               <radialGradient id="geofenceGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor={statusColor} stopOpacity={status === "in_range" ? "0.2" : status === "near_edge" ? "0.16" : "0.06"} />
-                <stop offset="85%" stopColor={statusColor} stopOpacity={status === "in_range" ? "0.08" : status === "near_edge" ? "0.05" : "0.02"} />
+                <stop
+                  offset="0%"
+                  stopColor={statusColor}
+                  stopOpacity={
+                    status === "in_range" ? "0.2" : status === "near_edge" ? "0.16" : "0.06"
+                  }
+                />
+                <stop
+                  offset="85%"
+                  stopColor={statusColor}
+                  stopOpacity={
+                    status === "in_range" ? "0.08" : status === "near_edge" ? "0.05" : "0.02"
+                  }
+                />
                 <stop offset="100%" stopColor={statusColor} stopOpacity="0" />
               </radialGradient>
-              
+
               {/* Pulsing glow filter */}
               <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="1.2" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="1.2" result="coloredBlur" />
                 <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
             </defs>
 
             {/* Radar Concentric Distance Rings (Static Reference) */}
-            <circle cx="50" cy="50" r="10" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.25" strokeDasharray="1 2" />
-            <circle cx="50" cy="50" r="20" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.25" strokeDasharray="1 2" />
-            <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.25" strokeDasharray="1 2" />
-            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.25" strokeDasharray="1 2" />
-            
+            <circle
+              cx="50"
+              cy="50"
+              r="10"
+              fill="none"
+              stroke="rgba(255,255,255,0.06)"
+              strokeWidth="0.25"
+              strokeDasharray="1 2"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="20"
+              fill="none"
+              stroke="rgba(255,255,255,0.06)"
+              strokeWidth="0.25"
+              strokeDasharray="1 2"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="30"
+              fill="none"
+              stroke="rgba(255,255,255,0.06)"
+              strokeWidth="0.25"
+              strokeDasharray="1 2"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="40"
+              fill="none"
+              stroke="rgba(255,255,255,0.06)"
+              strokeWidth="0.25"
+              strokeDasharray="1 2"
+            />
+
             {/* Axis Crosshairs */}
-            <line x1="50" y1="6" x2="50" y2="94" stroke="rgba(255,255,255,0.06)" strokeWidth="0.2" />
-            <line x1="6" y1="50" x2="94" y2="50" stroke="rgba(255,255,255,0.06)" strokeWidth="0.2" />
+            <line
+              x1="50"
+              y1="6"
+              x2="50"
+              y2="94"
+              stroke="rgba(255,255,255,0.06)"
+              strokeWidth="0.2"
+            />
+            <line
+              x1="6"
+              y1="50"
+              x2="94"
+              y2="50"
+              stroke="rgba(255,255,255,0.06)"
+              strokeWidth="0.2"
+            />
 
             {/* Range markers labels */}
-            <text x="51" y="41" fontSize="1.6" fill="rgba(255,255,255,0.22)" fontFamily="var(--font-mono)">100m</text>
-            <text x="51" y="31" fontSize="1.6" fill="rgba(255,255,255,0.22)" fontFamily="var(--font-mono)">200m</text>
-            <text x="51" y="21" fontSize="1.6" fill="rgba(255,255,255,0.22)" fontFamily="var(--font-mono)">300m</text>
-            <text x="51" y="11" fontSize="1.6" fill="rgba(255,255,255,0.22)" fontFamily="var(--font-mono)">400m</text>
+            <text
+              x="51"
+              y="41"
+              fontSize="1.6"
+              fill="rgba(255,255,255,0.22)"
+              fontFamily="var(--font-mono)"
+            >
+              100m
+            </text>
+            <text
+              x="51"
+              y="31"
+              fontSize="1.6"
+              fill="rgba(255,255,255,0.22)"
+              fontFamily="var(--font-mono)"
+            >
+              200m
+            </text>
+            <text
+              x="51"
+              y="21"
+              fontSize="1.6"
+              fill="rgba(255,255,255,0.22)"
+              fontFamily="var(--font-mono)"
+            >
+              300m
+            </text>
+            <text
+              x="51"
+              y="11"
+              fontSize="1.6"
+              fill="rgba(255,255,255,0.22)"
+              fontFamily="var(--font-mono)"
+            >
+              400m
+            </text>
 
             {/* Geofence Perimeter Area */}
-            <circle 
-              cx={COMPANY_X} 
-              cy={COMPANY_Y} 
-              r={svgRadius} 
+            <circle
+              cx={COMPANY_X}
+              cy={COMPANY_Y}
+              r={svgRadius}
               fill="url(#geofenceGlow)"
-              className="transition-all duration-300 pointer-events-none"
+              className="pointer-events-none transition-all duration-300"
             />
-            
+
             {/* Geofence Boundary Line */}
-            <circle 
-              cx={COMPANY_X} 
-              cy={COMPANY_Y} 
-              r={svgRadius} 
-              fill="none" 
-              stroke={statusColor} 
+            <circle
+              cx={COMPANY_X}
+              cy={COMPANY_Y}
+              r={svgRadius}
+              fill="none"
+              stroke={statusColor}
               strokeWidth={status === "in_range" ? "0.5" : "0.6"}
-              strokeDasharray={status === "in_range" ? "none" : status === "near_edge" ? "2.5 1.5" : "2 1.5"}
+              strokeDasharray={
+                status === "in_range" ? "none" : status === "near_edge" ? "2.5 1.5" : "2 1.5"
+              }
               filter="url(#glow)"
-              className="transition-all duration-300 pointer-events-none"
+              className="pointer-events-none transition-all duration-300"
             />
 
             {/* Connecting Vector Line */}
-            <line 
-              x1={COMPANY_X} 
-              y1={COMPANY_Y} 
-              x2={userX} 
-              y2={userY} 
-              stroke={statusColor} 
+            <line
+              x1={COMPANY_X}
+              y1={COMPANY_Y}
+              x2={userX}
+              y2={userY}
+              stroke={statusColor}
               strokeOpacity="0.4"
-              strokeWidth="0.3" 
+              strokeWidth="0.3"
               strokeDasharray="1 1"
               className="pointer-events-none"
             />
 
             {/* Compact Distance Callout Tag on Vector Line */}
-            <g transform={`translate(${(COMPANY_X + userX) / 2}, ${(COMPANY_Y + userY) / 2})`} className="pointer-events-none">
-              <rect 
-                x="-7" 
-                y="-2.4" 
-                width="14" 
-                height="4.2" 
-                rx="0.8" 
-                fill="#070A11" 
-                stroke={statusColor} 
+            <g
+              transform={`translate(${(COMPANY_X + userX) / 2}, ${(COMPANY_Y + userY) / 2})`}
+              className="pointer-events-none"
+            >
+              <rect
+                x="-7"
+                y="-2.4"
+                width="14"
+                height="4.2"
+                rx="0.8"
+                fill="#070A11"
+                stroke={statusColor}
                 strokeOpacity="0.5"
                 strokeWidth="0.25"
               />
-              <text 
-                y="0.5" 
-                fontSize="1.9" 
-                fill={statusColor} 
-                textAnchor="middle" 
+              <text
+                y="0.5"
+                fontSize="1.9"
+                fill={statusColor}
+                textAnchor="middle"
                 fontFamily="var(--font-mono)"
                 fontWeight="bold"
               >
@@ -405,11 +510,11 @@ export function GeofencingLab() {
               <circle r="2.2" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="0.25" />
               <circle r="1.2" fill="#FFFFFF" />
               <circle r="0.4" fill="#070A11" />
-              <text 
-                y="5" 
-                fontSize="1.8" 
-                fill="#94A3B8" 
-                textAnchor="middle" 
+              <text
+                y="5"
+                fontSize="1.8"
+                fill="#94A3B8"
+                textAnchor="middle"
                 fontFamily="var(--font-mono)"
                 letterSpacing="0.04em"
               >
@@ -418,9 +523,9 @@ export function GeofencingLab() {
             </g>
 
             {/* User Draggable Marker: Sleek, compact, with NO focus box */}
-            <g 
+            <g
               transform={`translate(${userX}, ${userY})`}
-              className="cursor-grab active:cursor-grabbing select-none outline-none focus:outline-none focus-visible:outline-none"
+              className="cursor-grab select-none outline-none focus:outline-none focus-visible:outline-none active:cursor-grabbing"
               style={{ outline: "none", WebkitTapHighlightColor: "transparent" }}
               onKeyDown={handleKeyDown}
               tabIndex={0}
@@ -434,62 +539,53 @@ export function GeofencingLab() {
               <circle r="6" fill="transparent" />
 
               {/* Subtle expanding sonar pulse */}
-              <circle 
-                r="1.2" 
-                fill="none" 
-                stroke={statusColor} 
-                strokeWidth="0.25" 
-                opacity="0.6"
-              >
-                <animate attributeName="r" values="1.2;3.6;1.2" dur="2.2s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.6;0;0.6" dur="2.2s" repeatCount="indefinite" />
+              <circle r="1.2" fill="none" stroke={statusColor} strokeWidth="0.25" opacity="0.6">
+                <animate
+                  attributeName="r"
+                  values="1.2;3.6;1.2"
+                  dur="2.2s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.6;0;0.6"
+                  dur="2.2s"
+                  repeatCount="indefinite"
+                />
               </circle>
 
               {/* Compact accuracy ring */}
-              <circle 
-                r={isDragging ? 2.8 : 2.2} 
-                fill={statusColor} 
-                fillOpacity={isDragging ? 0.2 : 0.08} 
-                stroke={statusColor} 
-                strokeWidth="0.25" 
+              <circle
+                r={isDragging ? 2.8 : 2.2}
+                fill={statusColor}
+                fillOpacity={isDragging ? 0.2 : 0.08}
+                stroke={statusColor}
+                strokeWidth="0.25"
                 strokeDasharray="1 1"
               />
 
               {/* Core beacon base */}
-              <circle 
-                r={isDragging ? 1.4 : 1.1} 
-                fill="#070A11" 
-                stroke={statusColor} 
-                strokeWidth="0.6" 
+              <circle
+                r={isDragging ? 1.4 : 1.1}
+                fill="#070A11"
+                stroke={statusColor}
+                strokeWidth="0.6"
                 filter="url(#glow)"
               />
-              
+
               {/* Center pip */}
-              <circle 
-                r={isDragging ? 0.7 : 0.55} 
-                fill={statusColor} 
-              />
-              
+              <circle r={isDragging ? 0.7 : 0.55} fill={statusColor} />
+
               {/* Compact "YOU" Micro Badge */}
               <g transform="translate(0, -3.2)">
-                <rect 
-                  x="-4" 
-                  y="-1.8" 
-                  width="8" 
-                  height="2.6" 
-                  rx="0.6" 
-                  fill={statusColor}
-                />
+                <rect x="-4" y="-1.8" width="8" height="2.6" rx="0.6" fill={statusColor} />
                 {/* Micro pointer tip */}
-                <polygon 
-                  points="-0.6,0.8 0.6,0.8 0,1.3" 
-                  fill={statusColor} 
-                />
-                <text 
-                  y="-0.1" 
-                  fontSize="1.4" 
-                  fill="#070A11" 
-                  textAnchor="middle" 
+                <polygon points="-0.6,0.8 0.6,0.8 0,1.3" fill={statusColor} />
+                <text
+                  y="-0.1"
+                  fontSize="1.4"
+                  fill="#070A11"
+                  textAnchor="middle"
                   fontFamily="var(--font-mono)"
                   fontWeight="bold"
                 >
@@ -500,21 +596,21 @@ export function GeofencingLab() {
           </svg>
 
           {/* Quick Scenario Jump Presets */}
-          <div 
-            className="w-full mt-3 flex flex-wrap items-center justify-center gap-1.5 z-20"
+          <div
+            className="z-20 mt-3 flex w-full flex-wrap items-center justify-center gap-1.5"
             onPointerDown={(e) => e.stopPropagation()}
           >
-            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mr-1">
+            <span className="mr-1 font-mono text-[10px] uppercase tracking-widest text-slate-400">
               Presets:
             </span>
             <button
               type="button"
               onClick={() => handlePresetByType("center")}
               className={cn(
-                "text-[10px] font-mono px-2 py-0.5 rounded border transition-all",
+                "rounded border px-2 py-0.5 font-mono text-[10px] transition-all",
                 distance < 10
-                  ? "bg-white/20 border-white/40 text-white font-medium shadow-[0_0_8px_rgba(255,255,255,0.2)]"
-                  : "bg-white/[0.04] hover:bg-white/10 border-white/10 text-slate-300 hover:text-white"
+                  ? "border-white/40 bg-white/20 font-medium text-white shadow-[0_0_8px_rgba(255,255,255,0.2)]"
+                  : "border-white/10 bg-white/[0.04] text-slate-300 hover:bg-white/10 hover:text-white"
               )}
             >
               🏢 Center (0m)
@@ -523,10 +619,10 @@ export function GeofencingLab() {
               type="button"
               onClick={() => handlePresetByType("in_range")}
               className={cn(
-                "text-[10px] font-mono px-2 py-0.5 rounded border transition-all",
+                "rounded border px-2 py-0.5 font-mono text-[10px] transition-all",
                 status === "in_range" && distance >= 10
-                  ? "bg-cyan-500/20 border-cyan-400 text-cyan-300 font-medium shadow-[0_0_8px_rgba(0,184,212,0.25)]"
-                  : "bg-cyan-500/5 hover:bg-cyan-500/15 border-cyan-500/20 text-cyan-400/90"
+                  ? "border-cyan-400 bg-cyan-500/20 font-medium text-cyan-300 shadow-[0_0_8px_rgba(0,184,212,0.25)]"
+                  : "border-cyan-500/20 bg-cyan-500/5 text-cyan-400/90 hover:bg-cyan-500/15"
               )}
             >
               🟢 In Range ({Math.round(radiusMeters * 0.5)}m)
@@ -535,10 +631,10 @@ export function GeofencingLab() {
               type="button"
               onClick={() => handlePresetByType("near_edge")}
               className={cn(
-                "text-[10px] font-mono px-2 py-0.5 rounded border transition-all",
+                "rounded border px-2 py-0.5 font-mono text-[10px] transition-all",
                 status === "near_edge"
-                  ? "bg-amber-500/20 border-amber-400 text-amber-300 font-medium shadow-[0_0_8px_rgba(245,158,11,0.25)]"
-                  : "bg-amber-500/5 hover:bg-amber-500/15 border-amber-500/20 text-amber-300/90"
+                  ? "border-amber-400 bg-amber-500/20 font-medium text-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.25)]"
+                  : "border-amber-500/20 bg-amber-500/5 text-amber-300/90 hover:bg-amber-500/15"
               )}
             >
               🟡 Near Edge ({Math.round(radiusMeters * 0.92)}m)
@@ -547,10 +643,10 @@ export function GeofencingLab() {
               type="button"
               onClick={() => handlePresetByType("outside")}
               className={cn(
-                "text-[10px] font-mono px-2 py-0.5 rounded border transition-all",
+                "rounded border px-2 py-0.5 font-mono text-[10px] transition-all",
                 status === "outside"
-                  ? "bg-rose-500/20 border-rose-400 text-rose-300 font-medium shadow-[0_0_8px_rgba(244,63,94,0.25)]"
-                  : "bg-rose-500/5 hover:bg-rose-500/15 border-rose-500/20 text-rose-400/90"
+                  ? "border-rose-400 bg-rose-500/20 font-medium text-rose-300 shadow-[0_0_8px_rgba(244,63,94,0.25)]"
+                  : "border-rose-500/20 bg-rose-500/5 text-rose-400/90 hover:bg-rose-500/15"
               )}
             >
               🔴 Outside ({Math.min(420, Math.round(radiusMeters * 1.35))}m)
@@ -559,76 +655,97 @@ export function GeofencingLab() {
         </div>
 
         {/* Telemetry Dashboard & Controls */}
-        <div className="lg:col-span-5 flex flex-col bg-[#0B0F19]">
+        <div className="flex flex-col bg-[#0B0F19] lg:col-span-5">
           {/* Status Verdict Header */}
-          <div className="p-5 md:p-6 border-b border-white/[0.08] bg-white/[0.02]">
-            <span className="text-[10px] font-mono text-slate-400 block mb-2 tracking-widest uppercase">
+          <div className="border-b border-white/[0.08] bg-white/[0.02] p-5 md:p-6">
+            <span className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-slate-400">
               VALIDATION RESULT
             </span>
 
-            <div className={cn(
-              "p-3.5 rounded-xl border flex items-center gap-3 transition-all duration-300",
-              status === "in_range" && "bg-cyan-500/10 border-cyan-500/30 text-cyan-300 shadow-[0_0_15px_rgba(0,184,212,0.12)]",
-              status === "near_edge" && "bg-amber-500/10 border-amber-500/30 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.15)]",
-              status === "outside" && "bg-rose-500/10 border-rose-500/30 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.12)]"
-            )}>
-              <div className={cn(
-                "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-                status === "in_range" && "bg-cyan-500/20 text-cyan-400",
-                status === "near_edge" && "bg-amber-500/20 text-amber-400",
-                status === "outside" && "bg-rose-500/20 text-rose-400"
-              )}>
-                {status === "in_range" && <ShieldCheck className="w-4 h-4" />}
-                {status === "near_edge" && <AlertTriangle className="w-4 h-4" />}
-                {status === "outside" && <ShieldAlert className="w-4 h-4" />}
+            <div
+              className={cn(
+                "flex items-center gap-3 rounded-xl border p-3.5 transition-all duration-300",
+                status === "in_range" &&
+                  "border-cyan-500/30 bg-cyan-500/10 text-cyan-300 shadow-[0_0_15px_rgba(0,184,212,0.12)]",
+                status === "near_edge" &&
+                  "border-amber-500/30 bg-amber-500/10 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.15)]",
+                status === "outside" &&
+                  "border-rose-500/30 bg-rose-500/10 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.12)]"
+              )}
+            >
+              <div
+                className={cn(
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                  status === "in_range" && "bg-cyan-500/20 text-cyan-400",
+                  status === "near_edge" && "bg-amber-500/20 text-amber-400",
+                  status === "outside" && "bg-rose-500/20 text-rose-400"
+                )}
+              >
+                {status === "in_range" && <ShieldCheck className="h-4 w-4" />}
+                {status === "near_edge" && <AlertTriangle className="h-4 w-4" />}
+                {status === "outside" && <ShieldAlert className="h-4 w-4" />}
               </div>
-              
+
               <div>
-                <div className="font-mono text-xs md:text-sm font-bold tracking-wide">
+                <div className="font-mono text-xs font-bold tracking-wide md:text-sm">
                   {status === "in_range" && "WITHIN GEOFENCE RANGE"}
                   {status === "near_edge" && "NEAR GEOFENCE EDGE (CAUTION)"}
                   {status === "outside" && "OUTSIDE GEOFENCE RANGE"}
                 </div>
-                <div className="text-[11px] opacity-80 mt-0.5">
-                  {status === "in_range" && `Attendance authorized (Margin: ${marginInside}m inside)`}
-                  {status === "near_edge" && `Near boundary (${marginInside}m inside). GPS drift risk.`}
+                <div className="mt-0.5 text-[11px] opacity-80">
+                  {status === "in_range" &&
+                    `Attendance authorized (Margin: ${marginInside}m inside)`}
+                  {status === "near_edge" &&
+                    `Near boundary (${marginInside}m inside). GPS drift risk.`}
                   {status === "outside" && `Check-in blocked (${delta}m past threshold)`}
                 </div>
               </div>
             </div>
-            
+
             {/* Telemetry Stats Grid */}
-            <div className="grid grid-cols-2 gap-2.5 mt-3">
-              <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-3">
-                <span className="text-[9px] font-mono text-slate-400 block mb-0.5">CALCULATED DISTANCE</span>
+            <div className="mt-3 grid grid-cols-2 gap-2.5">
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3">
+                <span className="mb-0.5 block font-mono text-[9px] text-slate-400">
+                  CALCULATED DISTANCE
+                </span>
                 <div className="font-display text-xl font-semibold text-white">
-                  {distance}<span className="text-[11px] font-mono font-normal text-slate-400 ml-1">meters</span>
+                  {distance}
+                  <span className="ml-1 font-mono text-[11px] font-normal text-slate-400">
+                    meters
+                  </span>
                 </div>
               </div>
-              
-              <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-3">
-                <span className="text-[9px] font-mono text-slate-400 block mb-0.5">THRESHOLD LIMIT</span>
+
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3">
+                <span className="mb-0.5 block font-mono text-[9px] text-slate-400">
+                  THRESHOLD LIMIT
+                </span>
                 <div className="font-display text-xl font-semibold text-white">
-                  {radiusMeters}<span className="text-[11px] font-mono font-normal text-slate-400 ml-1">meters</span>
+                  {radiusMeters}
+                  <span className="ml-1 font-mono text-[11px] font-normal text-slate-400">
+                    meters
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Perimeter Proximity Progress Bar */}
-            <div className="mt-2.5 bg-white/[0.02] border border-white/[0.06] rounded-xl p-2.5">
-              <div className="flex justify-between text-[10px] font-mono text-slate-400 mb-1">
+            <div className="mt-2.5 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5">
+              <div className="mb-1 flex justify-between font-mono text-[10px] text-slate-400">
                 <span>PERIMETER PROXIMITY</span>
-                <span className={cn(
-                  "font-semibold",
-                  status === "in_range" && "text-cyan-400",
-                  status === "near_edge" && "text-amber-400",
-                  status === "outside" && "text-rose-400"
-                )}>
+                <span
+                  className={cn(
+                    "font-semibold",
+                    status === "in_range" && "text-cyan-400",
+                    status === "near_edge" && "text-amber-400",
+                    status === "outside" && "text-rose-400"
+                  )}
+                >
                   {Math.round((distance / radiusMeters) * 100)}% of limit
                 </span>
               </div>
-              <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div 
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+                <div
                   className={cn(
                     "h-full rounded-full transition-all duration-150",
                     status === "in_range" && "bg-cyan-400",
@@ -641,60 +758,62 @@ export function GeofencingLab() {
             </div>
 
             {/* Live GPS Readout */}
-            <div className="mt-2.5 bg-white/[0.02] border border-white/[0.06] rounded-xl p-2.5 font-mono text-xs">
-              <div className="flex justify-between text-slate-400 mb-1 text-[9px]">
+            <div className="mt-2.5 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 font-mono text-xs">
+              <div className="mb-1 flex justify-between text-[9px] text-slate-400">
                 <span>SIMULATED GPS BEACON</span>
                 <span className="text-cyan-400">±0.1m precision</span>
               </div>
-              <div className="text-slate-200 text-[11px]">
-                LAT: <span className="text-white font-semibold">{userCoords.lat.toFixed(5)}° N</span>
+              <div className="text-[11px] text-slate-200">
+                LAT:{" "}
+                <span className="font-semibold text-white">{userCoords.lat.toFixed(5)}° N</span>
               </div>
-              <div className="text-slate-200 text-[11px]">
-                LON: <span className="text-white font-semibold">{userCoords.lon.toFixed(5)}° E</span>
+              <div className="text-[11px] text-slate-200">
+                LON:{" "}
+                <span className="font-semibold text-white">{userCoords.lon.toFixed(5)}° E</span>
               </div>
             </div>
           </div>
 
           {/* Controls & Configuration */}
-          <div className="p-5 md:p-6 flex-grow flex flex-col justify-between">
+          <div className="flex flex-grow flex-col justify-between p-5 md:p-6">
             <div>
-              <div className="flex justify-between items-center mb-2.5">
-                <span className="text-xs font-mono text-slate-300 uppercase tracking-wider">
+              <div className="mb-2.5 flex items-center justify-between">
+                <span className="font-mono text-xs uppercase tracking-wider text-slate-300">
                   Configured Radius
                 </span>
-                <span className="text-xs font-mono text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded bg-cyan-500/10">
+                <span className="rounded border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 font-mono text-xs text-cyan-300">
                   {radiusMeters} meters
                 </span>
               </div>
-              
-              <input 
-                type="range" 
-                min="50" 
-                max="400" 
+
+              <input
+                type="range"
+                min="50"
+                max="400"
                 step="10"
-                value={radiusMeters} 
+                value={radiusMeters}
                 onChange={(e) => setRadiusMeters(Number(e.target.value))}
-                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                className="h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-slate-800 accent-cyan-400"
                 aria-label="Adjust geofence radius"
               />
-              
-              <div className="flex justify-between mt-1.5 text-[9px] font-mono text-slate-500">
+
+              <div className="mt-1.5 flex justify-between font-mono text-[9px] text-slate-500">
                 <span>50m (Strict)</span>
                 <span>200m</span>
                 <span>400m (Campus)</span>
               </div>
 
               {/* Radius Quick Buttons */}
-              <div className="grid grid-cols-4 gap-1.5 mt-2.5">
+              <div className="mt-2.5 grid grid-cols-4 gap-1.5">
                 {[75, 100, 150, 250].map((preset) => (
                   <button
                     key={preset}
                     onClick={() => setRadiusMeters(preset)}
                     className={cn(
-                      "text-[10px] font-mono py-1 rounded border transition-colors",
+                      "rounded border py-1 font-mono text-[10px] transition-colors",
                       radiusMeters === preset
-                        ? "bg-cyan-500/20 border-cyan-400 text-cyan-300"
-                        : "bg-white/[0.03] border-white/10 text-slate-400 hover:text-white"
+                        ? "border-cyan-400 bg-cyan-500/20 text-cyan-300"
+                        : "border-white/10 bg-white/[0.03] text-slate-400 hover:text-white"
                     )}
                   >
                     {preset}m
@@ -704,13 +823,17 @@ export function GeofencingLab() {
             </div>
 
             {/* Technical Context Card */}
-            <div className="mt-4 bg-white/[0.02] border border-white/[0.08] rounded-xl p-3">
-              <div className="flex items-center gap-1.5 text-cyan-400 text-xs font-mono font-medium mb-1.5 border-b border-white/[0.08] pb-1.5">
-                <Info className="w-3.5 h-3.5" />
+            <div className="mt-4 rounded-xl border border-white/[0.08] bg-white/[0.02] p-3">
+              <div className="mb-1.5 flex items-center gap-1.5 border-b border-white/[0.08] pb-1.5 font-mono text-xs font-medium text-cyan-400">
+                <Info className="h-3.5 w-3.5" />
                 <span>Production Security Context</span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                In Shynr HRMS, client-submitted coordinates are validated on the backend against authorized office locations using the Haversine formula to confirm mathematical proximity. However, distance calculation alone does not prove device authenticity; full anti-spoofing in production requires layered mechanisms such as mock-location flags, cellular/Wi-Fi triangulation, and device integrity verification.
+              <p className="text-[11px] leading-relaxed text-slate-400">
+                In Shynr HRMS, client-submitted coordinates are validated on the backend against
+                authorized office locations using the Haversine formula to confirm mathematical
+                proximity. However, distance calculation alone does not prove device authenticity;
+                full anti-spoofing in production requires layered mechanisms such as mock-location
+                flags, cellular/Wi-Fi triangulation, and device integrity verification.
               </p>
             </div>
           </div>

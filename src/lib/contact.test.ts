@@ -2,7 +2,12 @@ import { beforeEach, describe, expect, it } from "vitest"
 import { contactSchema, fieldErrorsFrom } from "./contact"
 import { __resetRateLimit, rateLimit } from "./rate-limit"
 
-const valid = { name: "Alex", company: "", email: "alex@company.com", message: "Hello, I'd like to talk." }
+const valid = {
+  name: "Alex",
+  company: "",
+  email: "alex@company.com",
+  message: "Hello, I'd like to talk.",
+}
 
 describe("contactSchema", () => {
   it("accepts a valid message and trims fields", () => {

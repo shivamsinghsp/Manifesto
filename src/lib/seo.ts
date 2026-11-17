@@ -11,7 +11,12 @@ interface PageMeta {
 }
 
 /** Builds per-route metadata with canonical URL and matching Open Graph / Twitter fields. */
-export function pageMetadata({ title, description = site.description, path, image = "/opengraph-image" }: PageMeta): Metadata {
+export function pageMetadata({
+  title,
+  description = site.description,
+  path,
+  image = "/opengraph-image",
+}: PageMeta): Metadata {
   const fullTitle = title ? `${title} | ${site.name}` : `${site.name} — ${site.jobTitle}`
   return {
     title: title ?? { absolute: fullTitle },
@@ -25,7 +30,9 @@ export function pageMetadata({ title, description = site.description, path, imag
       title: fullTitle,
       description,
       // Child metadata replaces openGraph wholesale, so restate the generated default image.
-      images: [{ url: image, width: 1200, height: 630, alt: title ?? `${site.name} — ${site.jobTitle}` }],
+      images: [
+        { url: image, width: 1200, height: 630, alt: title ?? `${site.name} — ${site.jobTitle}` },
+      ],
     },
     twitter: {
       card: "summary_large_image",

@@ -14,7 +14,9 @@ export function useCanvasGovernor<T extends HTMLElement>(rootMargin = "100px") {
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin })
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      rootMargin,
+    })
     io.observe(el)
     const onVis = () => setTabVisible(document.visibilityState === "visible")
     onVis()

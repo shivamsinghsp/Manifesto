@@ -32,8 +32,14 @@ export const contactSchema = z.object({
   message: z
     .string()
     .trim()
-    .min(CONTACT_LIMITS.messageMin, `Message must be at least ${CONTACT_LIMITS.messageMin} characters.`)
-    .max(CONTACT_LIMITS.messageMax, `Message must be ${CONTACT_LIMITS.messageMax} characters or fewer.`),
+    .min(
+      CONTACT_LIMITS.messageMin,
+      `Message must be at least ${CONTACT_LIMITS.messageMin} characters.`
+    )
+    .max(
+      CONTACT_LIMITS.messageMax,
+      `Message must be ${CONTACT_LIMITS.messageMax} characters or fewer.`
+    ),
 })
 
 export type ContactInput = z.infer<typeof contactSchema>

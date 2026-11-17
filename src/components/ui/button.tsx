@@ -21,6 +21,10 @@ const sizes: Record<ButtonSize, string> = {
 }
 
 /** Class string for button-styled links and buttons. */
-export function buttonClass(variant: ButtonVariant = "primary", size: ButtonSize = "md", className?: string) {
+export function buttonClass(
+  variant: ButtonVariant = "primary",
+  size: ButtonSize = "md",
+  className?: string
+) {
   return cn(base, variants[variant], sizes[size], className)
 }

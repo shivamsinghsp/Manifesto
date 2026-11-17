@@ -13,42 +13,27 @@ const nodes: HeroNode[] = [
   {
     id: "idea",
     label: "IDEA",
-    annotation: [
-      "Define the problem",
-      "before defining the interface.",
-    ],
+    annotation: ["Define the problem", "before defining the interface."],
   },
   {
     id: "design",
     label: "DESIGN",
-    annotation: [
-      "Turn requirements into",
-      "usable product flows.",
-    ],
+    annotation: ["Turn requirements into", "usable product flows."],
   },
   {
     id: "architecture",
     label: "ARCHITECTURE",
-    annotation: [
-      "Define boundaries,",
-      "data and system behavior.",
-    ],
+    annotation: ["Define boundaries,", "data and system behavior."],
   },
   {
     id: "code",
     label: "CODE",
-    annotation: [
-      "Implement the system",
-      "with deliberate constraints.",
-    ],
+    annotation: ["Implement the system", "with deliberate constraints."],
   },
   {
     id: "product",
     label: "PRODUCT",
-    annotation: [
-      "Ship something",
-      "people can actually use.",
-    ],
+    annotation: ["Ship something", "people can actually use."],
   },
 ]
 
@@ -60,40 +45,47 @@ export function HeroSystem() {
 
   return (
     <div
-      className="relative w-full h-full min-h-[250px] md:min-h-[400px] flex items-center justify-center font-mono overflow-hidden"
+      className="relative flex h-full min-h-[250px] w-full items-center justify-center overflow-hidden font-mono md:min-h-[400px]"
       role="img"
       aria-label="Engineering workflow: Idea, Design, Architecture, Code, Product"
     >
       {/* Background Grid */}
-      <div className="absolute inset-0 bg-blueprint opacity-30 pointer-events-none" />
+      <div className="bg-blueprint pointer-events-none absolute inset-0 opacity-30" />
 
       {/* Connector Line (SVG) */}
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
+        className="pointer-events-none absolute inset-0 h-full w-full"
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
         aria-hidden="true"
       >
         <line
-          x1="50" y1="10" x2="50" y2="90"
+          x1="50"
+          y1="10"
+          x2="50"
+          y2="90"
           stroke="var(--color-border)"
           strokeWidth="0.3"
           strokeDasharray="1.5 1"
         />
         {/* Active segment highlight */}
-        {activeNode && (() => {
-          const idx = nodes.findIndex(n => n.id === activeNode)
-          const y1 = 10 + idx * 20
-          const y2 = y1 + 20
-          return idx < nodes.length - 1 ? (
-            <line
-              x1="50" y1={y1} x2="50" y2={y2}
-              stroke="var(--color-accent)"
-              strokeWidth="0.4"
-              className="transition-opacity duration-300"
-            />
-          ) : null
-        })()}
+        {activeNode &&
+          (() => {
+            const idx = nodes.findIndex((n) => n.id === activeNode)
+            const y1 = 10 + idx * 20
+            const y2 = y1 + 20
+            return idx < nodes.length - 1 ? (
+              <line
+                x1="50"
+                y1={y1}
+                x2="50"
+                y2={y2}
+                stroke="var(--color-accent)"
+                strokeWidth="0.4"
+                className="transition-opacity duration-300"
+              />
+            ) : null
+          })()}
       </svg>
 
       {/* Nodes */}
@@ -113,10 +105,10 @@ export function HeroSystem() {
             {/* Node Box */}
             <button
               className={cn(
-                "relative flex items-center justify-center border bg-bg px-4 py-2 transition-all duration-300 cursor-crosshair backdrop-blur-sm focus:outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent",
+                "relative flex cursor-crosshair items-center justify-center border bg-bg px-4 py-2 backdrop-blur-sm transition-all duration-300 focus:outline-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent",
                 isActive
-                  ? "border-accent text-accent z-20"
-                  : "border-border text-text-secondary hover:text-text hover:border-text-secondary z-10"
+                  ? "z-20 border-accent text-accent"
+                  : "z-10 border-border text-text-secondary hover:border-text-secondary hover:text-text"
               )}
               onMouseEnter={() => handleActivate(node.id)}
               onMouseLeave={handleDeactivate}
@@ -125,10 +117,12 @@ export function HeroSystem() {
               aria-label={`${node.label}: ${node.annotation.join(" ")}`}
             >
               {/* Step indicator */}
-              <span className={cn(
-                "absolute -left-6 text-[9px] transition-colors duration-300",
-                isActive ? "text-accent" : "text-text-tertiary"
-              )}>
+              <span
+                className={cn(
+                  "absolute -left-6 text-[9px] transition-colors duration-300",
+                  isActive ? "text-accent" : "text-text-tertiary"
+                )}
+              >
                 {`0${index + 1}`}
               </span>
               <span className="text-[10px] tracking-[0.2em]">{node.label}</span>
@@ -137,10 +131,10 @@ export function HeroSystem() {
             {/* Annotation Panel */}
             <div
               className={cn(
-                "absolute left-full ml-4 top-1/2 -translate-y-1/2 border bg-surface px-3 py-2 pointer-events-none transition-all duration-300 w-40 hidden md:block",
+                "pointer-events-none absolute left-full top-1/2 ml-4 hidden w-40 -translate-y-1/2 border bg-surface px-3 py-2 transition-all duration-300 md:block",
                 isActive
-                  ? "opacity-100 translate-x-0 border-border"
-                  : "opacity-0 -translate-x-2 border-transparent"
+                  ? "translate-x-0 border-border opacity-100"
+                  : "-translate-x-2 border-transparent opacity-0"
               )}
               aria-hidden={!isActive}
             >
@@ -148,7 +142,7 @@ export function HeroSystem() {
                 <span
                   key={i}
                   className={cn(
-                    "block text-[9px] tracking-wide leading-relaxed",
+                    "block text-[9px] leading-relaxed tracking-wide",
                     i === 0 ? "text-text-secondary" : "text-text-tertiary"
                   )}
                 >

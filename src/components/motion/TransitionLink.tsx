@@ -32,8 +32,11 @@ export function TransitionLink({ href, onClick, ...rest }: Props) {
 
   const handle = (e: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(e)
-    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-    const doc = document as Document & { startViewTransition?: (cb: () => Promise<void>) => { finished: Promise<void> } }
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
+      return
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => Promise<void>) => { finished: Promise<void> }
+    }
     if (!doc.startViewTransition || isMotionReduced() || busy.current) return
     e.preventDefault()
     busy.current = true
@@ -43,7 +46,12 @@ export function TransitionLink({ href, onClick, ...rest }: Props) {
         new Promise<void>((resolve) => {
           resolvePending = resolve
           router.push(href)
-          setTimeout(() => { if (resolvePending === resolve) { resolvePending = null; resolve() } }, 1500)
+          setTimeout(() => {
+            if (resolvePending === resolve) {
+              resolvePending = null
+              resolve()
+            }
+          }, 1500)
         })
     )
     vt.finished.finally(() => {

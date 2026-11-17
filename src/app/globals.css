@@ -87,8 +87,8 @@
 
     /* Fonts (next/font variables are injected on <body>) */
     --font-display: var(--font-plex-serif), "IBM Plex Serif", Georgia, serif;
-    --font-body: var(--font-plex-sans), "IBM Plex Sans", system-ui, -apple-system, "Segoe UI",
-      sans-serif;
+    --font-body:
+      var(--font-plex-sans), "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
   }
 
@@ -250,7 +250,12 @@
   }
   .bg-atmosphere {
     background:
-      radial-gradient(ellipse 85% 60% at 50% 0%, rgba(0, 184, 212, 0.15) 0%, rgba(59, 130, 246, 0.06) 45%, transparent 80%),
+      radial-gradient(
+        ellipse 85% 60% at 50% 0%,
+        rgba(0, 184, 212, 0.15) 0%,
+        rgba(59, 130, 246, 0.06) 45%,
+        transparent 80%
+      ),
       radial-gradient(ellipse 50% 40% at 85% 65%, rgba(99, 102, 241, 0.06) 0%, transparent 60%);
   }
   .tech-frame {
@@ -416,7 +421,6 @@ html[data-motion="reduce"] ::view-transition-new(*) {
   animation: none !important;
 }
 
-
 /* Pinned hero track: desktop + motion allowed only */
 @media (min-width: 1024px) {
   html:not([data-motion="reduce"]) .hero-track {
@@ -468,7 +472,11 @@ html[data-motion="reduce"] ::view-transition-new(*) {
 }
 .tilt-glare {
   opacity: 0;
-  background: radial-gradient(500px circle at var(--mx) var(--my), rgba(0, 229, 255, 0.1), transparent 45%);
+  background: radial-gradient(
+    500px circle at var(--mx) var(--my),
+    rgba(0, 229, 255, 0.1),
+    transparent 45%
+  );
   transition: opacity 300ms;
 }
 .tilt-card:hover .tilt-glare {

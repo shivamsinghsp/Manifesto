@@ -12,7 +12,9 @@ export const MOTION_STORAGE_KEY = "motion-pref"
 export const MOTION_BOOT_SCRIPT = `(function(){try{var p=localStorage.getItem("${MOTION_STORAGE_KEY}");if(p==="reduce"||p==="full"){document.documentElement.setAttribute("data-motion",p)}}catch(e){}})();`
 
 function systemPrefersReduced() {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  )
 }
 
 export function isMotionReduced(): boolean {
@@ -54,5 +56,7 @@ export function setMotionReduced(reduce: boolean) {
 
 /** Fine pointer + hover = mouse/trackpad. Used to gate cursor, tilt and magnetic effects. */
 export function hasFinePointer() {
-  return typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches
+  return (
+    typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches
+  )
 }

@@ -72,8 +72,15 @@ function JsonLd() {
         email: `mailto:${site.email}`,
         jobTitle: site.jobTitle,
         description: site.description,
-        address: { "@type": "PostalAddress", addressLocality: "Kanpur", addressRegion: "Uttar Pradesh", addressCountry: "IN" },
-        ...(education && { alumniOf: { "@type": "CollegeOrUniversity", name: education.organization } }),
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Kanpur",
+          addressRegion: "Uttar Pradesh",
+          addressCountry: "IN",
+        },
+        ...(education && {
+          alumniOf: { "@type": "CollegeOrUniversity", name: education.organization },
+        }),
         knowsAbout: skillGroups.flatMap((g) => g.items).slice(0, 20),
         sameAs: [site.socials.github, site.socials.linkedin],
       },
@@ -90,9 +97,15 @@ function JsonLd() {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${plexSerif.variable} ${plexSans.variable} ${plexMono.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${plexSerif.variable} ${plexSans.variable} ${plexMono.variable}`}
+    >
       <body>
-        <Script id="motion-boot" strategy="beforeInteractive">{MOTION_BOOT_SCRIPT}</Script>
+        <Script id="motion-boot" strategy="beforeInteractive">
+          {MOTION_BOOT_SCRIPT}
+        </Script>
         <a
           href="#main"
           className="sr-only-focusable fixed left-4 top-3 z-[2000] rounded-lg bg-cta-bg px-4 py-3 font-mono text-xs uppercase tracking-wider text-cta-text"

@@ -44,25 +44,39 @@ function useNodePositions() {
 
 function SystemGraph({ tier, reduced }: SceneProps) {
   const positions = useNodePositions()
-  const curve = useMemo(() => new THREE.CatmullRomCurve3(positions, false, "catmullrom", 0.5), [positions])
+  const curve = useMemo(
+    () => new THREE.CatmullRomCurve3(positions, false, "catmullrom", 0.5),
+    [positions]
+  )
   const glow = useMemo(() => createGlowTexture(), [])
   const [fontReady, setFontReady] = useState(false)
   useEffect(() => {
     let alive = true
     document.fonts.ready.then(() => alive && setFontReady(true))
-    return () => { alive = false }
+    return () => {
+      alive = false
+    }
   }, [])
   const labels = useMemo(() => {
     if (!fontReady) return null
     const font = cssFontFamily("--font-plex-mono")
-    return heroSteps.map((s, i) => createLabelTexture(`0${i + 1}  ${s.label}`, { font, px: 34, pill: false, tracking: 5 }))
+    return heroSteps.map((s, i) =>
+      createLabelTexture(`0${i + 1}  ${s.label}`, { font, px: 34, pill: false, tracking: 5 })
+    )
   }, [fontReady])
   useEffect(() => () => labels?.forEach((l) => l.texture.dispose()), [labels])
 
   // Base link + "data already flowed" link (draw range grows with scroll progress)
-  const TUBE_SEG = 240, RADIAL = 6
-  const tubeBase = useMemo(() => new THREE.TubeGeometry(curve, TUBE_SEG, 0.012, RADIAL, false), [curve])
-  const tubeLit = useMemo(() => new THREE.TubeGeometry(curve, TUBE_SEG, 0.02, RADIAL, false), [curve])
+  const TUBE_SEG = 240,
+    RADIAL = 6
+  const tubeBase = useMemo(
+    () => new THREE.TubeGeometry(curve, TUBE_SEG, 0.012, RADIAL, false),
+    [curve]
+  )
+  const tubeLit = useMemo(
+    () => new THREE.TubeGeometry(curve, TUBE_SEG, 0.02, RADIAL, false),
+    [curve]
+  )
 
   // Particle LUT: precomputed points along the curve for cheap per-frame sampling
   const COUNT = tier === "low" ? 60 : tier === "mid" ? 120 : 220
@@ -124,15 +138,26 @@ function SystemGraph({ tier, reduced }: SceneProps) {
     window.addEventListener("pointermove", onMove, { passive: true })
     // In demand mode (reduced motion) re-render when the step changes via scroll.
     let last = heroState.step
-    const id = reduced ? window.setInterval(() => { if (heroState.step !== last) { last = heroState.step; invalidate() } }, 150) : 0
-    return () => { window.removeEventListener("pointermove", onMove); clearInterval(id) }
+    const id = reduced
+      ? window.setInterval(() => {
+          if (heroState.step !== last) {
+            last = heroState.step
+            invalidate()
+          }
+        }, 150)
+      : 0
+    return () => {
+      window.removeEventListener("pointermove", onMove)
+      clearInterval(id)
+    }
   }, [reduced, invalidate])
 
   useFrame((state, delta) => {
     const dt = Math.min(delta, 0.05)
     const t = state.clock.elapsedTime
     const target = reduced ? (heroState.step + 0.5) / 5 : heroState.progress
-    smoothProgress.current += (target - smoothProgress.current) * (reduced ? 1 : 1 - Math.exp(-dt * 4))
+    smoothProgress.current +=
+      (target - smoothProgress.current) * (reduced ? 1 : 1 - Math.exp(-dt * 4))
     const p = smoothProgress.current
     const activeIdx = heroState.step
 
@@ -185,7 +210,8 @@ function SystemGraph({ tier, reduced }: SceneProps) {
       for (let i = 0; i < COUNT; i++) {
         const u = (seeds[i * 4] + t * seeds[i * 4 + 1] * boost) % 1
         const f = u * (LUT_SIZE - 1)
-        const a = lut[Math.floor(f)], b = lut[Math.min(LUT_SIZE - 1, Math.floor(f) + 1)]
+        const a = lut[Math.floor(f)],
+          b = lut[Math.min(LUT_SIZE - 1, Math.floor(f) + 1)]
         const k = f - Math.floor(f)
         arr[i * 3] = a.x + (b.x - a.x) * k + seeds[i * 4 + 2]
         arr[i * 3 + 1] = a.y + (b.y - a.y) * k + seeds[i * 4 + 3]
@@ -208,10 +234,18 @@ function SystemGraph({ tier, reduced }: SceneProps) {
     const camX = focus.x * 0.2 + (reduced ? 0 : pointer.current.x * 0.4)
     const camY = focus.y * 0.12 - (reduced ? 0 : pointer.current.y * 0.25)
     const aspect = state.size.width / Math.max(1, state.size.height)
-    camera.position.z = THREE.MathUtils.damp(camera.position.z, aspect < 1.15 ? 7.6 * Math.max(1, 0.95 / aspect) : 8.2, 3, dt)
+    camera.position.z = THREE.MathUtils.damp(
+      camera.position.z,
+      aspect < 1.15 ? 7.6 * Math.max(1, 0.95 / aspect) : 8.2,
+      3,
+      dt
+    )
     camera.position.x = THREE.MathUtils.damp(camera.position.x, camX, 2.5, dt)
     camera.position.y = THREE.MathUtils.damp(camera.position.y, camY, 2.5, dt)
-    lookTarget.current.lerp(new THREE.Vector3(focus.x * 0.25, focus.y * 0.15, 0), reduced ? 1 : 1 - Math.exp(-dt * 3))
+    lookTarget.current.lerp(
+      new THREE.Vector3(focus.x * 0.25, focus.y * 0.15, 0),
+      reduced ? 1 : 1 - Math.exp(-dt * 3)
+    )
     camera.lookAt(lookTarget.current)
   })
 
@@ -222,40 +256,96 @@ function SystemGraph({ tier, reduced }: SceneProps) {
         <meshBasicMaterial color="#00B8D4" transparent opacity={0.18} depthWrite={false} />
       </mesh>
       <mesh geometry={tubeLit}>
-        <meshBasicMaterial color={CYAN} transparent opacity={0.75} depthWrite={false} toneMapped={false} />
+        <meshBasicMaterial
+          color={CYAN}
+          transparent
+          opacity={0.75}
+          depthWrite={false}
+          toneMapped={false}
+        />
       </mesh>
 
       {positions.map((pos, i) => (
-        <group key={i} position={pos} ref={(el) => { nodeRefs.current[i] = el }}>
+        <group
+          key={i}
+          position={pos}
+          ref={(el) => {
+            nodeRefs.current[i] = el
+          }}
+        >
           <mesh>
             <sphereGeometry args={[0.085, 20, 20]} />
             <meshBasicMaterial color={WHITE} toneMapped={false} />
           </mesh>
-          <mesh ref={(el) => { shellRefs.current[i] = el }}>
+          <mesh
+            ref={(el) => {
+              shellRefs.current[i] = el
+            }}
+          >
             <icosahedronGeometry args={[0.32, 0]} />
             <meshBasicMaterial color={DIM} wireframe transparent opacity={0.3} depthWrite={false} />
           </mesh>
-          <sprite ref={(el) => { haloRefs.current[i] = el }} scale={1.3}>
-            <spriteMaterial map={glow} color={WHITE} transparent opacity={0.25} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
+          <sprite
+            ref={(el) => {
+              haloRefs.current[i] = el
+            }}
+            scale={1.3}
+          >
+            <spriteMaterial
+              map={glow}
+              color={WHITE}
+              transparent
+              opacity={0.25}
+              depthWrite={false}
+              blending={THREE.AdditiveBlending}
+              toneMapped={false}
+            />
           </sprite>
           {labels && (
             <sprite
-              ref={(el) => { labelRefs.current[i] = el }}
+              ref={(el) => {
+                labelRefs.current[i] = el
+              }}
               position={[0.45 + (0.2 * labels[i].aspect) / 2, 0, 0]}
               scale={[0.2 * labels[i].aspect, 0.2, 1]}
             >
-              <spriteMaterial map={labels[i].texture} color={LABEL_DIM} transparent depthWrite={false} toneMapped={false} />
+              <spriteMaterial
+                map={labels[i].texture}
+                color={LABEL_DIM}
+                transparent
+                depthWrite={false}
+                toneMapped={false}
+              />
             </sprite>
           )}
         </group>
       ))}
 
       <points ref={pointsRef} geometry={particles.geo} frustumCulled={false}>
-        <pointsMaterial map={glow} color={CYAN} size={0.09} sizeAttenuation transparent opacity={0.9} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
+        <pointsMaterial
+          map={glow}
+          color={CYAN}
+          size={0.09}
+          sizeAttenuation
+          transparent
+          opacity={0.9}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
       </points>
       {tier !== "low" && (
         <points ref={dustRef} geometry={dust}>
-          <pointsMaterial map={glow} color="#7C9CFF" size={0.05} sizeAttenuation transparent opacity={0.45} depthWrite={false} blending={THREE.AdditiveBlending} />
+          <pointsMaterial
+            map={glow}
+            color="#7C9CFF"
+            size={0.05}
+            sizeAttenuation
+            transparent
+            opacity={0.45}
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+          />
         </points>
       )}
     </>

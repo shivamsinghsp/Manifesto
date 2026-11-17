@@ -23,7 +23,11 @@ export function SkillsSection() {
 
   return (
     <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
-      <div ref={ref} aria-hidden="true" className="relative order-2 aspect-square w-full max-w-[560px] justify-self-center lg:order-1 lg:col-span-6">
+      <div
+        ref={ref}
+        aria-hidden="true"
+        className="relative order-2 aspect-square w-full max-w-[560px] justify-self-center lg:order-1 lg:col-span-6"
+      >
         <div className="absolute inset-[12%] rounded-full border border-dashed border-white/[0.07]" />
         <div className="absolute inset-[30%] rounded-full border border-white/[0.05]" />
         {mount === "ready" && (
@@ -32,12 +36,18 @@ export function SkillsSection() {
           </CanvasErrorBoundary>
         )}
         {mount === "ready" && (
-          <p className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 font-mono text-[11px] tracking-widest text-text-tertiary">DRAG TO ROTATE</p>
+          <p className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 font-mono text-[11px] tracking-widest text-text-tertiary">
+            DRAG TO ROTATE
+          </p>
         )}
       </div>
 
       <div className="order-1 lg:order-2 lg:col-span-6">
-        <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label="Highlight a technology group">
+        <div
+          className="mb-6 flex flex-wrap gap-2"
+          role="group"
+          aria-label="Highlight a technology group"
+        >
           {skillGroups.map((g) => {
             const on = selected === g.id
             return (
@@ -48,10 +58,16 @@ export function SkillsSection() {
                 onClick={() => setSelected(on ? null : g.id)}
                 className={cn(
                   "inline-flex min-h-[40px] items-center gap-2 rounded-full border px-4 font-mono text-xs uppercase tracking-wider transition-colors",
-                  on ? "border-white/40 bg-white/10 text-text" : "border-white/10 text-text-secondary hover:border-white/25 hover:text-text"
+                  on
+                    ? "border-white/40 bg-white/10 text-text"
+                    : "border-white/10 text-text-secondary hover:border-white/25 hover:text-text"
                 )}
               >
-                <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ background: g.color }} />
+                <span
+                  aria-hidden="true"
+                  className="h-2 w-2 rounded-full"
+                  style={{ background: g.color }}
+                />
                 {g.label}
               </button>
             )
@@ -61,13 +77,21 @@ export function SkillsSection() {
           {skillGroups.map((g) => (
             <div
               key={g.id}
-              className={cn("border-l pl-4 transition-opacity duration-300", selected && selected !== g.id ? "opacity-40" : "opacity-100")}
+              className={cn(
+                "border-l pl-4 transition-opacity duration-300",
+                selected && selected !== g.id ? "opacity-40" : "opacity-100"
+              )}
               style={{ borderColor: `${g.color}66` }}
             >
-              <dt className="mb-2 font-mono text-xs uppercase tracking-widest" style={{ color: g.color }}>
+              <dt
+                className="mb-2 font-mono text-xs uppercase tracking-widest"
+                style={{ color: g.color }}
+              >
                 {g.label}
               </dt>
-              <dd className="text-body-small leading-relaxed text-text-secondary">{g.items.join(" · ")}</dd>
+              <dd className="text-body-small leading-relaxed text-text-secondary">
+                {g.items.join(" · ")}
+              </dd>
             </div>
           ))}
         </dl>

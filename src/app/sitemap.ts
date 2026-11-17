@@ -14,7 +14,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ["/resume", 0.5, "yearly"],
   ]
   return [
-    ...routes.map(([path, priority, changeFrequency]) => ({ url: absoluteUrl(path), lastModified: now, changeFrequency, priority })),
-    ...projects.map((p) => ({ url: absoluteUrl(`/work/${p.slug}`), lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 })),
+    ...routes.map(([path, priority, changeFrequency]) => ({
+      url: absoluteUrl(path),
+      lastModified: now,
+      changeFrequency,
+      priority,
+    })),
+    ...projects.map((p) => ({
+      url: absoluteUrl(`/work/${p.slug}`),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
   ]
 }

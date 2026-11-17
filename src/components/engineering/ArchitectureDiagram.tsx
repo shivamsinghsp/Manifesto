@@ -20,24 +20,46 @@ export function ArchitectureDiagram({ src, alt, width, height }: Props) {
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); io.disconnect() } }, { threshold: 0.15 })
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true)
+          io.disconnect()
+        }
+      },
+      { threshold: 0.15 }
+    )
     io.observe(el)
     return () => io.disconnect()
   }, [])
 
   if (error) {
     return (
-      <div className="flex w-full flex-col items-center justify-center border border-dashed border-border-muted bg-surface/50 py-6">
-        <span className="mb-2 text-center text-mono-label uppercase text-text-tertiary">Diagram unavailable</span>
-        <span className="text-center text-body-small text-text-secondary">{alt}</span>
+      <div className="bg-surface/50 flex w-full flex-col items-center justify-center border border-dashed border-border-muted py-6">
+        <span className="text-mono-label mb-2 text-center uppercase text-text-tertiary">
+          Diagram unavailable
+        </span>
+        <span className="text-body-small text-center text-text-secondary">{alt}</span>
       </div>
     )
   }
 
   return (
-    <div ref={ref} className="relative w-full overflow-hidden rounded-lg border border-border bg-surface-alt p-4 md:p-8">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-blueprint opacity-20" />
-      <div aria-hidden="true" className={cn("pointer-events-none absolute inset-x-0 top-0 h-px bg-accent-hover/60 shadow-[0_0_14px_rgba(0,229,255,0.8)] transition-transform duration-[1100ms] ease-out-expo", visible ? "translate-y-[2000px] opacity-0" : "translate-y-0")} />
+    <div
+      ref={ref}
+      className="relative w-full overflow-hidden rounded-lg border border-border bg-surface-alt p-4 md:p-8"
+    >
+      <div
+        aria-hidden="true"
+        className="bg-blueprint pointer-events-none absolute inset-0 opacity-20"
+      />
+      <div
+        aria-hidden="true"
+        className={cn(
+          "bg-accent-hover/60 pointer-events-none absolute inset-x-0 top-0 h-px shadow-[0_0_14px_rgba(0,229,255,0.8)] transition-transform duration-[1100ms] ease-out-expo",
+          visible ? "translate-y-[2000px] opacity-0" : "translate-y-0"
+        )}
+      />
       <img
         src={src}
         alt={alt}
@@ -45,7 +67,10 @@ export function ArchitectureDiagram({ src, alt, width, height }: Props) {
         height={height}
         loading="lazy"
         decoding="async"
-        className={cn("diagram-reveal relative z-10 h-auto w-full object-contain", visible && "is-visible")}
+        className={cn(
+          "diagram-reveal relative z-10 h-auto w-full object-contain",
+          visible && "is-visible"
+        )}
         onError={() => setError(true)}
       />
     </div>

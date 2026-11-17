@@ -14,7 +14,10 @@ export function RouteTransition() {
   const [key, setKey] = useState(0)
 
   useEffect(() => {
-    if (first.current) { first.current = false; return }
+    if (first.current) {
+      first.current = false
+      return
+    }
     if (isMotionReduced()) return
     // Shared-element (View Transition) navigations animate themselves.
     if (document.documentElement.dataset.vt === "1") return
@@ -23,7 +26,11 @@ export function RouteTransition() {
 
   if (key === 0) return null
   return (
-    <div key={key} aria-hidden="true" className="route-curtain pointer-events-none fixed inset-0 z-[1100]">
+    <div
+      key={key}
+      aria-hidden="true"
+      className="route-curtain pointer-events-none fixed inset-0 z-[1100]"
+    >
       <style>{`
         .route-curtain{background:linear-gradient(90deg,transparent,rgba(0,229,255,.08) 40%,rgba(10,14,23,.96) 50%,rgba(0,229,255,.08) 60%,transparent);
           animation:curtain 650ms cubic-bezier(.16,1,.3,1) forwards;transform:translateX(-100%)}

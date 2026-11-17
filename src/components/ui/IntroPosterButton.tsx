@@ -10,7 +10,12 @@ export function IntroPosterButton({ className }: { className?: string }) {
   const [open, setOpen] = useState(false)
   return (
     <>
-      <button type="button" className={className} onClick={() => setOpen(true)} aria-haspopup="dialog">
+      <button
+        type="button"
+        className={className}
+        onClick={() => setOpen(true)}
+        aria-haspopup="dialog"
+      >
         Say hi — open the intro poster
       </button>
       {open && <WavingLandingModal onClosed={() => setOpen(false)} />}

@@ -28,9 +28,15 @@ export function HeroCanvas() {
   const fallback = <HeroFallback />
   return (
     <div ref={ref} aria-hidden="true" className="relative h-full w-full">
-      <div className={`absolute inset-0 transition-opacity duration-700 ${shown ? "opacity-0" : "opacity-100"}`}>{fallback}</div>
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 ${shown ? "opacity-0" : "opacity-100"}`}
+      >
+        {fallback}
+      </div>
       {mount === "ready" && (
-        <div className={`absolute inset-0 transition-opacity duration-1000 ${shown ? "opacity-100" : "opacity-0"}`}>
+        <div
+          className={`absolute inset-0 transition-opacity duration-1000 ${shown ? "opacity-100" : "opacity-0"}`}
+        >
           <CanvasErrorBoundary fallback={fallback}>
             <HeroScene tier={tier} reduced={reduced} active={active} />
           </CanvasErrorBoundary>

@@ -39,7 +39,10 @@ export async function POST(request: Request) {
   // Honeypot + timing trap. Respond as if successful so bots learn nothing.
   const honeypot = typeof body.website === "string" ? body.website : ""
   const startedAt = typeof body.startedAt === "number" ? body.startedAt : 0
-  if (honeypot.trim() !== "" || (startedAt > 0 && Date.now() - startedAt < CONTACT_LIMITS.minFillMs)) {
+  if (
+    honeypot.trim() !== "" ||
+    (startedAt > 0 && Date.now() - startedAt < CONTACT_LIMITS.minFillMs)
+  ) {
     return json({ success: true })
   }
 
@@ -58,7 +61,11 @@ export async function POST(request: Request) {
   const parsed = contactSchema.safeParse(body)
   if (!parsed.success) {
     return json(
-      { success: false, error: "Please correct the highlighted fields.", fieldErrors: fieldErrorsFrom(parsed.error) },
+      {
+        success: false,
+        error: "Please correct the highlighted fields.",
+        fieldErrors: fieldErrorsFrom(parsed.error),
+      },
       400
     )
   }
@@ -100,17 +107,25 @@ export async function POST(request: Request) {
         subject: `Portfolio inquiry from ${name}${company ? ` (${company})` : ""}`.slice(0, 200),
         text,
       }),
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), SEND_TIMEOUT_MS)),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("timeout")), SEND_TIMEOUT_MS)
+      ),
     ])
 
     if (result.error) {
       console.error("[contact] Resend error:", result.error.name)
-      return json({ success: false, error: `Delivery failed. Please email ${site.email} directly.` }, 502)
+      return json(
+        { success: false, error: `Delivery failed. Please email ${site.email} directly.` },
+        502
+      )
     }
     return json({ success: true })
   } catch (err) {
     console.error("[contact] send failed:", err instanceof Error ? err.message : "unknown")
-    return json({ success: false, error: `Delivery failed. Please email ${site.email} directly.` }, 502)
+    return json(
+      { success: false, error: `Delivery failed. Please email ${site.email} directly.` },
+      502
+    )
   }
 }
 

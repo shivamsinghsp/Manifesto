@@ -7,7 +7,8 @@ export function supportsWebGL(): boolean {
   if (webglCache !== null) return webglCache
   try {
     const canvas = document.createElement("canvas")
-    const gl = (canvas.getContext("webgl2") || canvas.getContext("webgl")) as WebGLRenderingContext | null
+    const gl = (canvas.getContext("webgl2") ||
+      canvas.getContext("webgl")) as WebGLRenderingContext | null
     webglCache = !!gl
     gl?.getExtension("WEBGL_lose_context")?.loseContext()
   } catch {
@@ -19,7 +20,10 @@ export function supportsWebGL(): boolean {
 /** Coarse device capability estimate used to scale particle counts, DPR and effects. */
 export function getPerfTier(): PerfTier {
   if (typeof navigator === "undefined") return "mid"
-  const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } }
+  const nav = navigator as Navigator & {
+    deviceMemory?: number
+    connection?: { saveData?: boolean }
+  }
   const cores = nav.hardwareConcurrency || 4
   const mem = nav.deviceMemory ?? 4
   const coarse = window.matchMedia("(pointer: coarse)").matches

@@ -46,12 +46,21 @@ export function ScrollEffects() {
       const line = vh() * 0.88
       pending = pending.filter((item) => {
         if (item.el.getBoundingClientRect().top > line) return true
-        gsap.to(item.targets, { autoAlpha: 1, y: 0, duration: 0.85, ease: "expo.out", stagger: item.stagger, overwrite: true })
+        gsap.to(item.targets, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.85,
+          ease: "expo.out",
+          stagger: item.stagger,
+          overwrite: true,
+        })
         return false
       })
       if (!pending.length) detach()
     }
-    const schedule = () => { if (!raf) raf = requestAnimationFrame(check) }
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(check)
+    }
     const detach = () => {
       window.removeEventListener("scroll", schedule)
       window.removeEventListener("resize", schedule)
@@ -66,7 +75,11 @@ export function ScrollEffects() {
         gsap.fromTo(
           el,
           { yPercent: -speed * 50 },
-          { yPercent: speed * 50, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } }
+          {
+            yPercent: speed * 50,
+            ease: "none",
+            scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
+          }
         )
       })
     })
@@ -75,7 +88,9 @@ export function ScrollEffects() {
       cancelAnimationFrame(raf)
       detach()
       // Never leave anything hidden when the effect is torn down (route change, motion toggle).
-      pending.forEach((item) => gsap.set(item.targets, { clearProps: "opacity,visibility,transform" }))
+      pending.forEach((item) =>
+        gsap.set(item.targets, { clearProps: "opacity,visibility,transform" })
+      )
       ctx.revert()
     }
   }, [reduced, pathname])

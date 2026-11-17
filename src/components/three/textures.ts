@@ -25,21 +25,28 @@ export function cssFontFamily(variable: string, fallback = "monospace") {
 }
 
 /** Renders a text label to a texture. Returns the texture and its aspect ratio. */
-export function createLabelTexture(text: string, opts: { color?: string; font?: string; px?: number; pill?: boolean; tracking?: number } = {}) {
+export function createLabelTexture(
+  text: string,
+  opts: { color?: string; font?: string; px?: number; pill?: boolean; tracking?: number } = {}
+) {
   const px = opts.px ?? 40
   const font = `500 ${px}px ${opts.font ?? "monospace"}`
   const c = document.createElement("canvas")
   const ctx = c.getContext("2d")!
   ctx.font = font
   const pill = opts.pill ?? true
-  if (opts.tracking) (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = `${opts.tracking}px`
+  if (opts.tracking)
+    (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing =
+      `${opts.tracking}px`
   const padX = pill ? px * 0.6 : px * 0.15
   const w = Math.ceil(ctx.measureText(text).width + padX * 2)
   const h = Math.ceil(px * 1.9)
   c.width = w
   c.height = h
   ctx.font = font
-  if (opts.tracking) (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = `${opts.tracking}px`
+  if (opts.tracking)
+    (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing =
+      `${opts.tracking}px`
   if (pill) {
     ctx.fillStyle = "rgba(10,14,23,0.78)"
     ctx.beginPath()

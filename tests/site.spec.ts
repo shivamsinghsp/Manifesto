@@ -125,7 +125,9 @@ test("contact API validates, honours the honeypot and caps size", async ({ reque
   const bad = await request.post("/api/contact", { data: { name: "", email: "x", message: "hi" } })
   expect(bad.status()).toBe(400)
   const body = await bad.json()
-  expect(Object.keys(body.fieldErrors)).toEqual(expect.arrayContaining(["name", "email", "message"]))
+  expect(Object.keys(body.fieldErrors)).toEqual(
+    expect.arrayContaining(["name", "email", "message"])
+  )
 
   const bot = await request.post("/api/contact", {
     data: { name: "Bot", email: "b@b.co", message: "spam spam spam", website: "http://spam" },
@@ -164,7 +166,10 @@ test("SEO routes use the configured site URL", async ({ request }) => {
 
 test("project cards navigate to their case study (view-transition link)", async ({ page }) => {
   await page.goto("/work")
-  await page.getByRole("link", { name: /Kanpur Architects Association/ }).first().click()
+  await page
+    .getByRole("link", { name: /Kanpur Architects Association/ })
+    .first()
+    .click()
   await expect(page).toHaveURL(/\/work\/kanpur-architects-association$/)
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Kanpur Architects Association")
 })

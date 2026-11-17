@@ -25,16 +25,28 @@ export function MobileNav() {
     const first = panel.current?.querySelector<HTMLElement>("a, button")
     first?.focus()
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setOpen(false); trigger.current?.focus() }
+      if (e.key === "Escape") {
+        setOpen(false)
+        trigger.current?.focus()
+      }
       if (e.key === "Tab" && panel.current) {
         const items = panel.current.querySelectorAll<HTMLElement>("a, button")
-        const a = items[0], b = items[items.length - 1]
-        if (e.shiftKey && document.activeElement === a) { e.preventDefault(); b.focus() }
-        else if (!e.shiftKey && document.activeElement === b) { e.preventDefault(); a.focus() }
+        const a = items[0],
+          b = items[items.length - 1]
+        if (e.shiftKey && document.activeElement === a) {
+          e.preventDefault()
+          b.focus()
+        } else if (!e.shiftKey && document.activeElement === b) {
+          e.preventDefault()
+          a.focus()
+        }
       }
     }
     document.addEventListener("keydown", onKey)
-    return () => { document.body.style.overflow = prev; document.removeEventListener("keydown", onKey) }
+    return () => {
+      document.body.style.overflow = prev
+      document.removeEventListener("keydown", onKey)
+    }
   }, [open])
 
   return (
@@ -57,13 +69,19 @@ export function MobileNav() {
         role="dialog"
         aria-modal="true"
         aria-label="Site menu"
-        className={cn("fixed inset-0 z-[1000] flex-col bg-bg/[0.98] backdrop-blur-xl", open ? "flex" : "hidden")}
+        className={cn(
+          "bg-bg/[0.98] fixed inset-0 z-[1000] flex-col backdrop-blur-xl",
+          open ? "flex" : "hidden"
+        )}
       >
         <div className="flex h-[var(--header-h)] items-center justify-between border-b border-border px-[var(--gutter)]">
           <span className="font-display text-xl text-text">{site.shortName}</span>
           <button
             type="button"
-            onClick={() => { setOpen(false); trigger.current?.focus() }}
+            onClick={() => {
+              setOpen(false)
+              trigger.current?.focus()
+            }}
             className="flex h-11 w-11 items-center justify-center rounded-button border border-border text-text transition-colors hover:bg-surface-alt"
             aria-label="Close menu"
           >
@@ -75,11 +93,18 @@ export function MobileNav() {
             {NAV_LINKS.map((link, i) => {
               const active = pathname === link.href || pathname.startsWith(`${link.href}/`)
               return (
-                <li key={link.href} style={{ animationDelay: `${i * 60}ms` }} className={cn(open && "animate-reveal-up")}>
+                <li
+                  key={link.href}
+                  style={{ animationDelay: `${i * 60}ms` }}
+                  className={cn(open && "animate-reveal-up")}
+                >
                   <NextLink
                     href={link.href}
                     aria-current={active ? "page" : undefined}
-                    className={cn("flex items-baseline gap-4 border-b border-border py-4 text-headline transition-colors", active ? "text-accent-hover" : "text-text hover:text-accent-hover")}
+                    className={cn(
+                      "text-headline flex items-baseline gap-4 border-b border-border py-4 transition-colors",
+                      active ? "text-accent-hover" : "text-text hover:text-accent-hover"
+                    )}
                   >
                     <span className="font-mono text-xs text-text-tertiary">{link.index}</span>
                     {link.label}

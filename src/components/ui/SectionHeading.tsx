@@ -14,9 +14,14 @@ interface Props {
 /** Mono label + display heading pair used to open every section. */
 export function SectionHeading({ label, title, as: Tag = "h2", action, className, id }: Props) {
   return (
-    <div className={cn("mb-12 flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-b border-border pb-6 md:mb-16", className)}>
+    <div
+      className={cn(
+        "mb-12 flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-b border-border pb-6 md:mb-16",
+        className
+      )}
+    >
       <div data-reveal>
-        <p className="mb-3 text-mono-label text-text-tertiary">{`// ${label}`}</p>
+        <p className="text-mono-label mb-3 text-text-tertiary">{`// ${label}`}</p>
         <Tag id={id} className="text-display-secondary">
           {title}
         </Tag>

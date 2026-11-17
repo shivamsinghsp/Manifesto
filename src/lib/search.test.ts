@@ -13,7 +13,8 @@ describe("searchPortfolio", () => {
   it("only links to case studies that exist", () => {
     const slugs = new Set(projects.map((p) => p.slug))
     for (const q of ["mongodb", "sharepoint", "qa", "geo search", "forms"]) {
-      for (const r of searchPortfolio(q)) if (r.projectSlug) expect(slugs.has(r.projectSlug)).toBe(true)
+      for (const r of searchPortfolio(q))
+        if (r.projectSlug) expect(slugs.has(r.projectSlug)).toBe(true)
     }
   })
 })

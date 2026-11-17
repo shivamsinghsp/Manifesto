@@ -1,6 +1,16 @@
 "use client"
 
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type ComponentProps, type MutableRefObject, type RefObject } from "react"
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentProps,
+  type MutableRefObject,
+  type RefObject,
+} from "react"
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber"
 import { Grid, Html, Line } from "@react-three/drei"
 import * as THREE from "three"
@@ -34,7 +44,14 @@ export interface GeoSceneProps {
 const PortalCtx = createContext<MutableRefObject<HTMLDivElement | null> | null>(null)
 function Overlay(props: ComponentProps<typeof Html>) {
   const portal = useContext(PortalCtx)
-  return <Html {...props} portal={(portal ?? undefined) as RefObject<HTMLElement> | undefined} style={{ pointerEvents: "none" }} zIndexRange={[10, 0]} />
+  return (
+    <Html
+      {...props}
+      portal={(portal ?? undefined) as RefObject<HTMLElement> | undefined}
+      style={{ pointerEvents: "none" }}
+      zIndexRange={[10, 0]}
+    />
+  )
 }
 
 const clampM = (v: number) => Math.max(-MAP_HALF_M, Math.min(MAP_HALF_M, v))
@@ -59,15 +76,18 @@ function City({ radius, color, tier }: { radius: number; color: string; tier: Pe
     const span = tier === "low" ? 4 : 6
     for (let i = -span; i <= span; i++) {
       for (let j = -span; j <= span; j++) {
-        const cx = i * pitch, cz = j * pitch
+        const cx = i * pitch,
+          cz = j * pitch
         if (Math.hypot(cx, cz) < 7) continue // office plaza
         const n = 1 + Math.floor(rand() * 3)
         for (let k = 0; k < n; k++) {
-          const w = 1.6 + rand() * 2.6, d = 1.6 + rand() * 2.6
+          const w = 1.6 + rand() * 2.6,
+            d = 1.6 + rand() * 2.6
           out.push({
             x: cx + (rand() - 0.5) * (pitch - 2.4 - w),
             z: cz + (rand() - 0.5) * (pitch - 2.4 - d),
-            w, d,
+            w,
+            d,
             h: 0.4 + rand() ** 2 * (Math.hypot(cx, cz) < 30 ? 2.6 : 3.4),
           })
         }
@@ -81,7 +101,11 @@ function City({ radius, color, tier }: { radius: number; color: string; tier: Pe
     if (!mesh) return
     const m = new THREE.Matrix4()
     blocks.forEach((b, i) => {
-      m.compose(new THREE.Vector3(b.x, b.h / 2, b.z), new THREE.Quaternion(), new THREE.Vector3(b.w, b.h, b.d))
+      m.compose(
+        new THREE.Vector3(b.x, b.h / 2, b.z),
+        new THREE.Quaternion(),
+        new THREE.Vector3(b.w, b.h, b.d)
+      )
       mesh.setMatrixAt(i, m)
     })
     mesh.instanceMatrix.needsUpdate = true
@@ -106,7 +130,16 @@ function City({ radius, color, tier }: { radius: number; color: string; tier: Pe
   )
 }
 
-function GeoWorld({ user, radius, status, distance, onUserChange, onRadiusChange, reduced, tier }: Omit<GeoSceneProps, "active">) {
+function GeoWorld({
+  user,
+  radius,
+  status,
+  distance,
+  onUserChange,
+  onRadiusChange,
+  reduced,
+  tier,
+}: Omit<GeoSceneProps, "active">) {
   const color = STATUS_COLOR[status]
   const colorObj = useMemo(() => new THREE.Color(color), [color])
   const glow = useMemo(() => createGlowTexture(), [])
@@ -150,8 +183,10 @@ function GeoWorld({ user, radius, status, distance, onUserChange, onRadiusChange
     // While dragging, hold the zoom so the map doesn't slide under the pointer.
     const zoomRate = dragging ? 0 : 2.5
     camera.position.x = THREE.MathUtils.damp(camera.position.x, px, 3, dt)
-    camera.position.y = intro.current < 1 ? alt : THREE.MathUtils.damp(camera.position.y, alt, zoomRate, dt)
-    camera.position.z = intro.current < 1 ? back : THREE.MathUtils.damp(camera.position.z, back + pz, zoomRate, dt)
+    camera.position.y =
+      intro.current < 1 ? alt : THREE.MathUtils.damp(camera.position.y, alt, zoomRate, dt)
+    camera.position.z =
+      intro.current < 1 ? back : THREE.MathUtils.damp(camera.position.z, back + pz, zoomRate, dt)
     camera.lookAt(0, 0, 0)
 
     if (pulse.current && !reduced) {
@@ -162,7 +197,10 @@ function GeoWorld({ user, radius, status, distance, onUserChange, onRadiusChange
     if (wallMat.current) wallMat.current.color.lerp(colorObj, 0.15)
   })
 
-  const toMeters = (p: THREE.Vector3) => ({ x: clampM(p.x * M_PER_UNIT), y: clampM(-p.z * M_PER_UNIT) })
+  const toMeters = (p: THREE.Vector3) => ({
+    x: clampM(p.x * M_PER_UNIT),
+    y: clampM(-p.z * M_PER_UNIT),
+  })
 
   const onPlaneMove = (e: ThreeEvent<PointerEvent>) => {
     if (!dragging) return
@@ -200,7 +238,9 @@ function GeoWorld({ user, radius, status, distance, onUserChange, onRadiusChange
       <mesh
         rotation-x={-Math.PI / 2}
         onPointerMove={onPlaneMove}
-        onPointerDown={(e) => { downAt.current = { x: e.clientX, y: e.clientY } }}
+        onPointerDown={(e) => {
+          downAt.current = { x: e.clientX, y: e.clientY }
+        }}
         onPointerUp={(e) => {
           const d = downAt.current
           downAt.current = null
@@ -236,15 +276,32 @@ function GeoWorld({ user, radius, status, distance, onUserChange, onRadiusChange
         </mesh>
         <mesh rotation-x={-Math.PI / 2} position={[0, 0.05, 0]} scale={r}>
           <ringGeometry args={[0.985, 1, 160]} />
-          <meshBasicMaterial color={color} transparent opacity={0.95} depthWrite={false} toneMapped={false} />
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={0.95}
+            depthWrite={false}
+            toneMapped={false}
+          />
         </mesh>
         <mesh position={[0, 1.2, 0]} scale={[r, 2.4, r]}>
           <cylinderGeometry args={[1, 1, 1, 96, 1, true]} />
-          <meshBasicMaterial ref={wallMat} color={color} transparent opacity={0.12} side={THREE.DoubleSide} depthWrite={false} />
+          <meshBasicMaterial
+            ref={wallMat}
+            color={color}
+            transparent
+            opacity={0.12}
+            side={THREE.DoubleSide}
+            depthWrite={false}
+          />
         </mesh>
         {/* Radius handle (east edge) */}
         <group position={[r, 0.6, 0]}>
-          <mesh onPointerDown={startDrag("radius")} onPointerOver={() => (gl.domElement.style.cursor = "ew-resize")} onPointerOut={() => !dragging && (gl.domElement.style.cursor = "")}>
+          <mesh
+            onPointerDown={startDrag("radius")}
+            onPointerOver={() => (gl.domElement.style.cursor = "ew-resize")}
+            onPointerOut={() => !dragging && (gl.domElement.style.cursor = "")}
+          >
             <sphereGeometry args={[0.9, 20, 20]} />
             <meshBasicMaterial color={color} toneMapped={false} />
           </mesh>
@@ -261,7 +318,14 @@ function GeoWorld({ user, radius, status, distance, onUserChange, onRadiusChange
           <meshStandardMaterial color="#d8e1f0" emissive="#00B8D4" emissiveIntensity={0.25} />
         </mesh>
         <sprite position={[0, 4.6, 0]} scale={4}>
-          <spriteMaterial map={glow} color="#ffffff" transparent opacity={0.8} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <spriteMaterial
+            map={glow}
+            color="#ffffff"
+            transparent
+            opacity={0.8}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
         </sprite>
         <Overlay center position={[0, 6.6, 0]}>
           <div className="geo-chip">OFFICE</div>
@@ -269,7 +333,17 @@ function GeoWorld({ user, radius, status, distance, onUserChange, onRadiusChange
       </group>
 
       {/* Distance vector */}
-      <Line points={[[0, 0.12, 0], [ux, 0.12, uz]]} color={color} lineWidth={2} dashed dashSize={1} gapSize={0.7} />
+      <Line
+        points={[
+          [0, 0.12, 0],
+          [ux, 0.12, uz],
+        ]}
+        color={color}
+        lineWidth={2}
+        dashed
+        dashSize={1}
+        gapSize={0.7}
+      />
       {Math.hypot(ux, uz) > 3 && (
         <Overlay center position={[ux * 0.45, 0.8, uz * 0.45]}>
           <div className="geo-chip geo-chip--strong" style={{ borderColor: color, color }}>
@@ -298,7 +372,14 @@ function GeoWorld({ user, radius, status, distance, onUserChange, onRadiusChange
           <meshBasicMaterial color={color} toneMapped={false} />
         </mesh>
         <sprite position={[0, 5, 0]} scale={5}>
-          <spriteMaterial map={glow} color={color} transparent opacity={0.65} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <spriteMaterial
+            map={glow}
+            color={color}
+            transparent
+            opacity={0.65}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
         </sprite>
         <Overlay center position={[0, 7.4, 0]}>
           <div className="geo-chip">YOU</div>
@@ -312,19 +393,19 @@ export default function GeoScene({ active, ...props }: GeoSceneProps) {
   const portal = useRef<HTMLDivElement | null>(null)
   return (
     <div ref={portal} className="relative h-full w-full">
-    <PortalCtx.Provider value={portal}>
-    <Canvas
-      dpr={dprFor(props.tier)}
-      frameloop={active ? "always" : "never"}
-      camera={{ position: [0, 260, 10], fov: 40, near: 1, far: 600 }}
-      gl={{ antialias: props.tier !== "low", powerPreference: "high-performance" }}
-      style={{ touchAction: "pan-y" }}
-    >
       <PortalCtx.Provider value={portal}>
-        <GeoWorld {...props} />
+        <Canvas
+          dpr={dprFor(props.tier)}
+          frameloop={active ? "always" : "never"}
+          camera={{ position: [0, 260, 10], fov: 40, near: 1, far: 600 }}
+          gl={{ antialias: props.tier !== "low", powerPreference: "high-performance" }}
+          style={{ touchAction: "pan-y" }}
+        >
+          <PortalCtx.Provider value={portal}>
+            <GeoWorld {...props} />
+          </PortalCtx.Provider>
+        </Canvas>
       </PortalCtx.Provider>
-    </Canvas>
-    </PortalCtx.Provider>
     </div>
   )
 }

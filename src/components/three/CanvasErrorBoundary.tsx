@@ -3,7 +3,10 @@
 import { Component, type ReactNode } from "react"
 
 /** If WebGL throws (context lost, driver bug), swap to the static fallback instead of crashing the page. */
-export class CanvasErrorBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
+export class CanvasErrorBoundary extends Component<
+  { fallback: ReactNode; children: ReactNode },
+  { failed: boolean }
+> {
   state = { failed: false }
   static getDerivedStateFromError() {
     return { failed: true }

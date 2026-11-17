@@ -71,8 +71,12 @@ export function HeroSteps() {
           </li>
         ))}
       </ol>
-      <p className="mt-3 min-h-[3rem] font-mono text-xs leading-relaxed text-text-secondary" aria-live="polite">
-        <span className="text-accent-hover">{`0${active + 1} / ${step.label}`}</span> — {step.annotation}
+      <p
+        className="mt-3 min-h-[3rem] font-mono text-xs leading-relaxed text-text-secondary"
+        aria-live="polite"
+      >
+        <span className="text-accent-hover">{`0${active + 1} / ${step.label}`}</span> —{" "}
+        {step.annotation}
       </p>
     </div>
   )

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest"
-import { classifyGeofence, EARTH_RADIUS_M, fromLocalMeters, haversineMeters, toLocalMeters } from "./geo"
+import {
+  classifyGeofence,
+  EARTH_RADIUS_M,
+  fromLocalMeters,
+  haversineMeters,
+  toLocalMeters,
+} from "./geo"
 import { haversineDistance } from "./haversine"
 
 const KANPUR = { lat: 26.4499, lon: 80.3319 }
@@ -10,7 +16,10 @@ describe("haversineMeters", () => {
   })
 
   it("matches one degree of latitude on the mean-radius sphere", () => {
-    expect(haversineMeters({ lat: 0, lon: 0 }, { lat: 1, lon: 0 })).toBeCloseTo((Math.PI / 180) * EARTH_RADIUS_M, 6)
+    expect(haversineMeters({ lat: 0, lon: 0 }, { lat: 1, lon: 0 })).toBeCloseTo(
+      (Math.PI / 180) * EARTH_RADIUS_M,
+      6
+    )
   })
 
   it("scales a degree of longitude by cos(latitude)", () => {
@@ -48,7 +57,13 @@ describe("local tangent-plane projection", () => {
   })
 
   it("agrees with Haversine to < 0.1% within 1 km of the origin", () => {
-    for (const [x, y] of [[100, 0], [0, -250], [300, 400], [-700, 700], [480, -480]]) {
+    for (const [x, y] of [
+      [100, 0],
+      [0, -250],
+      [300, 400],
+      [-700, 700],
+      [480, -480],
+    ]) {
       const d = haversineMeters(KANPUR, fromLocalMeters(x, y, KANPUR))
       const planar = Math.hypot(x, y)
       expect(Math.abs(d - planar) / planar).toBeLessThan(0.001)
