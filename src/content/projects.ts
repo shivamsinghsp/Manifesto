@@ -1,8 +1,20 @@
-export type ProjectCategory = "Tier 1: Product" | "Tier 2: System" | "Tier 3: Component";
+/** Recruiter-facing project classification (replaces the old internal "Tier" labels). */
+export type ProjectCategory =
+  | "Flagship Product"
+  | "Client Platform"
+  | "Product Build"
+  | "Enterprise Project"
+  | "QA Engagement";
 
 export interface ProjectMetric {
   label: string;
   value: string;
+}
+
+/** An outcome that is stated in the project record itself — never inferred. */
+export interface ProjectOutcome {
+  value: string;
+  label: string;
 }
 
 export interface ProjectLink {
@@ -16,13 +28,22 @@ export interface ProjectImage {
   caption?: string;
 }
 
+export interface ProjectDiagram {
+  src: string;
+  alt: string;
+  caption: string;
+  /** Intrinsic viewBox size, used to reserve layout space (prevents CLS). */
+  width: number;
+  height: number;
+}
+
 export interface CaseStudySection {
   type: "text" | "image" | "diagram" | "two-column" | "product-feature";
   category?: string;
   title?: string;
   content?: string | string[];
   image?: ProjectImage;
-  diagram?: { src: string; alt: string; caption: string };
+  diagram?: ProjectDiagram;
   leftCol?: string;
   rightCol?: string;
   implementation?: string[];
@@ -32,15 +53,18 @@ export interface Project {
   slug: string;
   title: string;
   category: ProjectCategory;
+  /** What Shivam did on the project. */
   role: string;
+  /** The context the work happened in (internship, client, team). */
+  engagement: string;
   timeline?: string;
   shortDescription: string;
   longDescription: string[];
-  metrics?: ProjectMetric[];
+  /** Outcomes / impact. Only facts already recorded in this file or the resume. */
+  outcomes: ProjectOutcome[];
   tags: string[];
   heroImage: ProjectImage;
   links?: ProjectLink[];
-  explorerTabs?: { label: string; sectionTitle: string }[];
   caseStudy?: CaseStudySection[];
 }
 
@@ -51,8 +75,9 @@ export const projects: Project[] = [
   {
     slug: "shynr",
     title: "Shynr — HRMS & Job Portal",
-    category: "Tier 1: Product",
-    role: "Full-Stack Engineering Intern — Primary Feature Developer",
+    category: "Flagship Product",
+    role: "Primary Feature Developer",
+    engagement: "Full-Stack Engineering Internship · Rapsora Technologies",
     timeline: "Jan 15 – Feb 9, 2026 (4-week core product sprint during Rapsora internship)",
     shortDescription:
       "A monolithic Next.js application combining an internal HRMS with a public job portal — featuring GPS-based geofencing attendance, RBAC, and an ATS workflow.",
@@ -60,10 +85,12 @@ export const projects: Project[] = [
       "Shynr is a production-deployed platform that merges two distinct business domains into a unified Next.js 15 application: a public job portal with listings, applications, and an ATS pipeline, and an internal HRMS handling attendance, leave management, employee administration, and activity logging.",
       "Developed during my software engineering internship at Rapsora Technologies. As the primary developer on the project, I implemented the foundational platform across 33 commits during an intensive 4-week product delivery sprint (January 15 – February 9, 2026)—translating technical specifications into working architecture, Next.js App Router frontend, MongoDB schemas, NextAuth.js authentication, role-based access control, and GPS-based geofencing attendance validation under senior engineering review.",
     ],
-    metrics: [
-      { label: "Core Product Sprint", value: "4 Weeks" },
-      { label: "Database Models", value: "6" },
-      { label: "Verified Commits", value: "33" },
+    outcomes: [
+      { value: "4 weeks", label: "Core product sprint, Jan 15 – Feb 9, 2026" },
+      { value: "33", label: "Verified commits as primary developer" },
+      { value: "6", label: "MongoDB data models" },
+      { value: "4", label: "Hierarchical roles (Admin · HR · Employee · User)" },
+      { value: "Live", label: "Production deployment at shynr.in" },
     ],
     tags: [
       "Next.js 15",
@@ -82,12 +109,6 @@ export const projects: Project[] = [
     links: [
       { label: "Live Site", url: "https://www.shynr.in" },
       { label: "GitHub", url: "https://github.com/shivamsinghsp/Shynr-Productions" },
-    ],
-    explorerTabs: [
-      { label: "JOB PORTAL", sectionTitle: "JOB PORTAL" },
-      { label: "HRMS ADMIN", sectionTitle: "HRMS" },
-      { label: "AUTH / RBAC", sectionTitle: "AUTHENTICATION" },
-      { label: "GEOFENCING", sectionTitle: "GEOSPATIAL ATTENDANCE" },
     ],
     caseStudy: [
       {
@@ -120,7 +141,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/shynr/auth-rbac.svg",
           alt: "Shynr Role Based Access Control",
-          caption: "Middleware-based Role Access Control Flow"
+          caption: "Middleware-based Role Access Control Flow",
+          width: 800,
+          height: 520,
         },
         implementation: [
           "NextAuth.js v4",
@@ -142,7 +165,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/shynr/architecture.svg",
           alt: "Shynr System Architecture",
-          caption: "Monolithic App Router Architecture handling both Public and Internal domains"
+          caption: "Monolithic App Router Architecture handling both Public and Internal domains",
+          width: 800,
+          height: 700,
         }
       },
       {
@@ -157,7 +182,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/shynr/attendance-geofencing.svg",
           alt: "Shynr Attendance Geofencing Architecture",
-          caption: "Browser Geolocation → Haversine Validation → Timezone Conversion → Database Record"
+          caption: "Browser Geolocation → Haversine Validation → Timezone Conversion → Database Record",
+          width: 800,
+          height: 900,
         },
         implementation: [
           "navigator.geolocation",
@@ -184,8 +211,9 @@ export const projects: Project[] = [
   {
     slug: "kanpur-architects-association",
     title: "Kanpur Architects Association",
-    category: "Tier 1: Product",
-    role: "Independent Full-Stack Developer — Client Project",
+    category: "Client Platform",
+    role: "Independent Full-Stack Developer",
+    engagement: "Client project",
     timeline: "~3.5 months (mid-May – early Sep 2026)",
     shortDescription:
       "A comprehensive platform combining a public architect directory, event management, membership, custom CMS, admin portal with ad/banner management, and geo-spatial architect search.",
@@ -210,10 +238,11 @@ export const projects: Project[] = [
     links: [
       { label: "Live Site", url: "https://kanpur-architects-association.vercel.app/" },
     ],
-    explorerTabs: [
-      { label: "PUBLIC PLATFORM", sectionTitle: "PUBLIC DIRECTORY" },
-      { label: "ADMIN PORTAL", sectionTitle: "ADMIN PLATFORM" },
-      { label: "AD ENGINE", sectionTitle: "AD/BANNER ENGINE" }
+    outcomes: [
+      { value: "~3.5 months", label: "Independent delivery, stakeholder to deployment" },
+      { value: "12", label: "Interconnected data models behind the admin portal" },
+      { value: "3", label: "Distinct authentication flows (Admin · Architect · Public)" },
+      { value: "Live", label: "Deployed client platform" },
     ],
     caseStudy: [
       {
@@ -228,7 +257,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/kanpur-architects-association/geo-search.svg",
           alt: "KAA Geo Spatial Search",
-          caption: "MongoDB 2dsphere indexing resolving location proximity."
+          caption: "MongoDB 2dsphere indexing resolving location proximity.",
+          width: 800,
+          height: 520,
         },
         implementation: [
           "MongoDB 2dsphere indexing",
@@ -249,7 +280,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/kanpur-architects-association/architecture.svg",
           alt: "KAA System Architecture",
-          caption: "Overall platform architecture handling multiple audiences."
+          caption: "Overall platform architecture handling multiple audiences.",
+          width: 800,
+          height: 780,
         },
         implementation: [
           "Architect & Member CRUD",
@@ -270,7 +303,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/kanpur-architects-association/ad-tracking.svg",
           alt: "KAA Ad Engine Tracking Flow",
-          caption: "Click tracking pipeline from user interaction to backend analytics."
+          caption: "Click tracking pipeline from user interaction to backend analytics.",
+          width: 800,
+          height: 680,
         },
         implementation: [
           "Create Campaign",
@@ -295,8 +330,9 @@ export const projects: Project[] = [
   {
     slug: "aao-seekhe",
     title: "Aao Seekhe.in",
-    category: "Tier 1: Product",
-    role: "Full-Stack Web Developer — Independent Project",
+    category: "Product Build",
+    role: "Full-Stack Web Developer",
+    engagement: "Independent project",
     timeline: "~2 months",
     shortDescription:
       "A multi-page educational platform with rich interactive UI, animated components, reusable forms, and serverless API routes handling validation, XSS sanitization, and SMTP email workflows.",
@@ -304,9 +340,11 @@ export const projects: Project[] = [
       "Aao Seekhe is a multi-page web application for an educational services company, covering test preparation (GRE, GMAT, SAT, IELTS), global admissions, academic collaboration, training, and consultation booking.",
       "Responsible for full-stack implementation across 34 commits—building the responsive frontend with Framer Motion, designing serverless API route handlers with Zod validation and XSS protection, and configuring SMTP email pipelines with Nodemailer.",
     ],
-    metrics: [
-      { label: "Verified Commits", value: "34" },
-      { label: "Serverless Endpoints", value: "4" },
+    outcomes: [
+      { value: "34", label: "Verified commits across the full stack" },
+      { value: "4", label: "Validated serverless form endpoints" },
+      { value: "~2 months", label: "Build timeline" },
+      { value: "Live", label: "Deployed at aaoseekhe.com" },
     ],
     tags: [
       "Next.js",
@@ -325,10 +363,6 @@ export const projects: Project[] = [
       { label: "Live Site", url: "https://www.aaoseekhe.com" },
       { label: "GitHub", url: "https://github.com/shivamsinghsp/Aao-Seekhe" },
     ],
-    explorerTabs: [
-      { label: "INTERACTIVE UI", sectionTitle: "INTERACTIVE UI" },
-      { label: "FORMS", sectionTitle: "FORMS" }
-    ],
     caseStudy: [
       {
         type: "product-feature",
@@ -342,7 +376,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/aao-seekhe/architecture.svg",
           alt: "Aao Seekhe Architecture",
-          caption: "Stateless frontend architecture with serverless endpoints."
+          caption: "Stateless frontend architecture with serverless endpoints.",
+          width: 800,
+          height: 800,
         }
       },
       {
@@ -357,7 +393,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/aao-seekhe/email-pipeline.svg",
           alt: "Aao Seekhe Form Pipeline Architecture",
-          caption: "Pipeline from form submission to email delivery."
+          caption: "Pipeline from form submission to email delivery.",
+          width: 800,
+          height: 700,
         },
         implementation: [
           "React Hook Form",
@@ -383,8 +421,9 @@ export const projects: Project[] = [
   {
     slug: "sharepoint-knowledge-hub",
     title: "Enterprise Knowledge Hub",
-    category: "Tier 2: System",
-    role: "Enterprise Frontend Engineer — SPFx / React",
+    category: "Enterprise Project",
+    role: "Enterprise Frontend Engineer (SPFx / React)",
+    engagement: "Enterprise engineering team",
     timeline: "~4 months (2026)",
     shortDescription:
       "A SharePoint Online knowledge platform with metadata-driven document discovery, an SME directory integrated with Microsoft Graph, and custom admin configuration.",
@@ -402,14 +441,15 @@ export const projects: Project[] = [
       "Microsoft Graph",
       "CAML",
     ],
+    outcomes: [
+      { value: "~4 months", label: "Enterprise engagement (2026)" },
+      { value: "0", label: "External backends — runs entirely inside SharePoint Online" },
+      { value: "3", label: "Data sources unified: SharePoint REST, Microsoft Graph, CAML" },
+    ],
     heroImage: {
       src: "/images/projects/sharepoint-knowledge-hub/01-home.png",
       alt: "Enterprise Knowledge Hub Interface",
     },
-    explorerTabs: [
-      { label: "KNOWLEDGE LIBRARY", sectionTitle: "KNOWLEDGE LIBRARY" },
-      { label: "SME FINDER", sectionTitle: "SME FINDER" }
-    ],
     caseStudy: [
       {
         type: "product-feature",
@@ -423,7 +463,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/sharepoint-knowledge-hub/knowledge-discovery.svg",
           alt: "Knowledge Hub Discovery Flow",
-          caption: "Metadata-driven discovery workflow without external databases."
+          caption: "Metadata-driven discovery workflow without external databases.",
+          width: 800,
+          height: 740,
         },
         implementation: [
           "React / SPFx",
@@ -444,7 +486,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/sharepoint-knowledge-hub/sme-finder.svg",
           alt: "SME Finder Data Architecture",
-          caption: "Data merging from SharePoint Lists and Microsoft Graph API."
+          caption: "Data merging from SharePoint Lists and Microsoft Graph API.",
+          width: 800,
+          height: 460,
         },
         implementation: [
           "SharePoint List (Profiles & Capabilities)",
@@ -459,7 +503,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/sharepoint-knowledge-hub/architecture.svg",
           alt: "Knowledge Hub SharePoint Architecture",
-          caption: "Fully integrated M365 architecture running strictly within SharePoint Online."
+          caption: "Fully integrated M365 architecture running strictly within SharePoint Online.",
+          width: 800,
+          height: 720,
         }
       },
       {
@@ -476,8 +522,9 @@ export const projects: Project[] = [
   {
     slug: "pledge-portal-qa",
     title: "PLEDGE Portal — QA & Verification Engineering",
-    category: "Tier 2: System",
+    category: "QA Engagement",
     role: "QA & Verification Engineer",
+    engagement: "Internship · Rapsora Technologies",
     timeline: "March 2026 – May 2026 (During Rapsora Internship)",
     shortDescription:
       "Functional testing, workflow validation, defect documentation and regression verification for the Government of Uttar Pradesh's PLEDGE portal.",
@@ -485,10 +532,10 @@ export const projects: Project[] = [
       "The PLEDGE Portal (Government of Uttar Pradesh) is a large-scale governmental platform managing industrial infrastructure, applicant submissions, and departmental approval chains. With sensitive multi-tier government workflows, ensuring rock-solid data integrity, precise role-based boundaries, and defect-free application state transitions was critical prior to staging and production milestones.",
       "During my software engineering internship at Rapsora Technologies, I performed rigorous functional and regression testing across key portal surfaces. My responsibilities centered on manual QA verification: executing test scenarios across multi-tier user roles (Citizen Applicant, Department Approver, Department Admin), performing boundary and payload verification on complex application forms, documenting reproducible defect logs with exact steps to replicate, and executing regression test cycles following developer fixes to identify and resolve unintended side effects across dependent workflows.",
     ],
-    metrics: [
-      { label: "Workflow Roles Tested", value: "3 Roles" },
-      { label: "Testing Methodology", value: "Functional & Regression QA" },
-      { label: "Defect Tracking", value: "Reproducible Bug Logs" },
+    outcomes: [
+      { value: "3", label: "User roles verified (Applicant · Approver · Admin)" },
+      { value: "5-stage", label: "QA lifecycle from requirement intake to staging sign-off" },
+      { value: "Regression", label: "Re-test cycles after every developer fix" },
     ],
     tags: [
       "Functional Testing",
@@ -504,10 +551,6 @@ export const projects: Project[] = [
       src: "/diagrams/projects/pledge/qa-workflow.svg",
       alt: "PLEDGE Portal QA Verification Architecture",
     },
-    explorerTabs: [
-      { label: "QA PROTOCOL", sectionTitle: "QA PROTOCOL" },
-      { label: "ROLE VALIDATION", sectionTitle: "ROLE VALIDATION" }
-    ],
     caseStudy: [
       {
         type: "product-feature",
@@ -516,7 +559,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/pledge/qa-workflow.svg",
           alt: "PLEDGE QA Protocol Lifecycle",
-          caption: "Structured 5-stage testing workflow from requirement analysis to staging deployment verification."
+          caption: "Structured 5-stage testing workflow from requirement analysis to staging deployment verification.",
+          width: 800,
+          height: 360,
         },
         implementation: [
           "Requirement & Acceptance Criteria Intake",
@@ -534,7 +579,9 @@ export const projects: Project[] = [
         diagram: {
           src: "/diagrams/projects/pledge/multi-role-testing.svg",
           alt: "Multi-Tier Role Validation Matrix",
-          caption: "Validation pipeline across Citizen Applicant, Department Approver, and Department Admin."
+          caption: "Validation pipeline across Citizen Applicant, Department Approver, and Department Admin.",
+          width: 800,
+          height: 360,
         },
         implementation: [
           "Citizen Submission Form Validation",

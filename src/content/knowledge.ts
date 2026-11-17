@@ -185,7 +185,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
   {
     id: "topic-voice-ai",
     keywords: ["voice", "voice assistant", "hume", "evi", "emotion", "empathic", "websocket", "audio", "microphone", "streaming"],
-    answer: "Shivam built a Real-Time AI Voice Assistant as a Tier 3 experiment using Hume AI's Empathic Voice Interface (EVI) API. The project demonstrates real-time bidirectional voice interaction, live transcription, and emotional-cue detection through WebSocket streaming, built with React.js and TypeScript.",
+    answer: "Shivam built a Real-Time AI Voice Assistant as an independent experiment using Hume AI's Empathic Voice Interface (EVI) API. The project demonstrates real-time bidirectional voice interaction, live transcription, and emotional-cue detection through WebSocket streaming, built with React.js and TypeScript.",
     sourceSection: "ENGINEERING PLAYGROUND",
   },
   {

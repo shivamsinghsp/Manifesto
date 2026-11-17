@@ -1,4 +1,4 @@
-import { portfolioKnowledge, KnowledgeEntry } from "@/data/portfolio-knowledge"
+import { portfolioKnowledge, KnowledgeEntry } from "@/content/knowledge"
 
 export interface SearchResult extends KnowledgeEntry {
   score: number
