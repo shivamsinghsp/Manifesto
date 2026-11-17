@@ -161,3 +161,19 @@ test("SEO routes use the configured site URL", async ({ request }) => {
   const og = await request.get("/opengraph-image")
   expect(og.headers()["content-type"]).toContain("image/png")
 })
+
+test("project cards navigate to their case study (view-transition link)", async ({ page }) => {
+  await page.goto("/work")
+  await page.getByRole("link", { name: /Kanpur Architects Association/ }).first().click()
+  await expect(page).toHaveURL(/\/work\/kanpur-architects-association$/)
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Kanpur Architects Association")
+})
+
+test("3D hero mounts after interaction without errors", async ({ page }) => {
+  const errors = trackErrors(page)
+  await page.goto("/", { waitUntil: "networkidle" })
+  await page.mouse.move(200, 300)
+  await page.mouse.move(400, 320)
+  await expect(page.locator("#hero canvas")).toHaveCount(1, { timeout: 15000 })
+  expect(errors).toEqual([])
+})

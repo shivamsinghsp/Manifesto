@@ -316,6 +316,18 @@
   .animate-reveal-up {
     animation: reveal-up var(--duration-reveal) var(--ease-out-expo) both;
   }
+  /* Transform-only entrance: stays visible (and LCP-eligible) from the first frame. */
+  @keyframes rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+  .animate-rise {
+    animation: rise 700ms var(--ease-out-expo) both;
+  }
   .animate-reveal-fade {
     animation: reveal-fade var(--duration-reveal) var(--ease-standard) both;
   }

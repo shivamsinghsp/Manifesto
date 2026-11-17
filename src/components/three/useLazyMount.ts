@@ -3,32 +3,49 @@
 import { useEffect, useState } from "react"
 import { supportsWebGL } from "@/lib/device"
 
+let interacted = false
+const waiters = new Set<() => void>()
+const EVENTS = ["pointermove", "pointerdown", "wheel", "touchstart", "keydown", "scroll"] as const
+
+function onFirstInteraction() {
+  if (interacted) return
+  interacted = true
+  EVENTS.forEach((e) => window.removeEventListener(e, onFirstInteraction))
+  waiters.forEach((w) => w())
+  waiters.clear()
+}
+
+/** Resolves on the visitor's first interaction, or after `fallbackMs` of idle time. */
+function whenEngaged(cb: () => void, fallbackMs: number) {
+  if (interacted) { cb(); return () => {} }
+  if (waiters.size === 0) EVENTS.forEach((e) => window.addEventListener(e, onFirstInteraction, { passive: true, once: true }))
+  waiters.add(cb)
+  const t = window.setTimeout(() => {
+    const ric = (window as Window & { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number }).requestIdleCallback
+    if (ric) ric(onFirstInteraction, { timeout: 2000 })
+    else onFirstInteraction()
+  }, fallbackMs)
+  return () => { waiters.delete(cb); clearTimeout(t) }
+}
+
 /**
  * Decides when (and whether) to mount a WebGL scene:
- *  - never during SSR, never before the browser is idle after load (keeps LCP/TBT clean)
+ *  - never during SSR, and not during the initial load window — the scene mounts on the
+ *    first interaction (or after an idle fallback), so shader compilation and the first
+ *    frames never compete with LCP / input readiness
  *  - only once the container is near the viewport
  *  - "unsupported" if WebGL is unavailable → render the static fallback
  */
-export function useLazyMount(inView: boolean) {
+export function useLazyMount(inView: boolean, fallbackMs = 6000) {
   const [state, setState] = useState<"pending" | "ready" | "unsupported">("pending")
-  const [idle, setIdle] = useState(false)
+  const [engaged, setEngaged] = useState(false)
+
+  useEffect(() => whenEngaged(() => setEngaged(true), fallbackMs), [fallbackMs])
 
   useEffect(() => {
-    const done = () => setIdle(true)
-    const schedule = () => {
-      const ric = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback
-      if (ric) ric(done, { timeout: 2500 })
-      else setTimeout(done, 600)
-    }
-    if (document.readyState === "complete") schedule()
-    else window.addEventListener("load", schedule, { once: true })
-    return () => window.removeEventListener("load", schedule)
-  }, [])
-
-  useEffect(() => {
-    if (state !== "pending" || !idle || !inView) return
+    if (state !== "pending" || !engaged || !inView) return
     setState(supportsWebGL() ? "ready" : "unsupported")
-  }, [idle, inView, state])
+  }, [engaged, inView, state])
 
   return state
 }

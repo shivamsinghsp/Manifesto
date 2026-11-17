@@ -11,8 +11,9 @@ import { SITE_URL, site } from "@/content/site"
 import { skillGroups } from "@/content/skills"
 import { experiences } from "@/content/experience"
 
+// Only the families needed for first paint are preloaded; the rest load on demand.
 const plexSerif = IBM_Plex_Serif({
-  weight: ["400", "700"],
+  weight: ["400"],
   style: ["normal", "italic"],
   subsets: ["latin"],
   variable: "--font-plex-serif",
@@ -20,12 +21,14 @@ const plexSerif = IBM_Plex_Serif({
 })
 const plexSans = IBM_Plex_Sans({
   weight: ["400", "500"],
+  preload: false,
   subsets: ["latin"],
   variable: "--font-plex-sans",
   display: "swap",
 })
 const plexMono = IBM_Plex_Mono({
   weight: ["400", "500"],
+  preload: false,
   subsets: ["latin"],
   variable: "--font-plex-mono",
   display: "swap",

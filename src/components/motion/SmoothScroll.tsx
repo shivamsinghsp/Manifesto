@@ -14,14 +14,15 @@ export const getLenis = () => lenisInstance
 
 /**
  * Lenis smooth scrolling, driven by GSAP's ticker so ScrollTrigger stays in sync.
- * Disabled when motion is reduced. Touch devices keep native scrolling (Lenis default).
+ * Disabled when motion is reduced and on touch-first devices (native scrolling is better there).
  */
 export function SmoothScroll() {
   const reduced = useReducedMotion()
   const pathname = usePathname()
 
   useEffect(() => {
-    if (reduced) return
+    // Touch devices keep native momentum scrolling; Lenis would only add a per-frame loop there.
+    if (reduced || window.matchMedia("(pointer: coarse)").matches) return
     const lenis = new Lenis({ duration: 1.1, anchors: { offset: -80 }, autoRaf: false })
     lenisInstance = lenis
     lenis.on("scroll", ScrollTrigger.update)

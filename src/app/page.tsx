@@ -42,10 +42,10 @@ export default function Home() {
                 <span className="line-mask"><span style={line(1)} className="italic text-text-secondary">systems that </span></span>
                 <span className="line-mask"><span style={line(2)}>ship.</span></span>
               </h1>
-              <p className="mb-9 max-w-md text-body-large text-text-secondary animate-reveal-up" style={{ animationDelay: "380ms" }}>
+              <p className="mb-9 max-w-md text-body-large text-text-secondary animate-rise" style={{ animationDelay: "200ms" }}>
                 Hi, I&apos;m Shivam. I build full-stack web applications, enterprise platforms, and interactive digital products — from architecture to deployment.
               </p>
-              <div className="mb-10 flex flex-wrap gap-3 animate-reveal-up" style={{ animationDelay: "480ms" }}>
+              <div className="mb-10 flex flex-wrap gap-3 animate-rise" style={{ animationDelay: "280ms" }}>
                 <Magnetic>
                   <NextLink href="/work" className={buttonClass("primary")}>View selected work</NextLink>
                 </Magnetic>

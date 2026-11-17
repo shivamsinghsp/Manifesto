@@ -28,7 +28,7 @@ export function Header() {
     >
       <NextLink
         href="/"
-        className="group flex min-h-[44px] items-center gap-2 font-display text-xl font-bold tracking-tight text-text transition-colors hover:text-accent-hover"
+        className="group flex min-h-[44px] items-center gap-2 font-display text-xl tracking-tight text-text transition-colors hover:text-accent-hover"
         aria-label={`${site.name} — home`}
       >
         <span aria-hidden="true" className="relative inline-flex h-2 w-2">

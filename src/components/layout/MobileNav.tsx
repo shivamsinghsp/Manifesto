@@ -60,7 +60,7 @@ export function MobileNav() {
         className={cn("fixed inset-0 z-[1000] flex-col bg-bg/[0.98] backdrop-blur-xl", open ? "flex" : "hidden")}
       >
         <div className="flex h-[var(--header-h)] items-center justify-between border-b border-border px-[var(--gutter)]">
-          <span className="font-display text-xl font-bold text-text">{site.shortName}</span>
+          <span className="font-display text-xl text-text">{site.shortName}</span>
           <button
             type="button"
             onClick={() => { setOpen(false); trigger.current?.focus() }}

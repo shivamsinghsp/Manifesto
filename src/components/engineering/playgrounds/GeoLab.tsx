@@ -30,7 +30,8 @@ export function GeoLab() {
   const [user, setUser] = useState({ x: 90, y: -60 })
   const [walking, setWalking] = useState(false)
   const { ref, inView, active } = useCanvasGovernor<HTMLDivElement>("150px")
-  const mount = useLazyMount(inView)
+  // The map is this page's main content, so it mounts sooner than decorative scenes.
+  const mount = useLazyMount(inView, 2500)
   const reduced = useReducedMotion()
   const [tier, setTier] = useState<PerfTier>("mid")
   useEffect(() => setTier(getPerfTier()), [])
@@ -126,7 +127,7 @@ export function GeoLab() {
             </CanvasErrorBoundary>
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-blueprint">
-              <span className="font-mono text-xs tracking-widest text-text-tertiary">LOADING 3D MAP…</span>
+              <span className="font-mono text-xs tracking-widest text-text-tertiary">PREPARING 3D MAP…</span>
             </div>
           )}
           <p className="pointer-events-none absolute bottom-3 left-3 right-3 font-mono text-[11px] leading-relaxed text-text-tertiary">
