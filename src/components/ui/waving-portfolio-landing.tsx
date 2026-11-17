@@ -17,7 +17,15 @@ import * as React from "react"
 // Monoline condensed capitals, drawn as centre-line paths and stroked with
 // square caps, so every letter fills its [0, w] x [0, h] box exactly at any
 // stroke weight. Round letters are stadiums, like the poster face they mimic.
-const WIDE: Record<string, number> = { A: 1.04, M: 1.3, N: 1.04, Q: 1.02, V: 1.04, W: 1.44, X: 1.02 }
+const WIDE: Record<string, number> = {
+  A: 1.04,
+  M: 1.3,
+  N: 1.04,
+  Q: 1.02,
+  V: 1.04,
+  W: 1.44,
+  X: 1.02,
+}
 
 function glyphWidth(ch: string, w: number, s: number): number {
   if (ch === "I") return s
@@ -39,18 +47,43 @@ function glyphPath(ch: string, w: number, h: number, s: number): string {
   const c = Math.min(bw * 0.62, bh / 4)
   const q = (...parts: (string | number)[]) =>
     parts.map((p) => (typeof p === "number" ? String(Math.round(p * 10) / 10) : p)).join(" ")
-  const arc = (rad: number, sweep: 0 | 1, x: number, y: number) => q("A", rad, rad, 0, 0, sweep, x, y)
-  const stadium = q("M", x0, y0 + r) + arc(r, 1, x1, y0 + r) + q("L", x1, y1 - r) + arc(r, 1, x0, y1 - r) + "Z"
-  const open = q("M", x1, y0 + r) + arc(r, 0, x0, y0 + r) + q("L", x0, y1 - r) + arc(r, 0, x1, y1 - r)
+  const arc = (rad: number, sweep: 0 | 1, x: number, y: number) =>
+    q("A", rad, rad, 0, 0, sweep, x, y)
+  const stadium =
+    q("M", x0, y0 + r) + arc(r, 1, x1, y0 + r) + q("L", x1, y1 - r) + arc(r, 1, x0, y1 - r) + "Z"
+  const open =
+    q("M", x1, y0 + r) + arc(r, 0, x0, y0 + r) + q("L", x0, y1 - r) + arc(r, 0, x1, y1 - r)
   const bowl = (yb: number) => {
     const k = Math.min(c, (yb - y0) / 2)
-    return q("M", x0, y1, "L", x0, y0, "L", x1 - k, y0) + arc(k, 1, x1, y0 + k) + q("L", x1, yb - k) + arc(k, 1, x1 - k, yb) + q("L", x0, yb)
+    return (
+      q("M", x0, y1, "L", x0, y0, "L", x1 - k, y0) +
+      arc(k, 1, x1, y0 + k) +
+      q("L", x1, yb - k) +
+      arc(k, 1, x1 - k, yb) +
+      q("L", x0, yb)
+    )
   }
   switch (ch) {
     case "A": {
       const ay = y0 + bh * 0.64
       const t = (y1 - ay) / bh
-      return q("M", x0, y1, "L", xm, y0, "L", x1, y1, "M", x0 + (xm - x0) * t, ay, "L", x1 - (x1 - xm) * t, ay)
+      return q(
+        "M",
+        x0,
+        y1,
+        "L",
+        xm,
+        y0,
+        "L",
+        x1,
+        y1,
+        "M",
+        x0 + (xm - x0) * t,
+        ay,
+        "L",
+        x1 - (x1 - xm) * t,
+        ay
+      )
     }
     case "B": {
       const yb = y0 + bh * 0.47
@@ -58,8 +91,14 @@ function glyphPath(ch: string, w: number, h: number, s: number): string {
       const ct = Math.min(c, (yb - y0) / 2, xt - x0)
       const cb = Math.min(c, (y1 - yb) / 2, bw)
       return (
-        q("M", x0, yb, "L", xt - ct, yb) + arc(ct, 0, xt, yb - ct) + q("L", xt, y0 + ct) + arc(ct, 0, xt - ct, y0) +
-        q("L", x0, y0, "L", x0, y1, "L", x1 - cb, y1) + arc(cb, 0, x1, y1 - cb) + q("L", x1, yb + cb) + arc(cb, 0, x1 - cb, yb) +
+        q("M", x0, yb, "L", xt - ct, yb) +
+        arc(ct, 0, xt, yb - ct) +
+        q("L", xt, y0 + ct) +
+        arc(ct, 0, xt - ct, y0) +
+        q("L", x0, y0, "L", x0, y1, "L", x1 - cb, y1) +
+        arc(cb, 0, x1, y1 - cb) +
+        q("L", x1, yb + cb) +
+        arc(cb, 0, x1 - cb, yb) +
         q("L", x0, yb)
       )
     }
@@ -67,12 +106,54 @@ function glyphPath(ch: string, w: number, h: number, s: number): string {
       return open
     case "D": {
       const k = Math.min(bw * 0.75, bh / 2)
-      return q("M", x0, y0, "L", x1 - k, y0) + arc(k, 1, x1, y0 + k) + q("L", x1, y1 - k) + arc(k, 1, x1 - k, y1) + q("L", x0, y1) + "Z"
+      return (
+        q("M", x0, y0, "L", x1 - k, y0) +
+        arc(k, 1, x1, y0 + k) +
+        q("L", x1, y1 - k) +
+        arc(k, 1, x1 - k, y1) +
+        q("L", x0, y1) +
+        "Z"
+      )
     }
     case "E":
-      return q("M", x1, y0, "L", x0, y0, "L", x0, y1, "L", x1, y1, "M", x0, ym, "L", x1 - bw * 0.12, ym)
+      return q(
+        "M",
+        x1,
+        y0,
+        "L",
+        x0,
+        y0,
+        "L",
+        x0,
+        y1,
+        "L",
+        x1,
+        y1,
+        "M",
+        x0,
+        ym,
+        "L",
+        x1 - bw * 0.12,
+        ym
+      )
     case "F":
-      return q("M", x1, y0, "L", x0, y0, "L", x0, y1, "M", x0, ym - bh * 0.02, "L", x1 - bw * 0.12, ym - bh * 0.02)
+      return q(
+        "M",
+        x1,
+        y0,
+        "L",
+        x0,
+        y0,
+        "L",
+        x0,
+        y1,
+        "M",
+        x0,
+        ym - bh * 0.02,
+        "L",
+        x1 - bw * 0.12,
+        ym - bh * 0.02
+      )
     case "G":
       return open + q("L", x1, ym + bh * 0.04, "L", xm, ym + bh * 0.04)
     case "H":
@@ -80,9 +161,30 @@ function glyphPath(ch: string, w: number, h: number, s: number): string {
     case "I":
       return q("M", xm, y0, "L", xm, y1)
     case "J":
-      return q("M", x1, y0, "L", x1, y1 - r) + arc(r, 1, x0, y1 - r) + q("L", x0, y1 - r - bh * 0.06)
+      return (
+        q("M", x1, y0, "L", x1, y1 - r) + arc(r, 1, x0, y1 - r) + q("L", x0, y1 - r - bh * 0.06)
+      )
     case "K":
-      return q("M", x0, y0, "L", x0, y1, "M", x1, y0, "L", x0, y0 + bh * 0.62, "M", x0 + bw * 0.28, y0 + bh * 0.47, "L", x1, y1)
+      return q(
+        "M",
+        x0,
+        y0,
+        "L",
+        x0,
+        y1,
+        "M",
+        x1,
+        y0,
+        "L",
+        x0,
+        y0 + bh * 0.62,
+        "M",
+        x0 + bw * 0.28,
+        y0 + bh * 0.47,
+        "L",
+        x1,
+        y1
+      )
     case "L":
       return q("M", x0, y0, "L", x0, y1, "L", x1, y1)
     case "M":
@@ -98,7 +200,12 @@ function glyphPath(ch: string, w: number, h: number, s: number): string {
     case "R":
       return bowl(y0 + bh * 0.5) + q("M", x0 + bw * 0.42, y0 + bh * 0.5, "L", x1, y1)
     case "S":
-      return q("M", x1, y0 + r) + arc(r, 0, x0, y0 + r) + q("C", x0, ym - bh * 0.02, x1, ym + bh * 0.02, x1, y1 - r) + arc(r, 1, x0, y1 - r)
+      return (
+        q("M", x1, y0 + r) +
+        arc(r, 0, x0, y0 + r) +
+        q("C", x0, ym - bh * 0.02, x1, ym + bh * 0.02, x1, y1 - r) +
+        arc(r, 1, x0, y1 - r)
+      )
     case "T":
       return q("M", x0, y0, "L", x1, y0, "M", xm, y0, "L", xm, y1)
     case "U":
@@ -112,7 +219,23 @@ function glyphPath(ch: string, w: number, h: number, s: number): string {
     case "X":
       return q("M", x0, y0, "L", x1, y1, "M", x1, y0, "L", x0, y1)
     case "Y":
-      return q("M", x0, y0, "L", xm, ym - bh * 0.04, "L", x1, y0, "M", xm, ym - bh * 0.04, "L", xm, y1)
+      return q(
+        "M",
+        x0,
+        y0,
+        "L",
+        xm,
+        ym - bh * 0.04,
+        "L",
+        x1,
+        y0,
+        "M",
+        xm,
+        ym - bh * 0.04,
+        "L",
+        xm,
+        y1
+      )
     case "Z":
       return q("M", x0, y0, "L", x1, y0, "L", x0, y1, "L", x1, y1)
     default:
@@ -124,7 +247,16 @@ function glyphPath(ch: string, w: number, h: number, s: number): string {
 // #region layout
 // The poster reads as two rows sharing one giant letter:  P [O] RT / F [O] LIO.
 // Left rows hug the giant letter, right rows start after the character's gap.
-type Cell = { ch: string; x: number; y: number; w: number; h: number; s: number; row: number; giant: boolean }
+type Cell = {
+  ch: string
+  x: number
+  y: number
+  w: number
+  h: number
+  s: number
+  row: number
+  giant: boolean
+}
 
 const LH = 230 // letter height
 const LW = 115 // base letter width
@@ -137,11 +269,15 @@ const MARGIN = 100
 const CHAR_GAP = 520 // room between the giant letter and the right rows
 const TOP = 100
 
-const cleanRow = (s: string) => s.toUpperCase().replace(/[^A-Z ]/g, "").trim()
+const cleanRow = (s: string) =>
+  s
+    .toUpperCase()
+    .replace(/[^A-Z ]/g, "")
+    .trim()
 
 function rowWidth(str: string): number {
   let t = 0
-  ;Array.from(str).forEach((ch, i) => {
+  Array.from(str).forEach((ch, i) => {
     t += glyphWidth(ch, LW, LS) + (i ? LGAP : 0)
   })
   return t
@@ -163,7 +299,8 @@ function layoutPoster(left: string[], giant: string, right: string[], compact = 
     let x = x0
     for (const ch of str) {
       const w = glyphWidth(ch, LW, LS)
-      if (ch !== " ") cells.push({ ch, x, y: TOP + row * (LH + ROWGAP), w, h: LH, s: LS, row, giant: false })
+      if (ch !== " ")
+        cells.push({ ch, x, y: TOP + row * (LH + ROWGAP), w, h: LH, s: LS, row, giant: false })
       x += w + LGAP
     }
   }
@@ -175,7 +312,16 @@ function layoutPoster(left: string[], giant: string, right: string[], compact = 
   r.forEach((row, i) => place(row, rx, i))
   cells.push({ ch: g, x: gx, y: TOP, w: gw, h: LH * 2 + ROWGAP, s: GS, row: 0, giant: true })
   const width = rx + rw + margin
-  return { cells, width, height: 700, margin, charScale, gapStart, charX: gapStart + charGap * 0.36, bottom: TOP + LH * 2 + ROWGAP }
+  return {
+    cells,
+    width,
+    height: 700,
+    margin,
+    charScale,
+    gapStart,
+    charX: gapStart + charGap * 0.36,
+    bottom: TOP + LH * 2 + ROWGAP,
+  }
 }
 // #endregion layout
 
@@ -256,7 +402,12 @@ export type WavingPortfolioLandingProps = {
   className?: string
 }
 
-type Burst = { id: number; x: number; y: number; bits: { ch: string; dx: number; dy: number; rot: number }[] }
+type Burst = {
+  id: number
+  x: number
+  y: number
+  bits: { ch: string; dx: number; dy: number; rot: number }[]
+}
 
 export default function WavingPortfolioLanding({
   name = "Shivam",
@@ -269,9 +420,9 @@ export default function WavingPortfolioLanding({
   signature,
   greeting = "Hi there!",
   accent = "#00E5FF", // Electric Cyan
-  paper = "#080C14",  // Deep Obsidian Dark
-  ink = "#F1F5F9",    // Crisp Slate/White
-  skin = "#F5EBE1",   // Warm Natural Skin
+  paper = "#080C14", // Deep Obsidian Dark
+  ink = "#F1F5F9", // Crisp Slate/White
+  skin = "#F5EBE1", // Warm Natural Skin
   intro = true,
   height = "100svh",
   className = "",
@@ -361,7 +512,7 @@ export default function WavingPortfolioLanding({
 
   const L = React.useMemo(
     () => layoutPoster(lettersLeft, giantLetter, lettersRight, compact),
-    [lettersLeft, giantLetter, lettersRight, compact],
+    [lettersLeft, giantLetter, lettersRight, compact]
   )
   const letters = L.cells.map((c) => c.ch).join("") || "ABC"
 
@@ -421,7 +572,8 @@ export default function WavingPortfolioLanding({
   const onLeave = () => {
     const root = rootRef.current
     if (!root) return
-    for (const v of ["--wpl-mx", "--wpl-my", "--wpl-ex", "--wpl-ey", "--wpl-hr"]) root.style.setProperty(v, "0")
+    for (const v of ["--wpl-mx", "--wpl-my", "--wpl-ex", "--wpl-ey", "--wpl-hr"])
+      root.style.setProperty(v, "0")
   }
 
   const onDown = (e: React.PointerEvent) => {
@@ -497,7 +649,14 @@ export default function WavingPortfolioLanding({
       ref={rootRef}
       className={"wpl-root " + className}
       data-intro={stage}
-      style={{ height, "--wpl-accent": accent, "--wpl-paper": paper, "--wpl-ink": ink } as React.CSSProperties}
+      style={
+        {
+          height,
+          "--wpl-accent": accent,
+          "--wpl-paper": paper,
+          "--wpl-ink": ink,
+        } as React.CSSProperties
+      }
       onPointerMove={onMove}
       onPointerLeave={onLeave}
       onPointerDown={onDown}
@@ -509,13 +668,25 @@ export default function WavingPortfolioLanding({
       </p>
 
       <div className="wpl-stage" key={run}>
-        <svg className="wpl-poster" viewBox={"0 0 " + L.width + " " + L.height} preserveAspectRatio="xMidYMid meet">
+        <svg
+          className="wpl-poster"
+          viewBox={"0 0 " + L.width + " " + L.height}
+          preserveAspectRatio="xMidYMid meet"
+        >
           <g className="wpl-par-lines" aria-hidden="true">
-            <text className="wpl-label" x={L.margin} y={73}>{nameT}</text>
-            <text className="wpl-label" x={L.width - L.margin} y={73} textAnchor="end">{yearT}</text>
+            <text className="wpl-label" x={L.margin} y={73}>
+              {nameT}
+            </text>
+            <text className="wpl-label" x={L.width - L.margin} y={73} textAnchor="end">
+              {yearT}
+            </text>
             <Rule a={nameEnd} b={yearStart} y={62} mid delay={2.55} color={accent} />
-            <text className="wpl-label" x={L.margin} y={663}>{roleLT}</text>
-            <text className="wpl-label" x={L.width - L.margin} y={663} textAnchor="end">{roleRT}</text>
+            <text className="wpl-label" x={L.margin} y={663}>
+              {roleLT}
+            </text>
+            <text className="wpl-label" x={L.width - L.margin} y={663} textAnchor="end">
+              {roleRT}
+            </text>
             <Rule a={roleLEnd} b={roleRStart} y={652} delay={2.75} color={accent} />
           </g>
 
@@ -535,7 +706,14 @@ export default function WavingPortfolioLanding({
           </g>
 
           <g className="wpl-par-char">
-            <svg x={charLeft} y={605 - 600 * k} width={460 * k} height={600 * k} viewBox="0 0 460 600" overflow="hidden">
+            <svg
+              x={charLeft}
+              y={605 - 600 * k}
+              width={460 * k}
+              height={600 * k}
+              viewBox="0 0 460 600"
+              overflow="hidden"
+            >
               <g
                 className={"wpl-char" + (waving ? " is-waving" : "")}
                 role="button"
@@ -547,14 +725,14 @@ export default function WavingPortfolioLanding({
                 onClick={wave}
                 onKeyDown={onCharKey}
               >
-                <Character 
-                  ink={ink} 
-                  paper={paper} 
+                <Character
+                  ink={ink}
+                  paper={paper}
                   accent={accent}
                   skin={skin}
                   isDarkPaper={isDarkPaper}
-                  shirtId={"wpl-" + uid + "-shirt"} 
-                  headRef={headRef} 
+                  shirtId={"wpl-" + uid + "-shirt"}
+                  headRef={headRef}
                 />
               </g>
             </svg>
@@ -564,7 +742,12 @@ export default function WavingPortfolioLanding({
             <g className="wpl-bubble" aria-hidden="true">
               <path
                 d={
-                  "M " + (charLeft + 372 * k) + " 20 h " + bubbleW + " v 56 h " + -(bubbleW - 34) +
+                  "M " +
+                  (charLeft + 372 * k) +
+                  " 20 h " +
+                  bubbleW +
+                  " v 56 h " +
+                  -(bubbleW - 34) +
                   " l -30 22 l 6 -22 h -10 Z"
                 }
                 fill={isDarkPaper ? "#0E1424" : paper}
@@ -572,10 +755,10 @@ export default function WavingPortfolioLanding({
                 strokeWidth={3.5}
                 strokeLinejoin="round"
               />
-              <text 
-                className="wpl-label wpl-bubble-text" 
-                x={charLeft + 372 * k + bubbleW / 2} 
-                y={58} 
+              <text
+                className="wpl-label wpl-bubble-text"
+                x={charLeft + 372 * k + bubbleW / 2}
+                y={58}
                 textAnchor="middle"
                 fill={isDarkPaper ? "#F1F5F9" : ink}
               >
@@ -609,11 +792,15 @@ export default function WavingPortfolioLanding({
                       const hollow = row % 3 !== 0
                       return (
                         <g key={off + "-" + k} transform={"translate(" + (off + g.x) + " 0)"}>
-                          <path d={d} stroke={row % 3 === 2 ? (isDarkPaper ? "#334155" : ink) : accent} strokeWidth={12} />
+                          <path
+                            d={d}
+                            stroke={row % 3 === 2 ? (isDarkPaper ? "#334155" : ink) : accent}
+                            strokeWidth={12}
+                          />
                           {hollow && <path d={d} stroke={paper} strokeWidth={5} />}
                         </g>
                       )
-                    }),
+                    })
                   )}
                 </svg>
               </div>
@@ -631,20 +818,37 @@ export default function WavingPortfolioLanding({
           >
             <svg viewBox="0 0 170 170" aria-hidden="true">
               {[108, 124, 140].map((v) => (
-                <path key={v} d={"M 0 " + v + " L " + v + " " + v + " L " + v + " 0"} fill="none" stroke={accent} strokeWidth={2} />
+                <path
+                  key={v}
+                  d={"M 0 " + v + " L " + v + " " + v + " L " + v + " 0"}
+                  fill="none"
+                  stroke={accent}
+                  strokeWidth={2}
+                />
               ))}
               <rect x={0} y={0} width={92} height={92} fill={accent} />
               <g key={diceSpin[k]} className={"wpl-pips" + (diceSpin[k] ? " is-rolled" : "")}>
                 <rect x={10} y={8} width={76} height={76} fill="none" />
                 {pips(dice[k]).map(([px, py], n) => (
-                  <circle key={n} cx={48 + px * 20} cy={46 + py * 20} r={7.5} fill={isDarkPaper ? "#080C14" : paper} />
+                  <circle
+                    key={n}
+                    cx={48 + px * 20}
+                    cy={46 + py * 20}
+                    r={7.5}
+                    fill={isDarkPaper ? "#080C14" : paper}
+                  />
                 ))}
               </g>
             </svg>
           </button>
         ))}
 
-        <button type="button" className="wpl-sign" aria-label={playing ? "Replay the intro" : "Wave again"} onClick={replay}>
+        <button
+          type="button"
+          className="wpl-sign"
+          aria-label={playing ? "Replay the intro" : "Wave again"}
+          onClick={replay}
+        >
           <Signature lines={sig} color={accent} />
         </button>
       </div>
@@ -656,7 +860,13 @@ export default function WavingPortfolioLanding({
               key={n}
               className="wpl-bit"
               viewBox="-3 -3 26 38"
-              style={{ "--dx": bit.dx + "px", "--dy": bit.dy + "px", "--rot": bit.rot + "deg" } as React.CSSProperties}
+              style={
+                {
+                  "--dx": bit.dx + "px",
+                  "--dy": bit.dy + "px",
+                  "--rot": bit.rot + "deg",
+                } as React.CSSProperties
+              }
             >
               <path
                 d={glyphPath(bit.ch, glyphWidth(bit.ch, 14, 3.4), 32, 3.4)}
@@ -676,23 +886,77 @@ export default function WavingPortfolioLanding({
 function pips(n: number): [number, number][] {
   const m: Record<number, [number, number][]> = {
     1: [[0, 0]],
-    2: [[-1, -1], [1, 1]],
-    3: [[-1, -1], [0, 0], [1, 1]],
-    4: [[-1, -1], [1, -1], [-1, 1], [1, 1]],
-    5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]],
-    6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]],
+    2: [
+      [-1, -1],
+      [1, 1],
+    ],
+    3: [
+      [-1, -1],
+      [0, 0],
+      [1, 1],
+    ],
+    4: [
+      [-1, -1],
+      [1, -1],
+      [-1, 1],
+      [1, 1],
+    ],
+    5: [
+      [-1, -1],
+      [1, -1],
+      [0, 0],
+      [-1, 1],
+      [1, 1],
+    ],
+    6: [
+      [-1, -1],
+      [1, -1],
+      [-1, 0],
+      [1, 0],
+      [-1, 1],
+      [1, 1],
+    ],
   }
   return m[n] ?? m[1]
 }
 
-function Rule({ a, b, y, mid, delay, color }: { a: number; b: number; y: number; mid?: boolean; delay: number; color: string }) {
+function Rule({
+  a,
+  b,
+  y,
+  mid,
+  delay,
+  color,
+}: {
+  a: number
+  b: number
+  y: number
+  mid?: boolean
+  delay: number
+  color: string
+}) {
   if (b - a < 40) return null
   const dots = mid ? [a, (a + b) / 2, b] : [a, b]
   return (
     <g>
-      <path className="wpl-draw" pathLength={1} d={"M " + a + " " + y + " L " + b + " " + y} stroke={color} strokeWidth={3} style={{ animationDelay: delay + "s" }} />
+      <path
+        className="wpl-draw"
+        pathLength={1}
+        d={"M " + a + " " + y + " L " + b + " " + y}
+        stroke={color}
+        strokeWidth={3}
+        style={{ animationDelay: delay + "s" }}
+      />
       {dots.map((x, k) => (
-        <circle key={k} className="wpl-dot" cx={x} cy={y} r={6.5} fill={color} style={{ animationDelay: delay + k * 0.35 + "s" }} />
+        <circle
+          key={k}
+          className="wpl-dot"
+          cx={x}
+          cy={y}
+          r={6.5}
+          fill={color}
+          style={{ animationDelay: delay + k * 0.35 + "s" }}
+        />
       ))}
     </g>
   )
@@ -755,7 +1019,11 @@ function LetterCell({
         >
           <path d={glyphPath(c.ch, c.w, c.h, c.s)} />
           {reel.map((g, k) => (
-            <path key={k} transform={"translate(" + (c.w - g.w) / 2 + " " + -(k + 1) * pitch + ")"} d={glyphPath(g.ch, g.w, c.h, c.s)} />
+            <path
+              key={k}
+              transform={"translate(" + (c.w - g.w) / 2 + " " + -(k + 1) * pitch + ")"}
+              d={glyphPath(g.ch, g.w, c.h, c.s)}
+            />
           ))}
         </g>
       </svg>
@@ -795,7 +1063,18 @@ function Signature({ lines, color }: { lines: string[]; color: string }) {
         style={{ animationDelay: "3s" }}
       />
       {rows.map((row, ri) => (
-        <g key={ri} transform={"translate(" + (60 - (row.width * k) / 2) + " " + (ys[ri] - (H * k) / 2) + ") scale(" + k + ")"}>
+        <g
+          key={ri}
+          transform={
+            "translate(" +
+            (60 - (row.width * k) / 2) +
+            " " +
+            (ys[ri] - (H * k) / 2) +
+            ") scale(" +
+            k +
+            ")"
+          }
+        >
           {row.items.map((it, ii) => {
             const j = n++
             const rot = (hash(j * 7 + 3) - 0.5) * 16
@@ -805,7 +1084,19 @@ function Signature({ lines, color }: { lines: string[]; color: string }) {
                 key={ii}
                 className="wpl-draw"
                 pathLength={1}
-                transform={"translate(" + it.x + " " + dy + ") rotate(" + rot + " " + it.w / 2 + " " + H / 2 + ")"}
+                transform={
+                  "translate(" +
+                  it.x +
+                  " " +
+                  dy +
+                  ") rotate(" +
+                  rot +
+                  " " +
+                  it.w / 2 +
+                  " " +
+                  H / 2 +
+                  ")"
+                }
                 d={glyphPath(it.ch, it.w, H, S)}
                 fill="none"
                 stroke={color}
@@ -819,7 +1110,16 @@ function Signature({ lines, color }: { lines: string[]; color: string }) {
         </g>
       ))}
       {["M 110 2 L 118 -8", "M 118 16 L 130 11", "M 100 -2 L 101 -14"].map((d, i) => (
-        <path key={d} className="wpl-draw wpl-spark" pathLength={1} d={d} stroke={color} strokeWidth={4} strokeLinecap="round" style={{ animationDelay: 3.8 + i * 0.08 + "s" }} />
+        <path
+          key={d}
+          className="wpl-draw wpl-spark"
+          pathLength={1}
+          d={d}
+          stroke={color}
+          strokeWidth={4}
+          strokeLinecap="round"
+          style={{ animationDelay: 3.8 + i * 0.08 + "s" }}
+        />
       ))}
     </svg>
   )
@@ -858,12 +1158,36 @@ function Character({
 
   const limb = (d: string, w: number) => (
     <>
-      <path d={d} fill="none" stroke={armOutline} strokeWidth={w + 8} strokeLinecap="round" strokeLinejoin="round" />
-      <path d={d} fill="none" stroke={effectiveSkin} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d={d}
+        fill="none"
+        stroke={armOutline}
+        strokeWidth={w + 8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d={d}
+        fill="none"
+        stroke={effectiveSkin}
+        strokeWidth={w}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </>
   )
-  const fingers = ["M 388 170 L 380 116", "M 399 166 L 399 106", "M 410 168 L 418 112", "M 419 178 L 434 136", "M 382 192 L 352 170"]
-  const specks = Array.from({ length: 64 }, (_, k) => [110 + hash(k * 3.1) * 190, 215 + hash(k * 5.7 + 1) * 305, 1 + hash(k * 9.3 + 2) * 1.8])
+  const fingers = [
+    "M 388 170 L 380 116",
+    "M 399 166 L 399 106",
+    "M 410 168 L 418 112",
+    "M 419 178 L 434 136",
+    "M 382 192 L 352 170",
+  ]
+  const specks = Array.from({ length: 64 }, (_, k) => [
+    110 + hash(k * 3.1) * 190,
+    215 + hash(k * 5.7 + 1) * 305,
+    1 + hash(k * 9.3 + 2) * 1.8,
+  ])
 
   return (
     <g className="wpl-rise">
@@ -873,64 +1197,185 @@ function Character({
           <path d="M 206 548 L 208 640" stroke={effectiveSkin} strokeWidth={3} />
 
           {/* Neck */}
-          <path d="M 184 158 L 184 226 L 222 226 L 222 158 Z" fill={effectiveSkin} stroke={lineStroke} strokeWidth={4} />
-          
+          <path
+            d="M 184 158 L 184 226 L 222 226 L 222 158 Z"
+            fill={effectiveSkin}
+            stroke={lineStroke}
+            strokeWidth={4}
+          />
+
           <clipPath id={shirtId}>
             <path d={torso} />
           </clipPath>
-          <path d={torso} fill={shirtColor} stroke={isDarkPaper ? "#334155" : undefined} strokeWidth={isDarkPaper ? 2 : 0} />
-          
+          <path
+            d={torso}
+            fill={shirtColor}
+            stroke={isDarkPaper ? "#334155" : undefined}
+            strokeWidth={isDarkPaper ? 2 : 0}
+          />
+
           {/* Shirt specks / cosmic particles */}
           <g clipPath={"url(#" + shirtId + ")"} fill={speckColor} opacity={isDarkPaper ? 0.9 : 0.8}>
             {specks.map(([x, y, r], k) => (
               <circle key={k} cx={x} cy={y} r={r} />
             ))}
           </g>
-          
+
           {/* Inner collar & chest triangle */}
           <path d="M 178 216 L 203 262 L 228 216 Z" fill={effectiveSkin} />
-          <path d="M 168 218 L 180 252 L 200 267 M 238 218 L 226 252 L 206 267" fill="none" stroke={effectiveSkin} strokeWidth={3} strokeLinejoin="round" />
-          <path d="M 203 280 L 203 505" stroke={effectiveSkin} strokeWidth={6} strokeLinecap="round" strokeDasharray="0 36" />
-          <path d="M 122 512 C 160 518 250 518 288 512" fill="none" stroke={effectiveSkin} strokeWidth={3} />
+          <path
+            d="M 168 218 L 180 252 L 200 267 M 238 218 L 226 252 L 206 267"
+            fill="none"
+            stroke={effectiveSkin}
+            strokeWidth={3}
+            strokeLinejoin="round"
+          />
+          <path
+            d="M 203 280 L 203 505"
+            stroke={effectiveSkin}
+            strokeWidth={6}
+            strokeLinecap="round"
+            strokeDasharray="0 36"
+          />
+          <path
+            d="M 122 512 C 160 518 250 518 288 512"
+            fill="none"
+            stroke={effectiveSkin}
+            strokeWidth={3}
+          />
 
           {/* his right arm, folded across the waist */}
           {limb("M 118 384 C 140 410 168 428 194 438", 30)}
           <circle cx={204} cy={440} r={24} fill={lineStroke} />
           <circle cx={204} cy={440} r={20} fill={effectiveSkin} />
-          <path d="M 206 426 C 214 430 218 438 216 448 M 196 446 C 202 452 210 454 216 450" fill="none" stroke={lineStroke} strokeWidth={3} strokeLinecap="round" />
-          <path d="M 124 250 C 110 300 106 345 112 382" fill="none" stroke={shirtColor} strokeWidth={50} strokeLinecap="round" />
-          <path d="M 144 282 C 136 320 134 350 138 376" fill="none" stroke={effectiveSkin} strokeWidth={2.5} strokeLinecap="round" />
-          <path d="M 90 380 C 102 394 126 396 140 386" fill="none" stroke={effectiveSkin} strokeWidth={2.5} strokeLinecap="round" />
+          <path
+            d="M 206 426 C 214 430 218 438 216 448 M 196 446 C 202 452 210 454 216 450"
+            fill="none"
+            stroke={lineStroke}
+            strokeWidth={3}
+            strokeLinecap="round"
+          />
+          <path
+            d="M 124 250 C 110 300 106 345 112 382"
+            fill="none"
+            stroke={shirtColor}
+            strokeWidth={50}
+            strokeLinecap="round"
+          />
+          <path
+            d="M 144 282 C 136 320 134 350 138 376"
+            fill="none"
+            stroke={effectiveSkin}
+            strokeWidth={2.5}
+            strokeLinecap="round"
+          />
+          <path
+            d="M 90 380 C 102 394 126 396 140 386"
+            fill="none"
+            stroke={effectiveSkin}
+            strokeWidth={2.5}
+            strokeLinecap="round"
+          />
 
           {/* the waving arm */}
           <g className="wpl-uarm">
             <g className="wpl-farm">
               {limb("M 350 350 L 392 214", 30)}
               <path d="M 381 252 L 387 233" stroke={shirtColor} strokeWidth={40} />
-              <circle cx={384} cy={243} r={8} fill={effectiveSkin} stroke={lineStroke} strokeWidth={3} />
+              <circle
+                cx={384}
+                cy={243}
+                r={8}
+                fill={effectiveSkin}
+                stroke={lineStroke}
+                strokeWidth={3}
+              />
               <g className="wpl-hand">
-                <ellipse cx={400} cy={180} rx={31} ry={35} fill={lineStroke} transform="rotate(12 400 180)" />
+                <ellipse
+                  cx={400}
+                  cy={180}
+                  rx={31}
+                  ry={35}
+                  fill={lineStroke}
+                  transform="rotate(12 400 180)"
+                />
                 {fingers.map((d) => (
-                  <path key={"o" + d} d={d} stroke={lineStroke} strokeWidth={24} strokeLinecap="round" />
+                  <path
+                    key={"o" + d}
+                    d={d}
+                    stroke={lineStroke}
+                    strokeWidth={24}
+                    strokeLinecap="round"
+                  />
                 ))}
-                <ellipse cx={400} cy={180} rx={27} ry={31} fill={effectiveSkin} transform="rotate(12 400 180)" />
+                <ellipse
+                  cx={400}
+                  cy={180}
+                  rx={27}
+                  ry={31}
+                  fill={effectiveSkin}
+                  transform="rotate(12 400 180)"
+                />
                 {fingers.map((d) => (
-                  <path key={"f" + d} d={d} stroke={effectiveSkin} strokeWidth={16} strokeLinecap="round" />
+                  <path
+                    key={"f" + d}
+                    d={d}
+                    stroke={effectiveSkin}
+                    strokeWidth={16}
+                    strokeLinecap="round"
+                  />
                 ))}
-                <path d="M 392 196 C 400 202 410 200 416 192 M 394 150 L 394 164 M 405 148 L 405 162" fill="none" stroke={lineStroke} strokeWidth={2.5} strokeLinecap="round" />
+                <path
+                  d="M 392 196 C 400 202 410 200 416 192 M 394 150 L 394 164 M 405 148 L 405 162"
+                  fill="none"
+                  stroke={lineStroke}
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                />
               </g>
             </g>
-            <path d="M 288 250 C 312 280 330 310 344 340" fill="none" stroke={shirtColor} strokeWidth={50} strokeLinecap="round" />
-            <path d="M 282 294 C 296 316 306 334 314 350" fill="none" stroke={effectiveSkin} strokeWidth={2.5} strokeLinecap="round" />
-            <path d="M 318 344 Q 342 356 364 324" fill="none" stroke={effectiveSkin} strokeWidth={2.5} strokeLinecap="round" />
+            <path
+              d="M 288 250 C 312 280 330 310 344 340"
+              fill="none"
+              stroke={shirtColor}
+              strokeWidth={50}
+              strokeLinecap="round"
+            />
+            <path
+              d="M 282 294 C 296 316 306 334 314 350"
+              fill="none"
+              stroke={effectiveSkin}
+              strokeWidth={2.5}
+              strokeLinecap="round"
+            />
+            <path
+              d="M 318 344 Q 342 356 364 324"
+              fill="none"
+              stroke={effectiveSkin}
+              strokeWidth={2.5}
+              strokeLinecap="round"
+            />
           </g>
 
           {/* Head & Face */}
           <g className="wpl-head" ref={headRef}>
             <g className="wpl-look">
-              <ellipse cx={158} cy={118} rx={12} ry={18} fill={effectiveSkin} stroke={lineStroke} strokeWidth={4} />
-              <path d="M 156 110 C 162 112 162 124 156 126" fill="none" stroke={lineStroke} strokeWidth={2.5} />
-              
+              <ellipse
+                cx={158}
+                cy={118}
+                rx={12}
+                ry={18}
+                fill={effectiveSkin}
+                stroke={lineStroke}
+                strokeWidth={4}
+              />
+              <path
+                d="M 156 110 C 162 112 162 124 156 126"
+                fill="none"
+                stroke={lineStroke}
+                strokeWidth={2.5}
+              />
+
               {/* Face contour */}
               <path
                 d="M 160 92 C 158 142 172 180 206 184 C 240 182 258 150 258 100 C 258 64 236 46 208 46 C 180 46 162 64 160 92 Z"
@@ -944,10 +1389,22 @@ function Character({
                 fill={lineStroke}
               />
               <path d="M 160 94 L 166 126 L 173 104 Z" fill={lineStroke} />
-              <path d="M 196 30 C 220 22 250 24 266 38 M 190 44 C 210 36 236 38 250 46" fill="none" stroke={effectiveSkin} strokeWidth={2.5} strokeLinecap="round" />
-              
+              <path
+                d="M 196 30 C 220 22 250 24 266 38 M 190 44 C 210 36 236 38 250 46"
+                fill="none"
+                stroke={effectiveSkin}
+                strokeWidth={2.5}
+                strokeLinecap="round"
+              />
+
               <g className="wpl-brows">
-                <path d="M 176 88 C 184 84 194 84 202 87 M 218 87 C 226 84 238 84 246 88" fill="none" stroke={lineStroke} strokeWidth={4.5} strokeLinecap="round" />
+                <path
+                  d="M 176 88 C 184 84 194 84 202 87 M 218 87 C 226 84 238 84 246 88"
+                  fill="none"
+                  stroke={lineStroke}
+                  strokeWidth={4.5}
+                  strokeLinecap="round"
+                />
               </g>
               <g className="wpl-eyes">
                 <g className="wpl-pupils">
@@ -955,18 +1412,75 @@ function Character({
                   <circle cx={232} cy={110} r={4.4} fill={lineStroke} />
                 </g>
               </g>
-              <path className="wpl-happy" d="M 182 113 Q 189 104 196 113 M 225 113 Q 232 104 239 113" fill="none" stroke={lineStroke} strokeWidth={3.5} strokeLinecap="round" />
-              <path d="M 172 102 L 160 100 M 206 105 C 209 101 211 101 214 105" fill="none" stroke={lineStroke} strokeWidth={4} strokeLinecap="round" />
-              
+              <path
+                className="wpl-happy"
+                d="M 182 113 Q 189 104 196 113 M 225 113 Q 232 104 239 113"
+                fill="none"
+                stroke={lineStroke}
+                strokeWidth={3.5}
+                strokeLinecap="round"
+              />
+              <path
+                d="M 172 102 L 160 100 M 206 105 C 209 101 211 101 214 105"
+                fill="none"
+                stroke={lineStroke}
+                strokeWidth={4}
+                strokeLinecap="round"
+              />
+
               {/* Glasses frames */}
-              <rect x={172} y={96} width={34} height={26} rx={5} fill="none" stroke={lineStroke} strokeWidth={4.5} />
-              <rect x={214} y={96} width={36} height={26} rx={5} fill="none" stroke={lineStroke} strokeWidth={4.5} />
-              
+              <rect
+                x={172}
+                y={96}
+                width={34}
+                height={26}
+                rx={5}
+                fill="none"
+                stroke={lineStroke}
+                strokeWidth={4.5}
+              />
+              <rect
+                x={214}
+                y={96}
+                width={36}
+                height={26}
+                rx={5}
+                fill="none"
+                stroke={lineStroke}
+                strokeWidth={4.5}
+              />
+
               {/* Nose & Smile */}
-              <path d="M 214 118 C 211 132 206 142 214 146 C 219 148 224 146 226 143" fill="none" stroke={lineStroke} strokeWidth={3.5} strokeLinecap="round" />
-              <path className="wpl-smile" d="M 196 158 C 206 166 222 166 234 156" fill="none" stroke={lineStroke} strokeWidth={3.5} strokeLinecap="round" />
-              <path className="wpl-grin" d="M 195 156 C 206 174 226 172 236 154 Z" fill={lineStroke} stroke={lineStroke} strokeWidth={3} strokeLinejoin="round" />
-              <path d="M 238 150 C 241 153 241 157 239 160" fill="none" stroke={lineStroke} strokeWidth={2.5} strokeLinecap="round" />
+              <path
+                d="M 214 118 C 211 132 206 142 214 146 C 219 148 224 146 226 143"
+                fill="none"
+                stroke={lineStroke}
+                strokeWidth={3.5}
+                strokeLinecap="round"
+              />
+              <path
+                className="wpl-smile"
+                d="M 196 158 C 206 166 222 166 234 156"
+                fill="none"
+                stroke={lineStroke}
+                strokeWidth={3.5}
+                strokeLinecap="round"
+              />
+              <path
+                className="wpl-grin"
+                d="M 195 156 C 206 174 226 172 236 154 Z"
+                fill={lineStroke}
+                stroke={lineStroke}
+                strokeWidth={3}
+                strokeLinejoin="round"
+              />
+              <path
+                d="M 238 150 C 241 153 241 157 239 160"
+                fill="none"
+                stroke={lineStroke}
+                strokeWidth={2.5}
+                strokeLinecap="round"
+              />
             </g>
           </g>
         </g>

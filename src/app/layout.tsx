@@ -1,98 +1,125 @@
-import type { Metadata } from "next";
-import { IBM_Plex_Serif, IBM_Plex_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata, Viewport } from "next"
+import Script from "next/script"
+import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google"
+import "./globals.css"
+import { Header } from "@/components/layout/Header"
+import { Footer } from "@/components/layout/Footer"
+import { ClientChrome } from "@/components/motion/ClientChrome"
+import { MOTION_BOOT_SCRIPT } from "@/lib/motion-preference"
+import { metadataBase, pageMetadata } from "@/lib/seo"
+import { SITE_URL, site } from "@/content/site"
+import { skillGroups } from "@/content/skills"
+import { experiences } from "@/content/experience"
 
-const ibmPlexSerif = IBM_Plex_Serif({
-  weight: ["700"],
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
+// Only the families needed for first paint are preloaded; the rest load on demand.
+const plexSerif = IBM_Plex_Serif({
   weight: ["400"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-plex-serif",
   display: "swap",
-});
+})
+const plexSans = IBM_Plex_Sans({
+  weight: ["400", "500"],
+  preload: false,
+  subsets: ["latin"],
+  variable: "--font-plex-sans",
+  display: "swap",
+})
+const plexMono = IBM_Plex_Mono({
+  weight: ["400", "500"],
+  preload: false,
+  subsets: ["latin"],
+  variable: "--font-plex-mono",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://shivamsingh.dev"),
-  title: {
-    default: "Shivam Singh — Software Engineer",
-    template: "%s | Shivam Singh",
-  },
-  description: "Full-stack engineer building web applications, enterprise platforms, and interactive digital products. Next.js, React, TypeScript, MongoDB, SharePoint.",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    siteName: "Shivam Singh — Portfolio",
-    title: "Shivam Singh — Software Engineer",
-    description: "Full-stack engineer building web applications, enterprise platforms, and interactive digital products.",
-    url: "https://shivamsingh.dev",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Shivam Singh — Software Engineer",
-    description: "Full-stack engineer building web applications, enterprise platforms, and interactive digital products.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+  metadataBase,
+  ...pageMetadata({ path: "/" }),
+  title: { default: `${site.name} — ${site.jobTitle}`, template: `%s | ${site.name}` },
+  applicationName: `${site.name} — Portfolio`,
+  authors: [{ name: site.name, url: SITE_URL }],
+  creator: site.name,
+  robots: { index: true, follow: true },
+}
 
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+export const viewport: Viewport = {
+  themeColor: "#0A0E17",
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+}
 
-// JSON-LD Structured Data
 function JsonLd() {
-  const structuredData = {
+  const education = experiences.find((e) => e.type === "Education")
+  const data = {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "WebSite",
-        name: "Shivam Singh — Portfolio",
-        url: "https://shivamsingh.dev",
-        description: "Full-stack engineer building web applications, enterprise platforms, and interactive digital products.",
+        "@id": `${SITE_URL}/#website`,
+        name: `${site.name} — Portfolio`,
+        url: SITE_URL,
+        description: site.description,
+        publisher: { "@id": `${SITE_URL}/#person` },
       },
       {
         "@type": "Person",
-        name: "Shivam Singh",
-        url: "https://shivamsingh.dev",
-        jobTitle: "Software Engineer",
-        description: "Full-stack engineer specializing in Next.js, React, TypeScript, MongoDB, and SharePoint.",
-        sameAs: [
-          "https://github.com/shivamsinghsp",
-          "https://www.linkedin.com/in/shivam2105-",
-        ],
+        "@id": `${SITE_URL}/#person`,
+        name: site.name,
+        url: SITE_URL,
+        email: `mailto:${site.email}`,
+        jobTitle: site.jobTitle,
+        description: site.description,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Kanpur",
+          addressRegion: "Uttar Pradesh",
+          addressCountry: "IN",
+        },
+        ...(education && {
+          alumniOf: { "@type": "CollegeOrUniversity", name: education.organization },
+        }),
+        knowsAbout: skillGroups.flatMap((g) => g.items).slice(0, 20),
+        sameAs: [site.socials.github, site.socials.linkedin],
       },
     ],
-  };
-
+  }
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      // Static, build-time data only — no user input reaches this string.
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
     />
-  );
+  )
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${ibmPlexSerif.variable} ${ibmPlexMono.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${plexSerif.variable} ${plexSans.variable} ${plexMono.variable}`}
+    >
+      <body>
+        <Script id="motion-boot" strategy="beforeInteractive">
+          {MOTION_BOOT_SCRIPT}
+        </Script>
+        <a
+          href="#main"
+          className="sr-only-focusable fixed left-4 top-3 z-[2000] rounded-lg bg-cta-bg px-4 py-3 font-mono text-xs uppercase tracking-wider text-cta-text"
+        >
+          Skip to content
+        </a>
         <JsonLd />
         <Header />
-        <main className="min-h-screen">
+        <main id="main" tabIndex={-1} className="min-h-[60vh] outline-none">
           {children}
         </main>
         <Footer />
+        <ClientChrome />
       </body>
     </html>
-  );
+  )
 }

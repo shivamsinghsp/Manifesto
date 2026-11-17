@@ -1,50 +1,31 @@
-import * as React from "react"
-import NextLink, { LinkProps as NextLinkProps } from "next/link"
+import NextLink from "next/link"
 import { ArrowUpRight } from "lucide-react"
+import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 
-export interface LinkProps extends NextLinkProps {
-  children: React.ReactNode
-  className?: string
-  variant?: "text" | "cta"
+/** Inline call-to-action link with an arrow. */
+export function CtaLink({
+  href,
+  children,
+  className,
+}: {
   href: string
+  children: ReactNode
+  className?: string
+}) {
+  return (
+    <NextLink
+      href={href}
+      className={cn(
+        "text-label group inline-flex min-h-[44px] items-center gap-2 text-accent transition-colors duration-200 hover:text-accent-hover",
+        className
+      )}
+    >
+      {children}
+      <ArrowUpRight
+        aria-hidden="true"
+        className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1"
+      />
+    </NextLink>
+  )
 }
-
-const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
-  ({ children, className, variant = "text", href, ...props }, ref) => {
-    
-    if (variant === "cta") {
-      return (
-        <NextLink
-          href={href}
-          ref={ref}
-          className={cn(
-            "group inline-flex items-center gap-2 text-label text-accent transition-colors duration-200 hover:text-accent-hover focus:outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-text",
-            className
-          )}
-          {...props}
-        >
-          {children}
-          <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-        </NextLink>
-      )
-    }
-
-    return (
-      <NextLink
-        href={href}
-        ref={ref}
-        className={cn(
-          "text-accent underline decoration-accent/30 underline-offset-4 transition-colors duration-200 hover:text-accent-hover hover:decoration-accent-hover focus:outline-none focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-text",
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </NextLink>
-    )
-  }
-)
-Link.displayName = "Link"
-
-export { Link }

@@ -1,215 +1,323 @@
+import type { CSSProperties } from "react"
 import NextLink from "next/link"
-import { projects } from "@/data/projects"
-import { experiences } from "@/data/experience"
+import { ArrowDown } from "lucide-react"
+import { projects } from "@/content/projects"
+import { experiences } from "@/content/experience"
+import { site } from "@/content/site"
 import { ProjectCard } from "@/components/ui/ProjectCard"
 import { Timeline } from "@/components/ui/Timeline"
-import { Link } from "@/components/ui/Link"
-import { buttonBaseStyles, buttonVariants, buttonSizes } from "@/components/ui/button"
-import { HeroSystem } from "@/components/ui/HeroSystem"
+import { CtaLink } from "@/components/ui/Link"
+import { SectionHeading } from "@/components/ui/SectionHeading"
+import { ProfilePhoto } from "@/components/ui/ProfilePhoto"
+import { buttonClass } from "@/components/ui/button"
+import { Magnetic } from "@/components/motion/Magnetic"
+import { HeroCanvas } from "@/components/sections/HeroCanvas"
+import { HeroSteps } from "@/components/sections/HeroSteps"
+import { SkillsSection } from "@/components/sections/SkillsSection"
 import { WorkAssistant } from "@/components/engineering/WorkAssistant"
-import { WavingLandingModal } from "@/components/ui/WavingLandingModal"
-import { cn } from "@/lib/utils"
+import { pageMetadata } from "@/lib/seo"
+
+export const metadata = pageMetadata({ path: "/" })
+
+const line = (i: number) => ({ "--i": i }) as CSSProperties
 
 export default function Home() {
-  const featuredProject = projects.find(p => p.slug === "shynr")
-  const otherProjects = projects.filter(p => p.slug !== "shynr")
-  const recentExperience = experiences.slice(0, 2).map(exp => ({
-    date: exp.dateRange,
-    title: `${exp.title} — ${exp.organization}`,
-    description: exp.description
-  }))
+  const featured = projects.find((p) => p.slug === "shynr") ?? projects[0]
+  const others = projects.filter((p) => p.slug !== featured.slug)
+  const recent = experiences
+    .filter((e) => e.type === "Work")
+    .slice(0, 2)
+    .map((e) => ({
+      date: e.dateRange,
+      title: e.title,
+      subtitle: e.organization,
+      description: e.description,
+    }))
 
   return (
     <>
-      {/* Interactive Waving Landing Poster Overlay / Pop-up */}
-      <WavingLandingModal />
-
-      {/* Hero Section */}
-      <section id="hero" className="py-16 md:py-20 lg:py-24 border-b border-border bg-atmosphere relative scroll-mt-20">
-        <div className="grid-container items-center gap-y-12 lg:gap-y-0">
-          <div className="col-span-full lg:col-span-7 flex flex-col items-start relative z-10">
-            <h1 className="text-display mb-6 leading-[1.05] tracking-tight text-text">
-              <span className="block">Engineering</span>
-              <span className="block italic text-text-secondary">systems that</span>
-              <span className="block">ship.</span>
-            </h1>
-            <p className="text-body-large text-text-secondary max-w-md mb-8">
-              Hi, I&apos;m Shivam. I build full-stack web applications, enterprise platforms, and interactive digital products — from architecture to deployment.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <NextLink 
-                href="/work"
-                className={cn(buttonBaseStyles, buttonVariants.primary, buttonSizes.md)}
+      {/* ── Hero: pinned on desktop; scroll drives the 5-step sequence ── */}
+      <section
+        id="hero"
+        aria-labelledby="hero-title"
+        className="hero-track bg-atmosphere relative border-b border-border"
+      >
+        <div className="lg:sticky lg:top-[var(--header-h)] lg:h-[calc(100svh-var(--header-h))] lg:min-h-[560px]">
+          <div className="grid-container h-full items-center gap-y-10 py-12 md:py-16 lg:py-0">
+            <div className="relative z-10 col-span-full flex flex-col items-start lg:col-span-6">
+              <p className="text-mono-label animate-reveal-fade mb-6 text-text-tertiary">{`// ${site.jobTitle} · Full-stack`}</p>
+              <h1 id="hero-title" className="text-display mb-7 text-text">
+                <span className="line-mask">
+                  <span style={line(0)}>Engineering </span>
+                </span>
+                <span className="line-mask">
+                  <span style={line(1)} className="italic text-text-secondary">
+                    systems that{" "}
+                  </span>
+                </span>
+                <span className="line-mask">
+                  <span style={line(2)}>ship.</span>
+                </span>
+              </h1>
+              <p
+                className="text-body-large animate-rise mb-9 max-w-md text-text-secondary"
+                style={{ animationDelay: "200ms" }}
               >
-                View Selected Work
-              </NextLink>
-              <NextLink 
-                href="/about"
-                className={cn(buttonBaseStyles, buttonVariants.secondary, buttonSizes.md)}
+                Hi, I&apos;m Shivam. I build full-stack web applications, enterprise platforms, and
+                interactive digital products — from architecture to deployment.
+              </p>
+              <div
+                className="animate-rise mb-10 flex flex-wrap gap-3"
+                style={{ animationDelay: "280ms" }}
               >
-                Read Manifesto
-              </NextLink>
+                <Magnetic>
+                  <NextLink href="/work" className={buttonClass("primary")}>
+                    View selected work
+                  </NextLink>
+                </Magnetic>
+                <Magnetic>
+                  <NextLink href="/contact" className={buttonClass("secondary")}>
+                    Get in touch
+                  </NextLink>
+                </Magnetic>
+              </div>
+              <div
+                className="animate-reveal-fade w-full max-w-lg"
+                style={{ animationDelay: "600ms" }}
+              >
+                <HeroSteps />
+              </div>
+            </div>
+            <div className="relative col-span-full h-[340px] overflow-hidden rounded-2xl border border-white/10 bg-[#0E1322]/60 sm:h-[420px] lg:col-span-6 lg:h-[min(640px,76vh)] lg:border-transparent lg:bg-transparent">
+              <HeroCanvas />
             </div>
           </div>
-          <div className="col-span-full lg:col-span-5 relative h-[300px] md:h-[420px] rounded-2xl border border-white/10 bg-[#0E1322]/80 backdrop-blur-xl shadow-2xl overflow-hidden">
-             <HeroSystem />
+          <p
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-6 left-1/2 hidden -translate-x-1/2 items-center gap-2 font-mono text-[11px] tracking-[0.3em] text-text-tertiary lg:flex"
+          >
+            SCROLL <ArrowDown className="h-3.5 w-3.5 motion-safe:animate-bounce" />
+          </p>
+        </div>
+      </section>
+
+      {/* ── 01 Featured ── */}
+      <section id="work" aria-labelledby="featured-h" className="section-y border-b border-border">
+        <div className="container-x">
+          <SectionHeading
+            id="featured-h"
+            label="01. FEATURED"
+            title="Selected case study"
+            action={<CtaLink href="/work">View archive</CtaLink>}
+          />
+          <div data-reveal>
+            <ProjectCard project={featured} featured />
           </div>
         </div>
       </section>
 
-      {/* Featured Work Section */}
-      <section id="work" className="py-16 md:py-24 lg:py-32 border-b border-border scroll-mt-20">
-        <div className="grid-container">
-          <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6 flex items-end justify-between">
-            <div>
-              <h2 className="text-mono-label text-text-tertiary mb-3">{`// 01. FEATURED`}</h2>
-              <h3 className="text-display-secondary">Selected Case Study</h3>
-            </div>
-            <Link href="/work" variant="cta">View Archive</Link>
-          </div>
-
-          <div className="col-span-full">
-            {featuredProject && (
-              <ProjectCard
-                featured
-                title={featuredProject.title}
-                description={featuredProject.shortDescription}
-                category={featuredProject.category}
-                href={`/work/${featuredProject.slug}`}
-                imageSrc={featuredProject.heroImage.src}
-                imageAlt={featuredProject.heroImage.alt}
-              />
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Ask Shivam's Work */}
-      <section id="explore" className="py-16 md:py-24 lg:py-32 border-b border-border bg-bg relative overflow-hidden scroll-mt-20">
-        <div className="absolute inset-0 bg-blueprint opacity-10 pointer-events-none" />
-        <div className="grid-container relative z-10">
-          <div className="col-span-full lg:col-span-12 mb-12">
-            <h2 className="text-mono-label text-text-tertiary mb-3">{`// 02. EXPLORE`}</h2>
-            <h3 className="text-display-secondary">Project Intelligence</h3>
-          </div>
-          <div className="col-span-full lg:col-span-10 lg:col-start-2">
+      {/* ── 02 Explore ── */}
+      <section
+        id="explore"
+        aria-labelledby="explore-h"
+        className="section-y relative overflow-hidden border-b border-border"
+      >
+        <div
+          aria-hidden="true"
+          className="bg-blueprint pointer-events-none absolute inset-0 opacity-10"
+        />
+        <div className="container-x relative">
+          <SectionHeading id="explore-h" label="02. EXPLORE" title="Project intelligence" />
+          <div className="mx-auto max-w-3xl" data-reveal>
             <WorkAssistant />
           </div>
         </div>
       </section>
 
-      {/* Other Projects Section */}
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-surface scroll-mt-20">
-        <div className="grid-container">
-          <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6 flex items-end justify-between">
-            <div>
-              <h2 className="text-mono-label text-text-tertiary mb-3">{`// 03. RECENT`}</h2>
-              <h3 className="text-display-secondary">Engineered Systems</h3>
-            </div>
-            <Link href="/work" variant="cta">View All Archive</Link>
-          </div>
-          
-          {otherProjects.map((project) => (
-            <div key={project.slug} className="col-span-full md:col-span-6 lg:col-span-6 mb-8">
-              <ProjectCard
-                title={project.title}
-                description={project.shortDescription}
-                category={project.category}
-                href={`/work/${project.slug}`}
-                imageSrc={project.heroImage.src}
-                imageAlt={project.heroImage.alt}
-                className="h-full"
-              />
-            </div>
-          ))}
+      {/* ── 03 Recent ── */}
+      <section
+        aria-labelledby="recent-h"
+        className="section-y bg-surface/60 border-b border-border"
+      >
+        <div className="container-x">
+          <SectionHeading
+            id="recent-h"
+            label="03. RECENT"
+            title="Engineered systems"
+            action={<CtaLink href="/work">All projects</CtaLink>}
+          />
+          <ul className="grid grid-cols-1 gap-6 md:grid-cols-2" data-reveal-stagger>
+            {others.map((p) => (
+              <li key={p.slug}>
+                <ProjectCard project={p} />
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* Engineering Playground Teaser */}
-      <section id="labs" className="py-16 md:py-24 lg:py-32 border-b border-border bg-bg relative overflow-hidden scroll-mt-20">
-        <div className="grid-container relative z-10">
-          <div className="col-span-full lg:col-span-12 mb-16 border-b border-border pb-6 flex items-end justify-between">
-            <div>
-              <h2 className="text-mono-label text-text-tertiary mb-3">{`// 04. LABS`}</h2>
-              <h3 className="text-display-secondary">Engineering Playground</h3>
-            </div>
-            <Link href="/playground" variant="cta">Enter Labs</Link>
-          </div>
-          
-          <div className="col-span-full lg:col-span-12">
-            <div className="rounded-2xl border border-white/10 bg-surface/70 backdrop-blur-xl p-8 md:p-12 shadow-2xl group hover:border-cyan-500/30 transition-all duration-300">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div>
-                  <div className="flex items-center gap-3 mb-6">
-                    <span className="w-8 h-[2px] bg-cyan-400 rounded-full"></span>
-                    <span className="text-xs font-mono tracking-widest text-cyan-400 uppercase font-medium">INTERACTIVE MODEL</span>
-                  </div>
-                  <h4 className="text-3xl font-display font-medium text-white mb-4 group-hover:text-cyan-300 transition-colors duration-300">Geospatial Validation</h4>
-                  <p className="text-base text-slate-300 mb-8 leading-relaxed">
-                    Explore a high-precision, interactive 2D model demonstrating the Haversine distance algorithm and geofencing validation engine developed for the Shynr HRMS platform.
-                  </p>
-                  <NextLink 
-                    href="/playground"
-                    className={cn(buttonBaseStyles, buttonVariants.secondary, buttonSizes.md)}
-                  >
-                    Open Geofencing Lab ↗
-                  </NextLink>
-                </div>
-                <div className="relative aspect-video rounded-xl border border-white/10 bg-[#070A12] flex items-center justify-center transition-all duration-500 overflow-hidden shadow-inner group-hover:border-cyan-500/40">
-                  <div className="absolute inset-0 bg-blueprint opacity-20 pointer-events-none" />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
-                  {/* Radar animation representation */}
-                  <svg viewBox="0 0 100 100" className="w-1/2 h-1/2 relative z-10">
-                    <circle cx="50" cy="50" r="30" fill="none" stroke="#00B8D4" strokeWidth="0.8" strokeDasharray="3 3" className="animate-[spin_20s_linear_infinite]" opacity="0.8" />
-                    <circle cx="50" cy="50" r="18" fill="rgba(0,184,212,0.08)" stroke="#00B8D4" strokeWidth="0.5" />
-                    <circle cx="50" cy="50" r="2" fill="#FFFFFF" />
-                    <line x1="50" y1="50" x2="68" y2="68" stroke="rgba(255,255,255,0.4)" strokeWidth="0.5" strokeDasharray="1 1" />
-                    <circle cx="68" cy="68" r="4" fill="#070A12" stroke="#00B8D4" strokeWidth="1" />
-                    <circle cx="68" cy="68" r="1.5" fill="#00B8D4" className="animate-ping" />
-                  </svg>
-                </div>
+      {/* ── 04 Stack ── */}
+      <section
+        id="stack"
+        aria-labelledby="stack-h"
+        className="section-y relative overflow-hidden border-b border-border"
+      >
+        <div className="container-x">
+          <SectionHeading id="stack-h" label="04. STACK" title="Tools I build with" />
+          <SkillsSection />
+        </div>
+      </section>
+
+      {/* ── 05 Labs ── */}
+      <section id="labs" aria-labelledby="labs-h" className="section-y border-b border-border">
+        <div className="container-x">
+          <SectionHeading
+            id="labs-h"
+            label="05. LABS"
+            title="Engineering playground"
+            action={<CtaLink href="/playground">Enter labs</CtaLink>}
+          />
+          <div
+            className="bg-surface/70 hover:border-accent/30 group rounded-2xl border border-white/10 p-6 shadow-2xl transition-colors duration-300 md:p-12"
+            data-reveal
+          >
+            <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2">
+              <div>
+                <p className="mb-5 flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-accent-hover">
+                  <span aria-hidden="true" className="h-[2px] w-8 rounded-full bg-accent-hover" />
+                  Interactive model
+                </p>
+                <h3 className="mb-4 font-display text-3xl text-text">Geospatial validation</h3>
+                <p className="text-body-large mb-8 text-text-secondary">
+                  A 3D map model of the Haversine distance check and geofencing rules behind
+                  Shynr&apos;s attendance flow. Drag a user pin, resize the fence, and watch the
+                  validation update live.
+                </p>
+                <NextLink href="/playground" className={buttonClass("secondary")}>
+                  Open the Geofencing Lab ↗
+                </NextLink>
+              </div>
+              <div
+                aria-hidden="true"
+                className="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#070A12]"
+                data-parallax="0.12"
+              >
+                <div className="bg-blueprint absolute inset-0 opacity-20" />
+                <svg viewBox="0 0 100 100" className="relative z-10 h-1/2 w-1/2">
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="30"
+                    fill="none"
+                    stroke="#00B8D4"
+                    strokeWidth="0.8"
+                    strokeDasharray="3 3"
+                    className="origin-center motion-safe:animate-[spin_20s_linear_infinite]"
+                    opacity="0.8"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="18"
+                    fill="rgba(0,184,212,0.08)"
+                    stroke="#00B8D4"
+                    strokeWidth="0.5"
+                  />
+                  <circle cx="50" cy="50" r="2" fill="#FFFFFF" />
+                  <line
+                    x1="50"
+                    y1="50"
+                    x2="68"
+                    y2="68"
+                    stroke="rgba(255,255,255,0.4)"
+                    strokeWidth="0.5"
+                    strokeDasharray="1 1"
+                  />
+                  <circle cx="68" cy="68" r="4" fill="#070A12" stroke="#00B8D4" strokeWidth="1" />
+                </svg>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Experience Snapshot */}
-      <section id="experience" className="py-16 md:py-24 lg:py-32 border-b border-border scroll-mt-20">
-        <div className="grid-container gap-y-16 lg:gap-y-0">
-          <div className="col-span-full lg:col-span-4 border-t lg:border-t-0 lg:border-r border-border pt-8 lg:pt-0 lg:pr-8">
-            <h2 className="text-mono-label text-text-tertiary mb-3">{`// 05. BACKGROUND`}</h2>
-            <h3 className="text-display-secondary mb-8">Where I&apos;ve Been</h3>
-            <p className="text-body-large text-text-secondary mb-12">
-              My engineering work spans full-stack product development, enterprise platforms, and interactive web applications.
+      {/* ── 06 Background ── */}
+      <section id="experience" aria-labelledby="bg-h" className="section-y border-b border-border">
+        <div className="grid-container gap-y-12">
+          <div className="col-span-full lg:col-span-4" data-reveal>
+            <p className="text-mono-label mb-3 text-text-tertiary">{"// 06. BACKGROUND"}</p>
+            <h2 id="bg-h" className="text-display-secondary mb-6">
+              Where I&apos;ve been
+            </h2>
+            <p className="text-body-large mb-8 text-text-secondary">
+              My engineering work spans full-stack product development, enterprise platforms, and
+              interactive web applications.
             </p>
-            <Link href="/experience" variant="cta">Full Timeline</Link>
+            <CtaLink href="/experience">Full timeline</CtaLink>
           </div>
           <div className="col-span-full lg:col-span-7 lg:col-start-6">
-            <Timeline items={recentExperience} />
+            <Timeline items={recent} />
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section id="contact" className="py-16 md:py-24 lg:py-32 relative overflow-hidden bg-bg text-center border-b border-border scroll-mt-20">
-        <div className="relative z-10 grid-container">
-          <div className="col-span-full flex flex-col items-center">
-            <h2 className="text-display mb-8">
-              Let&apos;s build <br/> <i className="text-text-secondary">something.</i>
+      {/* ── 07 About ── */}
+      <section
+        id="about"
+        aria-labelledby="about-h"
+        className="section-y bg-surface/60 border-b border-border"
+      >
+        <div className="grid-container items-center gap-y-10">
+          <div
+            className="col-span-full mx-auto w-full max-w-[340px] md:col-span-3 lg:col-span-4 lg:max-w-[380px]"
+            data-reveal
+          >
+            <ProfilePhoto />
+          </div>
+          <div className="col-span-full md:col-span-5 lg:col-span-7 lg:col-start-6" data-reveal>
+            <p className="text-mono-label mb-3 text-text-tertiary">{"// 07. ABOUT"}</p>
+            <h2 id="about-h" className="text-display-secondary mb-6">
+              Systems <span className="italic text-text-secondary">over</span> symptoms.
             </h2>
-            <p className="text-body-large text-text-secondary mb-12 max-w-2xl mx-auto">
-              I&apos;m currently open for new opportunities. Whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
+            <p className="text-body-large mb-5 text-text-secondary">
+              I enjoy turning complex requirements into clear systems, building practical
+              interfaces, and improving the way people interact with technology.
             </p>
-            <NextLink 
-              href="/contact"
-              className={cn(buttonBaseStyles, buttonVariants.primary, buttonSizes.lg)}
-            >
-              Initiate Contact
-            </NextLink>
+            <p className="text-body-large mb-8 text-text-secondary">
+              I approach engineering with a systems mindset: understand the problem first, simplify
+              where possible, and build solutions that are maintainable rather than merely
+              functional.
+            </p>
+            <CtaLink href="/about">Read the manifesto</CtaLink>
           </div>
         </div>
-        <div className="absolute inset-0 z-0 bg-blueprint opacity-50 pointer-events-none" />
+      </section>
+
+      {/* ── Closing CTA ── */}
+      <section
+        id="contact"
+        aria-labelledby="cta-h"
+        className="section-y relative overflow-hidden text-center"
+      >
+        <div
+          aria-hidden="true"
+          className="bg-blueprint pointer-events-none absolute inset-0 opacity-50"
+        />
+        <div className="container-x relative flex flex-col items-center" data-reveal>
+          <h2 id="cta-h" className="text-display mb-8">
+            {site.ctaHeadline.lead} <br />
+            <span className="italic text-text-secondary">{site.ctaHeadline.emphasis}</span>
+          </h2>
+          <p className="text-body-large mx-auto mb-12 max-w-2xl text-text-secondary">
+            I&apos;m open to software engineering opportunities and technical collaborations. Send a
+            note and I&apos;ll get back to you.
+          </p>
+          <Magnetic>
+            <NextLink href="/contact" className={buttonClass("primary", "lg")}>
+              Start a conversation
+            </NextLink>
+          </Magnetic>
+        </div>
       </section>
     </>
   )

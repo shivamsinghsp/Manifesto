@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shivam Singh — Portfolio
 
-## Getting Started
+An engineer's portfolio with a "systems thinking" look: mono labels, case-study depth, a 3D system-architecture hero, an interactive tech-stack orbit and a 3D geofencing lab.
 
-First, run the development server:
+**Stack:** Next.js 15 (App Router) · React 19 · TypeScript · Tailwind CSS · React Three Fiber + drei (three.js) · GSAP ScrollTrigger · Lenis · zod · Resend · Vitest · Playwright
+
+---
+
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm ci
+cp .env.example .env.local   # then fill in values (see below)
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Dev server |
+| `npm run build` / `npm start` | Production build / serve it |
+| `npm run lint` | ESLint (`next/core-web-vitals` + TypeScript), zero warnings allowed |
+| `npm run type-check` | `tsc --noEmit` |
+| `npm test` | Vitest unit tests (geo maths, contact validation, rate limiting, search, content integrity) |
+| `npm run test:e2e` | Playwright suite on desktop + mobile (starts `npm start`; run `npm run build` first) |
+| `npm run format` / `format:check` | Prettier (with Tailwind class sorting) |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+CI (`.github/workflows/playwright.yml`) runs lint → types → unit → build → e2e on pushes and PRs to `main`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> Running `next dev` and `next start` at the same time? Give dev its own build dir: `NEXT_DIST_DIR=.next-dev npm run dev`.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Environment variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Name | Required | Purpose |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical origin (no trailing slash). Drives canonical tags, `og:url`, sitemap, robots and JSON-LD. Defaults to `https://myportfolio-gilt-xi-63.vercel.app`. |
+| `RESEND_API_KEY` | For the contact form | API key from [resend.com](https://resend.com). Without it the form shows an honest "email me directly" fallback. |
+| `CONTACT_TO_EMAIL` | Optional | Inbox that receives messages (defaults to the email in `src/content/site.ts`). |
+| `CONTACT_FROM_EMAIL` | Optional, but needed for real delivery | Sender address on a **domain verified in Resend**, e.g. `Portfolio <hello@yourdomain.com>`. The default `onboarding@resend.dev` only delivers to the Resend account owner's address. |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Set these in **Vercel → Project → Settings → Environment Variables** for Production and Preview. Never commit `.env*` files; only `.env.example` is tracked.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Editing content
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All content is typed and lives in `src/content/`. Pages, metadata, JSON-LD, the sitemap and OG images all read from these files.
+
+| File | What's in it |
+| --- | --- |
+| `site.ts` | Name, title, email, socials, resume path, nav, closing CTA line, **profile photo path** |
+| `projects.ts` | Case studies: category, role, engagement, timeline, tags, links, **outcomes**, sections (`product-feature`, `text`, `diagram`, `image`, `two-column`) |
+| `experience.ts` | Work, education and recognition timeline |
+| `skills.ts` | Stack groups shown in the 3D orbit and the accessible list (only list technologies you've actually used) |
+| `knowledge.ts` | Answers behind "Ask Shivam's Work" (keyword-scored; see `src/lib/search.ts`) |
+| `hero.ts` | The five-step IDEA → PRODUCT sequence |
+
+**Rules for content:** outcomes and metrics must be facts stated in the project record or the resume. Case-study sections are numbered automatically (01 Overview, 02 Outcomes, then each section in order). A `text` section written as `01\nProblem\n→ Solution` renders as structured challenge cards.
+
+**Adding your photo:** put a square image (≥ 800px) at `public/images/profile.jpg` and set `photo: "/images/profile.jpg"` in `src/content/site.ts`. Until then a monogram frame is shown.
+
+**Adding a project:** add an entry to `projects.ts`, put screenshots in `public/images/projects/<slug>/` and diagrams in `public/diagrams/projects/<slug>/`, and include each diagram's viewBox `width`/`height`. The route, sitemap entry and OG image are generated automatically.
+
+---
+
+## Structure
+
+```
+src/
+  app/                    routes (App Router), metadata routes (sitemap, robots, manifest, OG/Twitter images, icons), /api/contact
+  components/
+    layout/               Header, MobileNav, Footer
+    sections/             Hero (canvas, steps, fallback), SkillsSection
+    case-study/           SectionNav, ReadingProgress, Outcomes, Challenges
+    engineering/          WorkAssistant ("Ask Shivam's Work"), ArchitectureDiagram, playgrounds/ (GeoLab 3D + GeofencingLab 2D fallback)
+    three/                R3F scenes (HeroScene, SkillsScene, GeoScene) + canvas governor, lazy mount, textures, error boundary
+    motion/               SmoothScroll (Lenis), ScrollEffects (reveals/parallax), Preloader, RouteTransition, TransitionLink (View Transitions), Cursor, Magnetic, MotionToggle
+    ui/                   ProjectCard, TiltCard, Timeline, SectionHeading, EmailLink, ProfilePhoto, buttons
+  content/                typed content (see above)
+  lib/                    geo (Haversine + projection), contact schema, rate limiter, seo, device tiering, motion preference, search
+tests/site.spec.ts        Playwright e2e
+```
+
+### How the 3D stays fast and accessible
+- Every canvas is decorative (`aria-hidden`); the real information is always HTML (step rail, stack list, geofence readout).
+- Scenes load through `next/dynamic` (`ssr: false`) and mount only once the section is near the viewport **and** the visitor has interacted (or after an idle fallback), so they never compete with LCP or input readiness.
+- Device pixel ratio is capped at 1 on low-end devices, 1.5 on touch/mid-range and 2 on desktop. Particle counts scale with the device tier. There is no post-processing: glow comes from additive sprites.
+- Render loops stop when a canvas is offscreen or the tab is hidden. Geometries and textures are disposed on unmount. The city in the geofence lab is a single instanced mesh.
+- If WebGL isn't available or the context fails, a static SVG fallback or the 2D lab is shown instead.
+- `prefers-reduced-motion` and the on-site **Reduce motion** switch (saved in `localStorage`) turn off smooth scrolling, reveals, the hero pin, the cursor, tilt and magnetic effects, and switch scenes to on-demand rendering.
+
+### Contact form
+Client and server share one zod schema (`src/lib/contact.ts`). The API adds a body-size cap, a honeypot plus a time-to-submit trap, a per-IP rate limit (5 per 10 minutes, kept in memory per instance — swap in Upstash Redis for strict global limits) and a 10 s send timeout. It returns field-level errors.
+
+### Notable dependencies
+| Package | Why |
+| --- | --- |
+| `three`, `@react-three/fiber`, `@react-three/drei` | Declarative WebGL scenes with React lifecycle (automatic disposal, suspense, performance monitor). `three` is pinned to 0.182 because later versions log a deprecation warning from R3F's internal clock. |
+| `gsap` (+ ScrollTrigger) | Scroll-linked hero progress and parallax |
+| `lenis` | Smooth wheel scrolling on desktop (off on touch and with reduced motion) |
+| `zod` | One validation schema for client and server |
+| `resend` | Email delivery for the contact form |

@@ -1,86 +1,89 @@
-import { Metadata } from "next"
 import NextLink from "next/link"
-import { projects } from "@/data/projects"
+import { ArrowRight } from "lucide-react"
+import { projects } from "@/content/projects"
 import { ProjectCard } from "@/components/ui/ProjectCard"
+import { pageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Work",
-  description: "Full-stack applications, enterprise platforms, and production-grade products by Shivam Singh.",
-}
+export const metadata = pageMetadata({
+  title: "Selected Work",
+  description:
+    "Case studies of full-stack products, client platforms, enterprise SharePoint work and QA engineering by Shivam Singh.",
+  path: "/work",
+})
 
 export default function WorkPage() {
-  const featuredProject = projects[0]
-  const otherProjects = projects.slice(1)
-
+  const [featured, ...others] = projects
   return (
     <>
-      <section className="py-16 md:py-20 lg:py-24 border-b border-border bg-blueprint bg-fixed">
-        <div className="grid-container">
-          <div className="col-span-full lg:col-span-8">
-            <span className="text-mono-label text-text-tertiary mb-6 block">{`// 01. ARCHIVE`}</span>
-            <h1 className="text-display mb-8">Selected Work</h1>
-            <p className="text-body-large text-text-secondary max-w-2xl leading-relaxed">
-              A selection of full-stack applications, enterprise platforms, and production-grade products — each built with specific engineering decisions documented.
-            </p>
-          </div>
+      <section className="bg-blueprint border-b border-border py-16 md:py-24">
+        <div className="container-x">
+          <p className="text-mono-label animate-reveal-fade mb-6 text-text-tertiary">
+            {"// 01. ARCHIVE"}
+          </p>
+          <h1 className="text-display mb-8">Selected Work</h1>
+          <p className="text-body-large max-w-2xl text-text-secondary">
+            Full-stack applications, client platforms and enterprise systems — each documented with
+            the engineering decisions behind it.
+          </p>
         </div>
       </section>
 
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
-        <div className="grid-container">
-          <div className="col-span-full lg:col-span-12 mb-16 border-b border-border-muted pb-4">
-            <h2 className="text-mono-label text-text-tertiary">FEATURED CASE STUDY</h2>
-          </div>
-
-          <div className="col-span-full">
-            {featuredProject && (
-              <ProjectCard
-                featured
-                title={featuredProject.title}
-                description={featuredProject.shortDescription}
-                category={featuredProject.category}
-                href={`/work/${featuredProject.slug}`}
-                imageSrc={featuredProject.heroImage.src}
-                imageAlt={featuredProject.heroImage.alt}
-              />
-            )}
-          </div>
+      <section aria-labelledby="featured-h" className="section-y border-b border-border">
+        <div className="container-x">
+          <h2
+            id="featured-h"
+            className="text-mono-label mb-10 border-b border-border-muted pb-4 text-text-tertiary"
+          >
+            Featured case study
+          </h2>
+          <ProjectCard project={featured} featured priority />
         </div>
       </section>
 
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
-        <div className="grid-container">
-          <div className="col-span-full lg:col-span-12 mb-16 border-b border-border-muted pb-4">
-            <h2 className="text-mono-label text-text-tertiary">INDEX</h2>
-          </div>
-          
-          <div className="col-span-full lg:col-span-12">
-            <div className="flex flex-col border-t border-border mt-4">
-              {otherProjects.map((project, index) => (
+      <section aria-labelledby="index-h" className="section-y border-b border-border">
+        <div className="container-x">
+          <h2
+            id="index-h"
+            className="text-mono-label mb-10 border-b border-border-muted pb-4 text-text-tertiary"
+          >
+            Index
+          </h2>
+          <ul className="grid grid-cols-1 gap-6 md:grid-cols-2" data-reveal-stagger>
+            {others.map((p) => (
+              <li key={p.slug}>
+                <ProjectCard project={p} />
+              </li>
+            ))}
+          </ul>
+          <ol className="mt-16 border-t border-border" aria-label="All projects">
+            {projects.map((p, i) => (
+              <li key={p.slug}>
                 <NextLink
-                  key={project.slug}
-                  href={`/work/${project.slug}`}
-                  className="group flex flex-col md:flex-row md:items-center justify-between py-6 md:py-8 border-b border-border transition-colors duration-300 hover:bg-surface-alt/50 focus:outline-none focus-visible:bg-surface-alt px-4 -mx-4 md:px-6 md:-mx-6"
+                  href={`/work/${p.slug}`}
+                  className="hover:bg-surface-alt/40 group grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 border-b border-border py-5 transition-colors md:grid-cols-[3rem_1.2fr_2fr_auto] md:px-4"
                 >
-                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-12 flex-grow">
-                    <span className="text-mono-label text-text-tertiary w-12 group-hover:text-text-secondary transition-colors">
-                      {String(index + 2).padStart(2, '0')}
+                  <span className="text-mono-label text-text-tertiary">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span>
+                    <span className="text-subheading block text-text group-hover:text-accent-hover">
+                      {p.title}
                     </span>
-                    <div className="flex flex-col gap-1 w-full md:w-1/4">
-                      <h3 className="text-subheading font-display group-hover:text-text-secondary transition-colors">{project.title}</h3>
-                      <span className="text-mono-label text-text-tertiary md:hidden">{project.category}</span>
-                    </div>
-                    <p className="text-body-small text-text-secondary mt-2 md:mt-0 max-w-xl hidden md:block">
-                      {project.shortDescription}
-                    </p>
-                  </div>
-                  <div className="hidden md:flex items-center justify-end w-1/4">
-                    <span className="text-mono-label text-text-tertiary text-right">{project.category}</span>
-                  </div>
+                    <span className="text-mono-label mt-1 block text-text-tertiary md:hidden">
+                      {p.category}
+                    </span>
+                  </span>
+                  <span className="text-body-small hidden text-text-secondary md:block">
+                    {p.category} · {p.role}
+                  </span>
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="h-4 w-4 text-text-tertiary transition-transform group-hover:translate-x-1 group-hover:text-accent-hover"
+                  />
                 </NextLink>
-              ))}
-            </div>
-          </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
     </>
