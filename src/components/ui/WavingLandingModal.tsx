@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react"
 import WavingPortfolioLanding, { WavingPortfolioLandingProps } from "@/components/ui/waving-portfolio-landing"
-import { X, Hand, Palette } from "lucide-react"
+import { X, Palette } from "lucide-react"
 
 export type PosterThemeKey = "cyan" | "gold" | "emerald" | "terracotta"
 
@@ -56,13 +56,13 @@ export const POSTER_THEMES: Record<PosterThemeKey, PosterThemeOption> = {
 }
 
 interface WavingLandingModalProps extends Partial<WavingPortfolioLandingProps> {
-  /** Whether to automatically show the modal when the portfolio opens */
-  autoOpen?: boolean
+  /** Called after the close animation finishes */
+  onClosed?: () => void
   defaultTheme?: PosterThemeKey
 }
 
 export function WavingLandingModal({
-  autoOpen = true,
+  onClosed,
   defaultTheme = "cyan",
   name = "Shivam",
   year = "2026",
@@ -75,7 +75,8 @@ export function WavingLandingModal({
   greeting = "Hi there!",
   intro = true,
 }: WavingLandingModalProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  // Opened on demand from the footer ("Say hi") — never auto-opens.
+  const [isOpen, setIsOpen] = useState(true)
   const [isClosing, setIsClosing] = useState(false)
   const [selectedTheme, setSelectedTheme] = useState<PosterThemeKey>(defaultTheme)
   
@@ -83,35 +84,19 @@ export function WavingLandingModal({
   const dialogRef = useRef<HTMLDivElement>(null)
   const posterCardRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
-  const launcherRef = useRef<HTMLButtonElement>(null)
   const previousActiveElement = useRef<HTMLElement | null>(null)
   const wasOpenRef = useRef(false) // tracks previous isOpen for open→closed transitions
 
   const currentTheme = POSTER_THEMES[selectedTheme]
 
-  useEffect(() => {
-    if (autoOpen) {
-      try {
-        const hasSeenIntro = sessionStorage.getItem("has_seen_intro_poster")
-        if (!hasSeenIntro) {
-          setIsOpen(true)
-        }
-      } catch {
-        setIsOpen(true)
-      }
-    }
-  }, [autoOpen])
-
   const handleClose = useCallback(() => {
-    try {
-      sessionStorage.setItem("has_seen_intro_poster", "true")
-    } catch {}
     setIsClosing(true)
     setTimeout(() => {
       setIsOpen(false)
       setIsClosing(false)
+      onClosed?.()
     }, 280)
-  }, [])
+  }, [onClosed])
 
   // Focus management: auto-focus on open, restore on genuine close only
   useEffect(() => {
@@ -126,11 +111,7 @@ export function WavingLandingModal({
     } else if (wasOpenRef.current) {
       // Only restore focus on a genuine open → closed transition
       wasOpenRef.current = false
-      if (launcherRef.current) {
-        launcherRef.current.focus()
-      } else if (previousActiveElement.current) {
-        previousActiveElement.current.focus()
-      }
+      previousActiveElement.current?.focus()
     }
   }, [isOpen])
 
@@ -188,26 +169,6 @@ export function WavingLandingModal({
 
   return (
     <>
-      {/* Floating launcher badge when modal is closed */}
-      {!isOpen && (
-        <button
-          ref={launcherRef}
-          onClick={() => setIsOpen(true)}
-          type="button"
-          aria-label="Replay intro poster"
-          className="fixed bottom-6 left-6 z-40 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/85 hover:bg-black text-[#F1F5F9] text-xs font-mono border border-white/20 backdrop-blur-md shadow-2xl transition-all duration-200 hover:scale-105 group"
-          style={{
-            borderColor: `${currentTheme.accent}40`,
-          }}
-        >
-          <Hand 
-            className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform origin-bottom" 
-            style={{ color: currentTheme.accent }}
-          />
-          <span>Intro Poster</span>
-        </button>
-      )}
-
       {/* Pop-up Overlay */}
       {isOpen && (
         <div

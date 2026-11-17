@@ -1,87 +1,54 @@
 import NextLink from "next/link"
+import { NAV_LINKS, site } from "@/content/site"
+import { EmailLink } from "@/components/ui/EmailLink"
+import { IntroPosterButton } from "@/components/ui/IntroPosterButton"
 
-const FOOTER_LINKS = {
-  Navigation: [
-    { label: "Selected Work", href: "/work" },
-    { label: "Full Timeline", href: "/experience" },
-    { label: "Manifesto", href: "/about" },
-    { label: "Contact", href: "/contact" },
-  ],
-  Social: [
-    { label: "GitHub", href: "https://github.com/shivamsinghsp" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/shivam2105-" },
-    { label: "Email", href: "mailto:shivamsinghabc439@gmail.com" },
-  ],
-  Resources: [
-    { label: "Resume (PDF)", href: "/resume.pdf" },
-  ]
-}
+const linkClass = "inline-flex min-h-[32px] items-center text-body-small text-text-secondary transition-colors duration-200 hover:text-accent-hover"
 
 export function Footer() {
   return (
-    <footer className="bg-[#070A12]/95 border-t border-white/[0.08] pt-16 pb-8 relative overflow-hidden">
-      <div className="absolute inset-0 bg-blueprint opacity-10 pointer-events-none" />
-      <div className="grid-container gap-y-12 lg:gap-y-0 relative z-10">
+    <footer className="relative overflow-hidden border-t border-white/[0.08] bg-[#070A12]/95 pb-8 pt-16">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-blueprint opacity-10" />
+      <div className="grid-container relative z-10 gap-y-12">
         <div className="col-span-full md:col-span-4 lg:col-span-3">
-          <h4 className="text-mono-label text-text-tertiary mb-6 border-b border-border-muted pb-2">01. NAVIGATION</h4>
-          <ul className="flex flex-col gap-3">
-            {FOOTER_LINKS.Navigation.map((link) => (
-              <li key={link.label}>
-                <NextLink href={link.href} className="text-body-small text-text-secondary hover:text-accent transition-colors duration-200 focus:outline-none focus-visible:underline">
-                  {link.label}
-                </NextLink>
+          <h2 className="mb-5 border-b border-border-muted pb-2 text-mono-label text-text-tertiary">01. Navigation</h2>
+          <ul className="flex flex-col gap-1">
+            {NAV_LINKS.map((l) => (
+              <li key={l.href}>
+                <NextLink href={l.href} className={linkClass}>{l.label === "Work" ? "Selected Work" : l.label}</NextLink>
               </li>
             ))}
-          </ul>
-        </div>
-        
-        <div className="col-span-full md:col-span-4 lg:col-span-3">
-          <h4 className="text-mono-label text-text-tertiary mb-6 border-b border-border-muted pb-2">02. SOCIAL</h4>
-          <ul className="flex flex-col gap-3">
-            {FOOTER_LINKS.Social.map((link) => (
-              <li key={link.label}>
-                <a href={link.href} target="_blank" rel="noopener noreferrer" className="text-body-small text-text-secondary hover:text-accent transition-colors duration-200 focus:outline-none focus-visible:underline">
-                  {link.label}
-                </a>
-              </li>
-            ))}
+            <li><NextLink href="/playground" className={linkClass}>Engineering Playground</NextLink></li>
           </ul>
         </div>
 
         <div className="col-span-full md:col-span-4 lg:col-span-3">
-          <h4 className="text-mono-label text-text-tertiary mb-6 border-b border-border-muted pb-2">03. RESOURCES</h4>
-          <ul className="flex flex-col gap-3">
-            {FOOTER_LINKS.Resources.map((link) => (
-              <li key={link.label}>
-                <a
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                  className="text-body-small text-text-secondary hover:text-accent transition-colors duration-200 focus:outline-none focus-visible:underline inline-flex items-center gap-1"
-                >
-                  <span>{link.label}</span>
-                  <span className="text-[10px] font-mono text-cyan-400">↗</span>
-                </a>
-              </li>
-            ))}
+          <h2 className="mb-5 border-b border-border-muted pb-2 text-mono-label text-text-tertiary">02. Contact</h2>
+          <ul className="flex flex-col gap-1">
+            <li><EmailLink className={linkClass}>Email</EmailLink></li>
+            <li><a href={site.socials.github} target="_blank" rel="noopener noreferrer" className={linkClass}>GitHub<span className="sr-only"> (opens in a new tab)</span></a></li>
+            <li><a href={site.socials.linkedin} target="_blank" rel="noopener noreferrer" className={linkClass}>LinkedIn<span className="sr-only"> (opens in a new tab)</span></a></li>
           </ul>
         </div>
 
         <div className="col-span-full md:col-span-4 lg:col-span-3">
-          <h4 className="text-mono-label text-text-tertiary mb-6 border-b border-border-muted pb-2">04. METADATA</h4>
+          <h2 className="mb-5 border-b border-border-muted pb-2 text-mono-label text-text-tertiary">03. Resources</h2>
+          <ul className="flex flex-col gap-1">
+            <li><a href={site.resumePath} className={linkClass}>Resume (PDF)</a></li>
+            <li><IntroPosterButton className={linkClass} /></li>
+          </ul>
+        </div>
+
+        <div className="col-span-full md:col-span-12 lg:col-span-3">
+          <h2 className="mb-5 border-b border-border-muted pb-2 text-mono-label text-text-tertiary">04. Metadata</h2>
           <p className="text-body-small text-text-secondary">
-            Built with Next.js & Tailwind CSS. Designed with systems thinking. No generic components.
+            Built with Next.js, React Three Fiber, GSAP & Tailwind CSS. Designed with systems thinking.
           </p>
         </div>
-        
-        <div className="col-span-full mt-16 flex flex-col md:flex-row justify-between items-center border-t border-border pt-6">
-          <p className="text-mono-label text-text-tertiary">
-            © {new Date().getFullYear()} SHIVAM SINGH
-          </p>
-          <p className="text-mono-label text-text-tertiary mt-4 md:mt-0">
-            {`// END_OF_DOCUMENT`}
-          </p>
+
+        <div className="col-span-full mt-8 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 md:flex-row">
+          <p className="text-mono-label text-text-tertiary">© {new Date().getFullYear()} {site.name}</p>
+          <p className="text-mono-label text-text-tertiary">{`// END_OF_DOCUMENT`}</p>
         </div>
       </div>
     </footer>

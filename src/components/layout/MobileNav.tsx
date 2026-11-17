@@ -1,78 +1,99 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
 import NextLink from "next/link"
+import { usePathname } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
 import { Menu, X } from "lucide-react"
-
-
-const NAV_LINKS = [
-  { href: "/work", label: "01. WORK" },
-  { href: "/experience", label: "02. EXPERIENCE" },
-  { href: "/about", label: "03. MANIFESTO" },
-  { href: "/contact", label: "04. CONTACT" },
-]
+import { NAV_LINKS, site } from "@/content/site"
+import { MotionToggle } from "@/components/motion/MotionToggle"
+import { EmailLink } from "@/components/ui/EmailLink"
+import { cn } from "@/lib/utils"
 
 export function MobileNav() {
-  const [isOpen, setIsOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+  const panel = useRef<HTMLDivElement>(null)
+  const trigger = useRef<HTMLButtonElement>(null)
+
+  // Close on navigation
+  useEffect(() => setOpen(false), [pathname])
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "unset"
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    const first = panel.current?.querySelector<HTMLElement>("a, button")
+    first?.focus()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { setOpen(false); trigger.current?.focus() }
+      if (e.key === "Tab" && panel.current) {
+        const items = panel.current.querySelectorAll<HTMLElement>("a, button")
+        const a = items[0], b = items[items.length - 1]
+        if (e.shiftKey && document.activeElement === a) { e.preventDefault(); b.focus() }
+        else if (!e.shiftKey && document.activeElement === b) { e.preventDefault(); a.focus() }
+      }
     }
-    return () => { document.body.style.overflow = "unset" }
-  }, [isOpen])
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false)
-    }
-    document.addEventListener("keydown", handleEscape)
-    return () => document.removeEventListener("keydown", handleEscape)
-  }, [])
+    document.addEventListener("keydown", onKey)
+    return () => { document.body.style.overflow = prev; document.removeEventListener("keydown", onKey) }
+  }, [open])
 
   return (
     <div className="md:hidden">
       <button
-        onClick={() => setIsOpen(true)}
-        className="w-11 h-11 flex items-center justify-center border border-border rounded-button text-text hover:bg-surface-alt transition-colors focus:outline-none focus-visible:outline-2 focus-visible:outline-accent"
+        ref={trigger}
+        type="button"
+        onClick={() => setOpen(true)}
+        className="flex h-11 w-11 items-center justify-center rounded-button border border-border text-text transition-colors hover:bg-surface-alt"
         aria-label="Open menu"
-        aria-expanded={isOpen}
+        aria-expanded={open}
+        aria-controls="mobile-menu"
       >
-        <Menu className="w-5 h-5" />
+        <Menu className="h-5 w-5" aria-hidden="true" />
       </button>
 
-      {isOpen && (
-        <div className="fixed inset-0 z-[1000] bg-bg flex flex-col" ref={menuRef}>
-          <div className="flex items-center justify-between h-[72px] px-4 sm:px-6 border-b border-border">
-            <NextLink href="/" className="font-display font-bold text-[20px] text-text" onClick={() => setIsOpen(false)}>
-              SHIVAM
-            </NextLink>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="w-11 h-11 flex items-center justify-center border border-border rounded-button text-text hover:bg-surface-alt transition-colors focus:outline-none focus-visible:outline-2 focus-visible:outline-accent"
-              aria-label="Close menu"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          
-          <nav className="flex-1 flex flex-col items-center justify-center gap-8">
-            {NAV_LINKS.map((link) => (
-              <NextLink
-                key={link.href}
-                href={link.href}
-                className="text-headline text-text hover:text-accent transition-colors focus:outline-none focus-visible:outline-2 focus-visible:outline-accent"
-                onClick={() => setIsOpen(false)}
-              >
-                {link.label}
-              </NextLink>
-            ))}
-          </nav>
+      <div
+        id="mobile-menu"
+        ref={panel}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site menu"
+        className={cn("fixed inset-0 z-[1000] flex-col bg-bg/[0.98] backdrop-blur-xl", open ? "flex" : "hidden")}
+      >
+        <div className="flex h-[var(--header-h)] items-center justify-between border-b border-border px-[var(--gutter)]">
+          <span className="font-display text-xl font-bold text-text">{site.shortName}</span>
+          <button
+            type="button"
+            onClick={() => { setOpen(false); trigger.current?.focus() }}
+            className="flex h-11 w-11 items-center justify-center rounded-button border border-border text-text transition-colors hover:bg-surface-alt"
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
         </div>
-      )}
+        <nav aria-label="Mobile" className="flex flex-1 flex-col justify-center px-[var(--gutter)]">
+          <ul className="flex flex-col gap-2">
+            {NAV_LINKS.map((link, i) => {
+              const active = pathname === link.href || pathname.startsWith(`${link.href}/`)
+              return (
+                <li key={link.href} style={{ animationDelay: `${i * 60}ms` }} className={cn(open && "animate-reveal-up")}>
+                  <NextLink
+                    href={link.href}
+                    aria-current={active ? "page" : undefined}
+                    className={cn("flex items-baseline gap-4 border-b border-border py-4 text-headline transition-colors", active ? "text-accent-hover" : "text-text hover:text-accent-hover")}
+                  >
+                    <span className="font-mono text-xs text-text-tertiary">{link.index}</span>
+                    {link.label}
+                  </NextLink>
+                </li>
+              )
+            })}
+          </ul>
+          <div className="mt-10 flex flex-col items-start gap-2">
+            <EmailLink className="inline-flex min-h-[44px] items-center font-mono text-sm text-text-secondary hover:text-accent-hover" />
+            <MotionToggle className="-ml-3" />
+          </div>
+        </nav>
+      </div>
     </div>
   )
 }

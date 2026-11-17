@@ -1,56 +1,20 @@
-import { MetadataRoute } from "next"
-import { projects } from "@/data/projects"
+import type { MetadataRoute } from "next"
+import { projects } from "@/content/projects"
+import { absoluteUrl } from "@/content/site"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://shivamsingh.dev"
-
-  // Static routes
-  const staticRoutes: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/work`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/experience`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/playground`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.6,
-    },
+  const now = new Date()
+  const routes: [string, number, MetadataRoute.Sitemap[number]["changeFrequency"]][] = [
+    ["/", 1, "monthly"],
+    ["/work", 0.9, "monthly"],
+    ["/about", 0.8, "monthly"],
+    ["/experience", 0.7, "monthly"],
+    ["/playground", 0.6, "monthly"],
+    ["/contact", 0.6, "yearly"],
+    ["/resume", 0.5, "yearly"],
   ]
-
-  // Dynamic case study routes
-  const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
-    url: `${baseUrl}/work/${project.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }))
-
-  return [...staticRoutes, ...projectRoutes]
+  return [
+    ...routes.map(([path, priority, changeFrequency]) => ({ url: absoluteUrl(path), lastModified: now, changeFrequency, priority })),
+    ...projects.map((p) => ({ url: absoluteUrl(`/work/${p.slug}`), lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 })),
+  ]
 }

@@ -2,52 +2,77 @@
 
 import NextLink from "next/link"
 import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
 import { MobileNav } from "./MobileNav"
+import { NAV_LINKS, site } from "@/content/site"
+import { MotionToggle } from "@/components/motion/MotionToggle"
 import { cn } from "@/lib/utils"
-
-const NAV_LINKS = [
-  { href: "/work", label: "01. WORK" },
-  { href: "/experience", label: "02. EXPERIENCE" },
-  { href: "/about", label: "03. MANIFESTO" },
-  { href: "/contact", label: "04. CONTACT" },
-]
 
 export function Header() {
   const pathname = usePathname()
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   return (
-    <header className="sticky top-0 z-[900] h-[72px] bg-[#0A0E17]/80 backdrop-blur-md border-b border-white/[0.08] flex items-center justify-between px-4 sm:px-6 md:px-8 animate-reveal-fade delay-100">
-      <NextLink 
-        href="/" 
-        className="font-display font-medium text-[20px] tracking-tight text-white hover:text-cyan-400 transition-colors focus:outline-none focus-visible:outline-2 focus-visible:outline-cyan-400 flex items-center gap-2"
+    <header
+      className={cn(
+        "sticky top-0 z-[900] flex h-[var(--header-h)] items-center justify-between border-b px-[var(--gutter)] backdrop-blur-md transition-colors duration-300",
+        scrolled ? "border-white/[0.08] bg-[#0A0E17]/85" : "border-transparent bg-[#0A0E17]/40"
+      )}
+    >
+      <NextLink
+        href="/"
+        className="group flex min-h-[44px] items-center gap-2 font-display text-xl font-bold tracking-tight text-text transition-colors hover:text-accent-hover"
+        aria-label={`${site.name} — home`}
       >
-        <span className="w-2 h-2 rounded-full bg-cyan-400 inline-block"></span>
-        SHIVAM
+        <span aria-hidden="true" className="relative inline-flex h-2 w-2">
+          <span className="absolute inset-0 rounded-full bg-accent-hover opacity-60 motion-safe:animate-ping" />
+          <span className="relative inline-block h-2 w-2 rounded-full bg-accent-hover" />
+        </span>
+        {site.shortName}
       </NextLink>
-      
-      <nav className="hidden md:flex items-center gap-2">
-        {NAV_LINKS.map((link) => {
-          const isActive = pathname.startsWith(link.href)
-          
-          return (
-            <NextLink
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "relative text-xs font-mono px-3.5 py-1.5 rounded-lg transition-all duration-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-cyan-400",
-                isActive 
-                  ? "text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 font-medium" 
-                  : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
-              )}
-            >
-              {link.label}
-            </NextLink>
-          )
-        })}
-      </nav>
+
+      <div className="hidden items-center gap-2 md:flex">
+        <nav aria-label="Primary">
+          <ul className="flex items-center gap-1">
+            {NAV_LINKS.map((link) => {
+              const active = pathname === link.href || pathname.startsWith(`${link.href}/`)
+              return (
+                <li key={link.href}>
+                  <NextLink
+                    href={link.href}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "group relative inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase tracking-wider transition-colors duration-200",
+                      active ? "text-accent-hover" : "text-text-secondary hover:text-text"
+                    )}
+                  >
+                    <span className="mr-1.5 text-text-tertiary">{link.index}.</span>
+                    {link.label}
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "absolute inset-x-3 bottom-2 h-px origin-left bg-accent-hover transition-transform duration-300 ease-out-expo",
+                        active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                      )}
+                    />
+                  </NextLink>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
+        <span aria-hidden="true" className="mx-1 h-5 w-px bg-white/10" />
+        <MotionToggle />
+      </div>
 
       <MobileNav />
     </header>
   )
 }
-

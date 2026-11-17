@@ -1,98 +1,38 @@
-"use client"
-
-import React from "react"
 import { cn } from "@/lib/utils"
-import { useIntersectionObserver } from "@/hooks/use-intersection-observer"
-
-export interface TimelineItemProject {
-  title: string
-  description: string
-}
 
 export interface TimelineItem {
   date?: string
   title: string
+  subtitle?: string
   description: string
-  projects?: TimelineItemProject[]
+  projects?: { title: string; description: string }[]
 }
 
-export interface TimelineProps {
-  items: TimelineItem[]
-  className?: string
-}
-
-function TimelineNode({ item, isLast }: { item: TimelineItem; isLast: boolean }) {
-  const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.2 })
-
+/** Vertical ledger. `headingLevel` keeps the document outline valid wherever it is used. */
+export function Timeline({ items, className, headingLevel = 3 }: { items: TimelineItem[]; className?: string; headingLevel?: 3 | 4 }) {
+  const H = `h${headingLevel}` as "h3" | "h4"
+  const SubH = `h${headingLevel + 1}` as "h4" | "h5"
   return (
-    <div
-      ref={ref}
-      className={cn(
-        "relative flex flex-col gap-2 py-8 pl-8 group transition-all duration-[800ms] ease-out-expo",
-        isIntersecting ? "opacity-100 translate-x-0" : "opacity-40 -translate-x-4"
-      )}
-    >
-      {/* Draw line to the next item */}
-      {!isLast && (
-        <div className="absolute left-[0px] top-12 bottom-[-2rem] w-[1px] bg-border overflow-hidden">
-          <div className={cn(
-            "w-full bg-text-tertiary transition-all duration-1000 ease-out-expo",
-            isIntersecting ? "h-full" : "h-0"
-          )} />
-        </div>
-      )}
-
-      {/* The node marker */}
-      <div 
-        className={cn(
-          "absolute left-[-3px] top-10 w-[7px] h-[7px] rounded-none transition-colors duration-700 z-10",
-          isIntersecting ? "bg-accent shadow-[0_0_10px_rgba(0,184,212,0.3)]" : "bg-text-tertiary"
-        )} 
-      />
-      
-      <span className={cn(
-        "text-mono-label transition-colors duration-[800ms]",
-        isIntersecting ? "text-text-secondary" : "text-text-tertiary"
-      )}>
-        {item.date}
-      </span>
-      <h4 className={cn(
-        "text-subheading font-display transition-colors duration-[800ms]",
-        isIntersecting ? "text-text" : "text-text-secondary"
-      )}>
-        {item.title}
-      </h4>
-      <p className="text-body-large text-text-secondary mt-2 leading-relaxed max-w-2xl">
-        {item.description}
-      </p>
-
-      {/* Project subsections */}
-      {item.projects && item.projects.length > 0 && (
-        <div className="mt-6 flex flex-col gap-4">
-          {item.projects.map((project, i) => (
-            <div key={i} className="border-l border-border-muted pl-6 py-3">
-              <h5 className="text-mono-label text-accent mb-2">{project.title}</h5>
-              <p className="text-body-small text-text-secondary leading-relaxed">
-                {project.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
-export function Timeline({ items, className }: TimelineProps) {
-  return (
-    <div className={cn("pl-4", className)}>
-      {items.map((item, index) => (
-        <TimelineNode 
-          key={index} 
-          item={item} 
-          isLast={index === items.length - 1} 
-        />
+    <ol className={cn("relative border-l border-border pl-0", className)}>
+      {items.map((item, i) => (
+        <li key={i} className="relative py-7 pl-8 first:pt-0" data-reveal>
+          <span aria-hidden="true" className="absolute left-[-4px] top-9 h-[7px] w-[7px] bg-accent shadow-[0_0_10px_rgba(0,184,212,0.5)] [li:first-child>&]:top-2" />
+          {item.date && <p className="text-mono-label text-text-secondary">{item.date}</p>}
+          <H className="mt-2 text-subheading text-text">{item.title}</H>
+          {item.subtitle && <p className="mt-1 font-mono text-xs uppercase tracking-wider text-accent-hover">{item.subtitle}</p>}
+          <p className="mt-3 max-w-2xl text-body-large text-text-secondary">{item.description}</p>
+          {item.projects && item.projects.length > 0 && (
+            <ul className="mt-6 flex flex-col gap-4">
+              {item.projects.map((p) => (
+                <li key={p.title} className="border-l border-border-muted py-2 pl-6">
+                  <SubH className="mb-2 text-mono-label text-accent-hover">{p.title}</SubH>
+                  <p className="text-body-small text-text-secondary">{p.description}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
       ))}
-    </div>
+    </ol>
   )
 }
