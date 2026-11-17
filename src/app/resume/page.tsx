@@ -1,30 +1,30 @@
-import { Metadata } from "next"
-import { ArrowRight } from "lucide-react"
+import { Download, ExternalLink } from "lucide-react"
+import { site } from "@/content/site"
+import { buttonClass } from "@/components/ui/button"
+import { pageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Resume",
-  description: "Download my professional resume.",
-}
+  description: "Download or view Shivam Singh's resume (PDF): experience, projects, technical skills and education.",
+  path: "/resume",
+})
 
 export default function ResumePage() {
   return (
-    <section className="min-h-[70vh] flex flex-col items-center justify-center border-b border-border py-24">
-      <div className="grid-container text-center">
-        <div className="col-span-full lg:col-span-12 flex flex-col items-center">
-          <span className="text-mono-label text-text-tertiary mb-6 block uppercase">{`// CURRICULUM_VITAE`}</span>
-          <h1 className="text-display mb-6">Resume</h1>
-          <p className="text-body-large text-text-secondary max-w-lg mx-auto mb-12">
-            A comprehensive overview of my professional experience, education, and technical skills.
-          </p>
-          
-          <a 
-            href="/resume.pdf" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center font-body font-semibold text-[14px] leading-[1.4] tracking-[0.5px] rounded-button h-12 px-8 bg-cta-bg text-cta-text hover:bg-cta-hover transition-colors gap-2 group"
-          >
-            Download PDF
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+    <section className="flex min-h-[70vh] flex-col items-center justify-center border-b border-border py-24">
+      <div className="container-x flex flex-col items-center text-center">
+        <p className="mb-6 text-mono-label text-text-tertiary">{"// CURRICULUM_VITAE"}</p>
+        <h1 className="mb-6 text-display">Resume</h1>
+        <p className="mx-auto mb-12 max-w-lg text-body-large text-text-secondary">
+          A one-page overview of my professional experience, projects, technical skills and education.
+        </p>
+        <div className="flex flex-wrap justify-center gap-3">
+          {/* Direct static links — no redirects or tracking */}
+          <a href={site.resumePath} download="Shivam-Singh-Resume.pdf" className={buttonClass("primary")}>
+            <Download className="h-4 w-4" aria-hidden="true" /> Download PDF
+          </a>
+          <a href={site.resumePath} target="_blank" rel="noopener noreferrer" className={buttonClass("secondary")}>
+            <ExternalLink className="h-4 w-4" aria-hidden="true" /> Open in browser<span className="sr-only"> (new tab)</span>
           </a>
         </div>
       </div>

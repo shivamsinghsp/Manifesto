@@ -1,120 +1,62 @@
-import { Metadata } from "next"
-import { experiences } from "@/data/experience"
-import { Timeline } from "@/components/ui/Timeline"
-import { ArrowDown } from "lucide-react"
 import { Award } from "lucide-react"
+import { experiences } from "@/content/experience"
+import { site } from "@/content/site"
+import { Timeline } from "@/components/ui/Timeline"
+import { pageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Experience",
-  description: "Professional experience, education, and recognition — a chronological ledger of my engineering journey.",
+  description: "Internships at Rapsora Technologies and Androcoders, B.Tech in Information Technology, and recognition — Shivam Singh's engineering timeline.",
+  path: "/experience",
+})
+
+function Category({ id, title, children, icon }: { id: string; title: string; children: React.ReactNode; icon?: React.ReactNode }) {
+  return (
+    <section aria-labelledby={id} className="section-y border-b border-border">
+      <div className="grid-container gap-y-10">
+        <div className="col-span-full md:col-span-3">
+          <div className="flex items-center justify-between border-b border-border pb-4 md:sticky md:top-28 md:block md:border-b-0 md:border-t md:pt-4">
+            <div>
+              <p className="mb-2 text-mono-label text-text-tertiary">{"// CATEGORY"}</p>
+              <h2 id={id} className="text-display-secondary text-[2rem]">{title}</h2>
+            </div>
+            {icon}
+          </div>
+        </div>
+        <div className="col-span-full md:col-span-5 lg:col-span-8 lg:col-start-5">{children}</div>
+      </div>
+    </section>
+  )
 }
 
 export default function ExperiencePage() {
-  const workExperience = experiences
-    .filter(exp => exp.type === "Work")
-    .map(exp => ({
-      date: exp.dateRange,
-      title: `${exp.title} — ${exp.organization}`,
-      description: exp.description,
-      projects: exp.projects?.map(p => ({
-        title: p.title,
-        description: p.description
-      }))
-    }))
-
-  const eduExperience = experiences
-    .filter(exp => exp.type === "Education")
-    .map(exp => ({
-      date: exp.dateRange,
-      title: `${exp.title} — ${exp.organization}`,
-      description: exp.description
-    }))
-
-  const recognitions = experiences
-    .filter(exp => exp.type === "Recognition")
+  const work = experiences.filter((e) => e.type === "Work").map((e) => ({
+    date: e.dateRange, title: e.title, subtitle: e.organization, description: e.description, projects: e.projects,
+  }))
+  const edu = experiences.filter((e) => e.type === "Education").map((e) => ({
+    date: e.dateRange, title: e.title, subtitle: e.organization, description: e.description,
+  }))
+  const rec = experiences.filter((e) => e.type === "Recognition").map((e) => ({
+    title: e.title, subtitle: e.organization, description: e.description,
+  }))
 
   return (
     <>
-      <section className="py-16 md:py-20 lg:py-24 border-b border-border bg-blueprint bg-fixed">
-        <div className="grid-container">
-          <div className="col-span-full lg:col-span-8">
-            <span className="text-mono-label text-text-tertiary mb-6 block">{`// 02. TIMELINE`}</span>
-            <h1 className="text-display mb-8">Experience</h1>
-            <p className="text-body-large text-text-secondary max-w-2xl leading-relaxed mb-8">
-              A chronological ledger of my professional journey, highlighting the teams I&apos;ve worked with and the systems we&apos;ve built.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <a
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                download
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs font-mono text-white hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-all shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-              >
-                <span>DOWNLOAD RESUME (PDF)</span>
-                <span className="text-cyan-400">↗</span>
-              </a>
-            </div>
-          </div>
+      <section className="border-b border-border bg-blueprint py-16 md:py-24">
+        <div className="container-x">
+          <p className="mb-6 text-mono-label text-text-tertiary animate-reveal-fade">{"// 02. TIMELINE"}</p>
+          <h1 className="mb-8 text-display">Experience</h1>
+          <p className="mb-8 max-w-2xl text-body-large text-text-secondary">
+            A chronological ledger of my professional journey — the teams I&apos;ve worked with and the systems we built.
+          </p>
+          <a href={site.resumePath} className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 font-mono text-xs uppercase tracking-wider text-text transition-colors hover:border-accent/50 hover:text-accent-hover">
+            Resume (PDF) <span aria-hidden="true" className="text-accent-hover">↗</span>
+          </a>
         </div>
       </section>
-
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
-        <div className="grid-container gap-y-12 md:gap-y-0">
-          <div className="col-span-full md:col-span-4 lg:col-span-3">
-            <div className="md:sticky top-24 md:border-t border-b md:border-b-0 border-border md:pt-4 pb-4 md:pb-0 mb-8 md:mb-0 flex md:block items-center justify-between">
-              <div>
-                <h2 className="text-mono-label text-text-tertiary mb-2">{`// CATEGORY`}</h2>
-                <h3 className="text-display-secondary text-[2rem]">Professional</h3>
-              </div>
-              <ArrowDown className="w-5 h-5 text-text-tertiary md:mt-8 hidden md:block" />
-            </div>
-          </div>
-          <div className="col-span-full md:col-span-8 lg:col-span-7">
-            <Timeline items={workExperience} />
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
-        <div className="grid-container gap-y-12 md:gap-y-0">
-          <div className="col-span-full md:col-span-4 lg:col-span-3">
-            <div className="md:sticky top-24 md:border-t border-b md:border-b-0 border-border md:pt-4 pb-4 md:pb-0 mb-8 md:mb-0 flex md:block items-center justify-between">
-              <div>
-                <h2 className="text-mono-label text-text-tertiary mb-2">{`// CATEGORY`}</h2>
-                <h3 className="text-display-secondary text-[2rem]">Education</h3>
-              </div>
-              <ArrowDown className="w-5 h-5 text-text-tertiary md:mt-8 hidden md:block" />
-            </div>
-          </div>
-          <div className="col-span-full md:col-span-8 lg:col-span-7">
-            <Timeline items={eduExperience} />
-          </div>
-        </div>
-      </section>
-
-      {/* Recognition Section */}
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
-        <div className="grid-container gap-y-12 md:gap-y-0">
-          <div className="col-span-full md:col-span-4 lg:col-span-3">
-            <div className="md:sticky top-24 md:border-t border-b md:border-b-0 border-border md:pt-4 pb-4 md:pb-0 mb-8 md:mb-0 flex md:block items-center justify-between">
-              <div>
-                <h2 className="text-mono-label text-text-tertiary mb-2">{`// CATEGORY`}</h2>
-                <h3 className="text-display-secondary text-[2rem]">Recognition</h3>
-              </div>
-              <Award className="w-5 h-5 text-text-tertiary md:mt-8 hidden md:block" />
-            </div>
-          </div>
-          <div className="col-span-full md:col-span-8 lg:col-span-7">
-            <Timeline
-              items={recognitions.map(rec => ({
-                title: `${rec.title} — ${rec.organization}`,
-                description: rec.description
-              }))}
-            />
-          </div>
-        </div>
-      </section>
+      <Category id="work-h" title="Professional"><Timeline items={work} /></Category>
+      <Category id="edu-h" title="Education"><Timeline items={edu} /></Category>
+      <Category id="rec-h" title="Recognition" icon={<Award className="h-5 w-5 text-text-tertiary md:mt-6" aria-hidden="true" />}><Timeline items={rec} /></Category>
     </>
   )
 }

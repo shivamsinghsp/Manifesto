@@ -30,12 +30,8 @@ export function WorkAssistant() {
 
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion)
-    // We need to wait for state to update before searching
-    setTimeout(() => {
-      const res = searchPortfolio(suggestion)
-      setResults(res)
-      setHasSearched(true)
-    }, 50)
+    setResults(searchPortfolio(suggestion))
+    setHasSearched(true)
   }
 
   const handleReset = () => {
@@ -46,28 +42,28 @@ export function WorkAssistant() {
   }
 
   return (
-    <div className="w-full max-w-3xl rounded-2xl border border-white/10 bg-[#0E1322]/85 backdrop-blur-xl p-6 md:p-10 shadow-2xl">
+    <div className="w-full rounded-2xl border border-white/10 bg-[#0E1322]/85 backdrop-blur-xl p-6 md:p-10 shadow-2xl">
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
           <span className="w-2 h-2 rounded-full bg-cyan-400 inline-block animate-pulse"></span>
-          <h3 className="text-xs font-mono font-medium text-cyan-400 uppercase tracking-widest">
-            ASK SHIVAM&apos;S WORK
+          <h3 className="text-xs font-mono font-medium text-accent-hover uppercase tracking-widest">
+            Ask Shivam&apos;s work
           </h3>
         </div>
         <p className="text-sm text-slate-300">
-          A deterministic knowledge system querying verified portfolio data, architectural patterns, and production systems.
+          Ask a question about projects, technologies or roles. Answers come only from the verified portfolio data on this site.
         </p>
       </div>
 
-      <form onSubmit={handleSearch} className="relative mb-6">
+      <form onSubmit={handleSearch} className="relative mb-6" role="search">
         <input
           ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Ask about projects, technologies, or architecture..."
-          className="w-full bg-white/[0.04] border border-white/10 text-white rounded-xl px-4 py-3.5 pr-28 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all placeholder:text-slate-500"
-          aria-label="Search query"
+          className="w-full bg-white/[0.04] border border-white/10 text-white rounded-xl px-4 py-3.5 pr-28 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all placeholder:text-text-tertiary"
+          aria-label="Ask about Shivam's work"
         />
         <button
           type="submit"
@@ -78,6 +74,7 @@ export function WorkAssistant() {
         </button>
       </form>
 
+      <div aria-live="polite">
       {!hasSearched ? (
         <div>
           <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block mb-2.5">
@@ -88,7 +85,7 @@ export function WorkAssistant() {
               <button
                 key={i}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="text-xs font-mono rounded-full border border-white/10 bg-white/[0.02] text-slate-300 px-3.5 py-1.5 hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-all"
+                className="text-xs font-mono rounded-full border border-white/10 bg-white/[0.02] text-slate-300 px-3.5 py-2 hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-all"
               >
                 {suggestion}
               </button>
@@ -116,7 +113,7 @@ export function WorkAssistant() {
                   {result.projectSlug && (
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3.5 border-t border-white/[0.08]">
                       <div className="flex flex-col">
-                        <span className="text-[10px] text-slate-500 font-mono uppercase">VERIFIED IN</span>
+                        <span className="text-[10px] text-text-tertiary font-mono uppercase">VERIFIED IN</span>
                         <span className="text-xs font-mono text-cyan-300">
                           {result.projectSlug.replace(/-/g, ' ').toUpperCase()}
                           {result.sourceSection && ` / ${result.sourceSection}`}
@@ -163,6 +160,7 @@ export function WorkAssistant() {
           )}
         </div>
       )}
+      </div>
     </div>
   )
 }

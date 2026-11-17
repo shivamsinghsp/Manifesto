@@ -1,420 +1,246 @@
-import { Metadata } from "next"
+import type { Metadata } from "next"
 import Image from "next/image"
 import NextLink from "next/link"
 import { notFound } from "next/navigation"
-import { projects } from "@/data/projects"
-import { ProjectExplorer } from "@/components/engineering/ProjectExplorer"
+import { Fragment, type ReactNode } from "react"
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react"
+import { projects, type CaseStudySection, type ProjectImage } from "@/content/projects"
 import { ArchitectureDiagram } from "@/components/engineering/ArchitectureDiagram"
-import React from "react"
+import { SectionNav, type NavSection } from "@/components/case-study/SectionNav"
+import { ReadingProgress } from "@/components/case-study/ReadingProgress"
+import { Outcomes } from "@/components/case-study/Outcomes"
+import { Challenges } from "@/components/case-study/Challenges"
+import { pageMetadata } from "@/lib/seo"
+import { slugify } from "@/lib/slug"
 
-interface PageProps {
-  params: { slug: string }
+type Params = Promise<{ slug: string }>
+
+export function generateStaticParams() {
+  return projects.map((p) => ({ slug: p.slug }))
 }
 
-export async function generateStaticParams() {
-  return projects.map((project) => ({
-    slug: project.slug,
-  }))
+export const dynamicParams = false
+
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { slug } = await params
+  const project = projects.find((p) => p.slug === slug)
+  if (!project) return { title: "Not found" }
+  return pageMetadata({ title: `${project.title} — Case Study`, description: project.shortDescription, path: `/work/${slug}` })
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const project = projects.find((p) => p.slug === params.slug)
-  if (!project) return { title: "Not Found" }
+const pad = (n: number) => String(n).padStart(2, "0")
 
-  return {
-    title: `${project.title} — Case Study`,
-    description: project.shortDescription,
-  }
+function Paragraphs({ content }: { content?: string | string[] }) {
+  if (!content) return null
+  const list = Array.isArray(content) ? content : [content]
+  return (
+    <div className="max-w-3xl space-y-5">
+      {list.map((p, i) => (
+        <p key={i} className="whitespace-pre-line text-body-large text-text-secondary">{p}</p>
+      ))}
+    </div>
+  )
 }
 
-function getOwnershipLabel(role: string): string {
-  const lower = role.toLowerCase()
-  if (lower.includes("client project") || lower.includes("independent full-stack")) {
-    return "Independent Client Delivery"
-  }
-  if (lower.includes("primary feature")) {
-    return "Primary Feature Developer"
-  }
-  if (lower.includes("independent project") || lower.includes("full-stack web developer")) {
-    return "Independent Project"
-  }
-  if (lower.includes("enterprise") || lower.includes("spfx")) {
-    return "Enterprise Contributor"
-  }
-  if (lower.includes("qa") || lower.includes("verification")) {
-    return "QA & Verification Engineer"
-  }
-  return "Core Contributor"
+function Screenshot({ image }: { image: ProjectImage }) {
+  return (
+    <figure className="w-full" data-reveal>
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-surface/70 p-2 shadow-2xl">
+        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-surface-alt">
+          <Image src={image.src} alt={image.alt} fill sizes="(max-width: 768px) 92vw, (max-width: 1280px) 66vw, 860px" className="object-cover object-top" />
+        </div>
+      </div>
+      {image.caption && <figcaption className="mt-3 text-right text-mono-label text-text-tertiary">{image.caption}</figcaption>}
+    </figure>
+  )
 }
 
-export default function CaseStudyPage({ params }: PageProps) {
-  const project = projects.find((p) => p.slug === params.slug)
+function Implementation({ steps }: { steps: string[] }) {
+  return (
+    <div className="relative overflow-hidden rounded-xl border border-border bg-surface-alt p-6 md:p-8">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-blueprint opacity-10" />
+      <h3 className="relative mb-5 inline-block border-b border-border-muted pb-2 text-mono-label text-text-tertiary">Implementation flow</h3>
+      <ol className="relative flex flex-col font-mono text-[13px] leading-relaxed text-text-secondary" data-reveal-stagger>
+        {steps.map((step, i) => (
+          <li key={i} className="flex flex-col">
+            <span className="flex gap-3"><span className="text-text-tertiary">{pad(i + 1)}</span>{step}</span>
+            {i < steps.length - 1 && <span aria-hidden="true" className="my-1.5 pl-7 text-accent">↓</span>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
 
-  if (!project) {
-    notFound()
+function SectionBody({ section }: { section: CaseStudySection }) {
+  if (section.type === "text" && typeof section.content === "string" && /^\d{2}\n/.test(section.content)) {
+    return <Challenges content={section.content} />
   }
+  return (
+    <div className="flex flex-col gap-10">
+      {section.type === "image" || section.type === "product-feature" ? section.image && <Screenshot image={section.image} /> : null}
+      <Paragraphs content={section.content} />
+      {section.type === "two-column" && (
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <p className="text-body-large text-text-secondary">{section.leftCol}</p>
+          <p className="text-body-large text-text-secondary">{section.rightCol}</p>
+        </div>
+      )}
+      {section.diagram && (
+        <figure className="w-full">
+          <ArchitectureDiagram {...section.diagram} />
+          <figcaption className="mt-3 text-right text-mono-label text-text-tertiary">{section.diagram.caption}</figcaption>
+        </figure>
+      )}
+      {section.implementation && section.implementation.length > 0 && <Implementation steps={section.implementation} />}
+    </div>
+  )
+}
 
-  // Compute section numbering offset
-  const sectionOffset = project.metrics ? 3 : 2 // 1=OVERVIEW, 2=SNAPSHOT (or METRICS), ...
+function Block({ id, index, title, children, alt }: { id: string; index: string; title: string; children: ReactNode; alt?: boolean }) {
+  return (
+    <section id={id} aria-labelledby={`${id}-h`} className={`section-y scroll-mt-32 border-b border-border ${alt ? "bg-surface/60" : ""}`}>
+      <div className="grid-container gap-y-8">
+        <div className="col-span-full md:col-span-3">
+          <div className="border-b border-border pb-3 md:sticky md:top-32 md:border-b-0 md:border-t md:pt-4">
+            <h2 id={`${id}-h`} tabIndex={-1} className="text-mono-label text-text-tertiary outline-none">
+              <span className="text-accent-hover">{index}.</span> {title}
+            </h2>
+          </div>
+        </div>
+        <div className="col-span-full md:col-span-5 lg:col-span-9">{children}</div>
+      </div>
+    </section>
+  )
+}
+
+export default async function CaseStudyPage({ params }: { params: Params }) {
+  const { slug } = await params
+  const idx = projects.findIndex((p) => p.slug === slug)
+  if (idx === -1) notFound()
+  const project = projects[idx]
+  const prev = projects[(idx - 1 + projects.length) % projects.length]
+  const next = projects[(idx + 1) % projects.length]
+
+  // Sequential numbering: 01 Overview, 02 Outcomes, then every case-study section.
+  const sections: (NavSection & { section?: CaseStudySection })[] = [
+    { id: "overview", label: "Overview", index: "01" },
+    { id: "outcomes", label: "Outcomes", index: "02" },
+    ...(project.caseStudy ?? []).map((s, i) => ({
+      id: slugify(s.title || s.category || `section-${i + 3}`),
+      label: (s.title || s.category || "Section").toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase()),
+      index: pad(i + 3),
+      section: s,
+    })),
+  ]
+
+  const facts = [
+    { label: "Role", value: project.role },
+    { label: "Engagement", value: project.engagement },
+    { label: "Timeline", value: project.timeline ?? "—" },
+    { label: "Type", value: project.category },
+  ]
 
   return (
-    <article className="pb-24">
-      {/* Case Study Header */}
-      <header className="py-16 md:py-20 lg:py-24 border-b border-border bg-blueprint bg-fixed">
+    <article id="case-study" className="pb-8">
+      <ReadingProgress targetId="case-study" />
+
+      <header className="border-b border-border bg-blueprint pb-12 pt-12 md:pb-16 md:pt-16">
         <div className="grid-container">
           <div className="col-span-full mb-8">
-            <NextLink
-              href="/work"
-              className="inline-flex items-center gap-2 text-xs font-mono text-slate-400 hover:text-cyan-400 transition-colors focus:outline-none focus:underline"
-            >
-              <span>←</span>
-              <span>Back to Selected Work</span>
+            <NextLink href="/work" className="inline-flex min-h-[44px] items-center gap-2 font-mono text-xs text-text-secondary transition-colors hover:text-accent-hover">
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" /> All selected work
             </NextLink>
           </div>
-
-          <div className="col-span-full lg:col-span-8 mb-16">
-            <span className="text-mono-label text-text-tertiary mb-6 block uppercase">{`// CASE_STUDY: ${project.category}`}</span>
-            <h1 className="text-display mb-8">{project.title}</h1>
-            <p className="text-body-large text-text-secondary leading-relaxed">
-              {project.shortDescription}
-            </p>
+          <div className="col-span-full mb-12 lg:col-span-9">
+            <p className="mb-5 text-mono-label text-text-tertiary animate-reveal-up">{`// CASE STUDY · ${project.category}`}</p>
+            <h1 className="mb-6 text-display">{project.title}</h1>
+            <p className="max-w-3xl text-body-large text-text-secondary">{project.shortDescription}</p>
           </div>
-          
-          <div className="col-span-full grid grid-cols-2 md:grid-cols-4 gap-8 pt-12 border-t border-border">
-            <div>
-              <h3 className="text-mono-label text-text-tertiary mb-3 border-b border-border-muted pb-2">ROLE</h3>
-              <p className="text-body-small text-text">{project.role}</p>
-            </div>
-            <div>
-              <h3 className="text-mono-label text-text-tertiary mb-3 border-b border-border-muted pb-2">TIMELINE</h3>
-              <p className="text-body-small text-text">{project.timeline}</p>
-            </div>
-            <div className="col-span-2 md:col-span-2">
-              <h3 className="text-mono-label text-text-tertiary mb-3 border-b border-border-muted pb-2">TECHNOLOGIES</h3>
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map(tag => (
-                  <span key={tag} className="text-mono-label text-text bg-surface border border-border px-2 py-1">
-                    {tag}
-                  </span>
-                ))}
+
+          <dl className="col-span-full grid grid-cols-1 gap-x-8 gap-y-6 border-t border-border pt-8 xs:grid-cols-2 lg:grid-cols-4">
+            {facts.map((f) => (
+              <div key={f.label}>
+                <dt className="mb-2 border-b border-border-muted pb-2 text-mono-label text-text-tertiary">{f.label}</dt>
+                <dd className="text-body-small text-text">{f.value}</dd>
               </div>
+            ))}
+            <div className="xs:col-span-2 lg:col-span-4">
+              <dt className="mb-2 border-b border-border-muted pb-2 text-mono-label text-text-tertiary">Technologies</dt>
+              <dd>
+                <ul className="flex flex-wrap gap-2">
+                  {project.tags.map((t) => (
+                    <li key={t} className="rounded border border-border bg-surface px-2 py-1 text-mono-label normal-case tracking-normal text-text">{t}</li>
+                  ))}
+                </ul>
+              </dd>
             </div>
-          </div>
+          </dl>
 
-          {/* External Project Links */}
           {project.links && project.links.length > 0 && (
-            <div className="col-span-full flex flex-wrap gap-4 pt-8">
-              {project.links.map(link => (
+            <div className="col-span-full flex flex-wrap gap-3 pt-8">
+              {project.links.map((link) => (
                 <a
                   key={link.url}
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 border border-border text-mono-label text-text hover:bg-surface hover:border-accent hover:text-accent transition-colors duration-300"
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border px-4 text-mono-label text-text transition-colors hover:border-accent hover:text-accent-hover"
                 >
                   {link.label}
-                  <span className="text-text-tertiary">↗</span>
+                  <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                  <span className="sr-only">(opens in a new tab)</span>
                 </a>
               ))}
-            </div>
-          )}
-
-          {/* Interactive Project Explorer */}
-          {project.explorerTabs && project.explorerTabs.length > 0 && (
-            <div className="col-span-full">
-              <ProjectExplorer tabs={project.explorerTabs} />
             </div>
           )}
         </div>
       </header>
 
-      {/* Hero Image */}
-      <div className="w-full max-w-[1440px] mx-auto border-b border-border">
-        <div className="aspect-[16/9] md:aspect-[21/9] relative overflow-hidden flex items-center justify-center text-text-tertiary bg-surface filter grayscale opacity-90 transition-all duration-700 hover:grayscale-0 hover:opacity-100 animate-scan">
-          {project.heroImage.src ? (
-            <Image
-              src={project.heroImage.src}
-              alt={project.heroImage.alt}
-              fill
-              className="object-cover"
-              priority
-            />
-          ) : (
-            <span className="font-mono text-sm">[HERO IMAGE: {project.heroImage.alt}]</span>
-          )}
+      <div className="mx-auto w-full max-w-[1440px] border-b border-border">
+        <div className="relative aspect-[16/9] overflow-hidden bg-surface md:aspect-[21/9]" style={{ viewTransitionName: `project-${project.slug}` }}>
+          <Image src={project.heroImage.src} alt={project.heroImage.alt} fill priority sizes="(max-width: 1440px) 100vw, 1440px" className="object-cover object-top" />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/70 via-transparent to-transparent" />
         </div>
       </div>
 
-      {/* Project Overview */}
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border">
-        <div className="grid-container gap-y-12 lg:gap-y-0">
-          <div className="col-span-full md:col-span-4 lg:col-span-3">
-            <div className="md:sticky top-24 md:border-t border-b md:border-b-0 border-border md:pt-4 pb-4 md:pb-0 mb-8 md:mb-0">
-              <h2 className="text-mono-label text-text-tertiary">01. OVERVIEW</h2>
-            </div>
-          </div>
-          <div className="col-span-full md:col-span-8 lg:col-span-9 prose prose-invert max-w-3xl">
-            {project.longDescription.map((p, i) => (
-              <p key={i} className="text-body-large text-text-secondary mb-8 leading-relaxed">{p}</p>
-            ))}
-          </div>
-        </div>
-      </section>
+      <SectionNav sections={sections.map(({ id, label, index }) => ({ id, label, index }))} />
 
-      {/* Project Snapshot — Compact Technical Metadata */}
-      <section className="py-12 border-b border-border bg-surface">
-        <div className="grid-container">
-          <div className="col-span-full grid grid-cols-2 md:grid-cols-4 gap-0 border border-border">
-            <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-border">
-              <div className="text-mono-label text-text-tertiary mb-3">ROLE</div>
-              <div className="text-body-small text-text">{project.role}</div>
-            </div>
-            <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-border">
-              <div className="text-mono-label text-text-tertiary mb-3">OWNERSHIP</div>
-              <div className="text-body-small text-text">{getOwnershipLabel(project.role)}</div>
-            </div>
-            <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-border">
-              <div className="text-mono-label text-text-tertiary mb-3">TIMELINE</div>
-              <div className="text-body-small text-text">{project.timeline || "—"}</div>
-            </div>
-            <div className="p-6 md:p-8">
-              <div className="text-mono-label text-text-tertiary mb-3">TYPE</div>
-              <div className="text-body-small text-text">{project.category}</div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Block id="overview" index="01" title="Overview">
+        <Paragraphs content={project.longDescription} />
+      </Block>
 
-      {/* Key Metrics */}
-      {project.metrics && (
-        <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-surface">
-          <div className="grid-container">
-            <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-0 border border-border">
-              {project.metrics.map((metric, i) => (
-                <div key={i} className="p-8 md:p-12 border-b md:border-b-0 md:border-r border-border last:border-0 relative">
-                  <div className="absolute top-4 left-4 text-mono-label text-text-tertiary">{`0${i + 1}`}</div>
-                  <div className="text-display-secondary text-text mb-4 mt-4">{metric.value}</div>
-                  <div className="text-mono-label text-text-secondary">{metric.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <Block id="outcomes" index="02" title="Outcomes / Impact" alt>
+        <Outcomes items={project.outcomes} />
+      </Block>
 
-      {/* Case Study Dynamic Content */}
-      {project.caseStudy && (
-        <div className="case-study-content">
-          {project.caseStudy.map((section, index) => (
-            <section key={index} className="py-16 md:py-24 lg:py-32 border-b border-border">
-              <div className="grid-container gap-y-12 lg:gap-y-0">
-                
-                {/* Left Column: Section Title */}
-                <div className="col-span-full md:col-span-4 lg:col-span-3">
-                  <div className="md:sticky top-24 md:border-t border-b md:border-b-0 border-border md:pt-4 pb-4 md:pb-0 mb-8 md:mb-0">
-                    <h2 className="text-mono-label text-text-tertiary">
-                      {`0${sectionOffset + index}. ${section.title || section.category || 'SECTION'}`}
-                    </h2>
-                  </div>
-                </div>
+      {sections.slice(2).map((s, i) => (
+        <Fragment key={s.id}>
+          <Block id={s.id} index={s.index} title={s.section?.title || s.label} alt={i % 2 === 1}>
+            {s.section && <SectionBody section={s.section} />}
+          </Block>
+        </Fragment>
+      ))}
 
-                {/* Right Column: Content */}
-                <div className="col-span-full md:col-span-8 lg:col-span-9">
-                  
-                  {/* Text Section */}
-                  {section.type === "text" && (
-                    <div className="prose prose-invert max-w-3xl">
-                      <p className="text-body-large text-text-secondary leading-relaxed whitespace-pre-line">
-                        {section.content}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Product Feature Section */}
-                  {section.type === "product-feature" && (
-                    <div className="flex flex-col gap-12">
-                      
-                      {/* 1. Real Screenshot */}
-                      {section.image && (
-                        <figure className="w-full relative group">
-                          <div className="relative z-10 rounded-2xl border border-white/10 bg-surface/70 backdrop-blur-xl p-2.5 shadow-2xl overflow-hidden">
-                            <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden text-text-tertiary flex items-center justify-center bg-surface-alt">
-                              {section.image.src ? (
-                                <Image
-                                  src={section.image.src}
-                                  alt={section.image.alt}
-                                  fill
-                                  className="object-cover"
-                                />
-                              ) : (
-                                <div className="text-mono-label uppercase">[ IMAGE RESERVED ]</div>
-                              )}
-                            </div>
-                          </div>
-                          {section.image.caption && (
-                            <figcaption className="mt-4 text-mono-label text-text-tertiary text-right pr-2">
-                              {section.image.caption}
-                            </figcaption>
-                          )}
-                        </figure>
-                      )}
-
-                      {/* 2. Technical Explanation */}
-                      {section.content && (
-                        <div className="prose prose-invert max-w-3xl">
-                          {Array.isArray(section.content) ? (
-                            section.content.map((p, i) => (
-                              <p key={i} className="text-body-large text-text-secondary leading-relaxed mb-4 last:mb-0">{p}</p>
-                            ))
-                          ) : (
-                            <p className="text-body-large text-text-secondary leading-relaxed">
-                              {section.content}
-                            </p>
-                          )}
-                        </div>
-                      )}
-
-                      {/* 3. Real SVG Architecture Diagram */}
-                      {section.diagram && (
-                        <figure className="w-full mx-auto relative tech-frame">
-                          <ArchitectureDiagram
-                            src={section.diagram.src}
-                            alt={section.diagram.alt}
-                          />
-                          {section.diagram.caption && (
-                            <figcaption className="mt-4 text-mono-label text-text-tertiary text-right">
-                              {section.diagram.caption}
-                            </figcaption>
-                          )}
-                        </figure>
-                      )}
-
-                      {/* 4. Implementation Logic Block */}
-                      {section.implementation && section.implementation.length > 0 && (
-                        <div className="bg-surface-alt border border-border p-6 md:p-8 relative overflow-hidden group">
-                          <div className="absolute inset-0 bg-blueprint opacity-10 pointer-events-none" />
-                          <h4 className="text-mono-label text-text-tertiary mb-6 relative z-10 border-b border-border-muted pb-2 inline-block">IMPLEMENTATION</h4>
-                          <div className="font-mono text-[12px] leading-relaxed relative z-10 text-text-secondary">
-                            {section.implementation.map((step, i) => (
-                              <React.Fragment key={i}>
-                                <div>{step}</div>
-                                {i < section.implementation!.length - 1 && (
-                                  <div className="text-accent my-2">↓</div>
-                                )}
-                              </React.Fragment>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                    </div>
-                  )}
-
-                  {/* Two Column Section */}
-                  {section.type === "two-column" && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div>
-                        <p className="text-body-large text-text-secondary leading-relaxed">{section.leftCol}</p>
-                      </div>
-                      <div>
-                        <p className="text-body-large text-text-secondary leading-relaxed">{section.rightCol}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Diagram Standalone Section */}
-                  {section.type === "diagram" && section.diagram && (
-                    <div className="flex flex-col gap-8">
-                      {section.content && (
-                        <p className="text-body-large text-text-secondary leading-relaxed">
-                          {section.content}
-                        </p>
-                      )}
-                      
-                      <figure className="w-full mx-auto relative tech-frame">
-                        <ArchitectureDiagram
-                          src={section.diagram.src}
-                          alt={section.diagram.alt}
-                        />
-                        {section.diagram.caption && (
-                          <figcaption className="mt-4 text-mono-label text-text-tertiary text-right">
-                            {section.diagram.caption}
-                          </figcaption>
-                        )}
-                      </figure>
-                    </div>
-                  )}
-
-                  {/* Image Standalone Section */}
-                  {section.type === "image" && section.image && (
-                    <div className="flex flex-col gap-8">
-                      {section.content && (
-                        <div className="prose prose-invert max-w-3xl">
-                          {Array.isArray(section.content) ? (
-                            section.content.map((p, i) => (
-                              <p key={i} className="text-body-large text-text-secondary leading-relaxed">{p}</p>
-                            ))
-                          ) : (
-                            <p className="text-body-large text-text-secondary leading-relaxed">{section.content}</p>
-                          )}
-                        </div>
-                      )}
-                      <figure className="w-full relative group">
-                        <div className="relative z-10 rounded-2xl border border-white/10 bg-surface/70 backdrop-blur-xl p-2.5 shadow-2xl overflow-hidden">
-                          <div className="relative aspect-[16/9] flex items-center justify-center text-text-tertiary rounded-xl overflow-hidden animate-scan">
-                            {section.image.src ? (
-                              <Image
-                                src={section.image.src}
-                                alt={section.image.alt}
-                                fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                              />
-                            ) : (
-                              <div className="absolute inset-0 bg-surface flex items-center justify-center border border-border-muted">
-                                <span className="font-mono text-[10px] tracking-[0.2em] text-text-tertiary/70 uppercase">
-                                  [ INTERFACE PLATE RESERVED ]
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        {section.image.caption && (
-                          <figcaption className="mt-6 border-t border-border-muted pt-2 text-mono-label text-text-secondary text-right relative z-10">
-                            {section.image.caption}
-                          </figcaption>
-                        )}
-                      </figure>
-                    </div>
-                  )}
-
-                </div>
-              </div>
-            </section>
-          ))}
-        </div>
-      )}
-
-      {/* Case Study Bottom Navigation */}
-      <section className="py-16 border-t border-border bg-surface mt-16">
-        <div className="grid-container">
-          <div className="col-span-full flex flex-col sm:flex-row items-center justify-between gap-6">
-            <NextLink
-              href="/work"
-              className="inline-flex items-center gap-2 text-sm font-mono text-cyan-400 hover:text-cyan-300 transition-colors"
-            >
-              <span>←</span>
-              <span>All Selected Work</span>
+      <nav aria-label="More case studies" className="border-b border-border bg-surface">
+        <div className="grid-container py-10 md:py-14">
+          <div className="col-span-full grid grid-cols-1 gap-4 md:grid-cols-2">
+            <NextLink href={`/work/${prev.slug}`} className="group flex min-h-[44px] flex-col gap-2 rounded-xl border border-border p-6 transition-colors hover:border-accent/50">
+              <span className="inline-flex items-center gap-2 text-mono-label text-text-tertiary"><ArrowLeft className="h-4 w-4" aria-hidden="true" /> Previous</span>
+              <span className="text-subheading text-text group-hover:text-accent-hover">{prev.title}</span>
             </NextLink>
-            <NextLink
-              href="/playground"
-              className="inline-flex items-center gap-2 text-sm font-mono text-slate-400 hover:text-white transition-colors"
-            >
-              <span>Explore Engineering Playground</span>
-              <span>→</span>
+            <NextLink href={`/work/${next.slug}`} className="group flex min-h-[44px] flex-col items-end gap-2 rounded-xl border border-border p-6 text-right transition-colors hover:border-accent/50">
+              <span className="inline-flex items-center gap-2 text-mono-label text-text-tertiary">Next <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+              <span className="text-subheading text-text group-hover:text-accent-hover">{next.title}</span>
+            </NextLink>
+          </div>
+          <div className="col-span-full mt-6 flex justify-center">
+            <NextLink href="/playground" className="inline-flex min-h-[44px] items-center gap-2 font-mono text-sm text-text-secondary hover:text-accent-hover">
+              Explore the Engineering Playground <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </NextLink>
           </div>
         </div>
-      </section>
+      </nav>
     </article>
   )
 }

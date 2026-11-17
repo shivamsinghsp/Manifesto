@@ -1,107 +1,78 @@
-import { Metadata } from "next"
-import { GeofencingLab } from "@/components/engineering/playgrounds/GeofencingLab"
+import { GeoLab } from "@/components/engineering/playgrounds/GeoLab"
+import { pageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Engineering Playground",
-  description: "Interactive engineering models and experiments based on production systems built by Shivam Singh.",
-}
+  description: "Interactive models of systems Shivam Singh has built — including a 3D geofencing lab demonstrating Haversine distance validation.",
+  path: "/playground",
+})
 
 export default function PlaygroundPage() {
   return (
-    <article className="pb-24">
-      <header className="py-16 md:py-20 lg:py-24 border-b border-border bg-blueprint bg-fixed">
-        <div className="grid-container">
-          <div className="col-span-full lg:col-span-8">
-            <span className="text-mono-label text-text-tertiary mb-6 block uppercase">{`// ENGINEERING_PLAYGROUND`}</span>
-            <h1 className="text-display mb-8">Interactive Models</h1>
-            <p className="text-body-large text-text-secondary leading-relaxed">
-              These are not production systems. They are lightweight interactive models demonstrating the concepts, algorithms, and logic behind systems I have actually built.
-            </p>
-          </div>
+    <article className="pb-16">
+      <header className="border-b border-border bg-blueprint py-16 md:py-24">
+        <div className="container-x">
+          <p className="mb-6 text-mono-label text-text-tertiary">{"// ENGINEERING_PLAYGROUND"}</p>
+          <h1 className="mb-8 text-display">Interactive models</h1>
+          <p className="max-w-3xl text-body-large text-text-secondary">
+            These are not production systems. They are lightweight interactive models demonstrating the concepts, algorithms, and logic behind systems I have actually built.
+          </p>
         </div>
       </header>
 
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-bg relative overflow-hidden">
-        <div className="grid-container relative z-10">
-          <div className="col-span-full mb-12">
-            <div className="flex items-center gap-3 mb-3">
-              <h2 className="text-mono-label text-text-tertiary">{`// MODEL_01`}</h2>
-              <span className="text-[9px] font-mono text-accent border border-accent/30 bg-accent/5 px-2 py-0.5 uppercase tracking-widest">Tier 1: Interactive</span>
+      <section aria-labelledby="geo-h" className="section-y border-b border-border">
+        <div className="container-x">
+          <div className="mb-10">
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              <p className="text-mono-label text-text-tertiary">{"// MODEL_01"}</p>
+              <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-hover">Interactive model</span>
             </div>
-            <h3 className="text-display-secondary">Geospatial Validation</h3>
+            <h2 id="geo-h" className="mb-4 text-display-secondary">Geofencing lab</h2>
+            <p className="max-w-3xl text-body-large text-text-secondary">
+              Shynr validates attendance by comparing an employee&apos;s browser location against configured company locations with the Haversine formula. This model runs the same check on a 3D map of a reference office in Kanpur.
+            </p>
           </div>
-          
-          <div className="col-span-full">
-            <GeofencingLab />
-          </div>
+          <GeoLab />
         </div>
       </section>
 
-      {/* Tier 3 Experiment: Real-Time AI Voice Assistant */}
-      <section className="py-16 md:py-24 lg:py-32 border-b border-border bg-surface relative overflow-hidden">
-        <div className="grid-container relative z-10">
-          <div className="col-span-full mb-12">
-            <div className="flex items-center gap-3 mb-3">
-              <h2 className="text-mono-label text-text-tertiary">{`// EXPERIMENT_02`}</h2>
-              <span className="text-[9px] font-mono text-text-secondary border border-border bg-surface-alt px-2 py-0.5 uppercase tracking-widest">Tier 3: Experiment</span>
+      <section aria-labelledby="voice-h" className="section-y border-b border-border bg-surface/60">
+        <div className="container-x">
+          <div className="mb-10">
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              <p className="text-mono-label text-text-tertiary">{"// EXPERIMENT_02"}</p>
+              <span className="rounded border border-border bg-surface-alt px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-text-secondary">Experiment</span>
             </div>
-            <h3 className="text-display-secondary">Real-Time AI Voice Assistant</h3>
+            <h2 id="voice-h" className="text-display-secondary">Real-time AI voice assistant</h2>
           </div>
 
-          <div className="col-span-full lg:col-span-8">
-            <div className="rounded-2xl border border-white/10 bg-[#0E1322]/85 backdrop-blur-xl p-6 md:p-8 shadow-2xl">
-              <div className="flex flex-wrap gap-6 mb-6 pb-6 border-b border-white/[0.08]">
-                <div>
-                  <span className="text-[10px] font-mono text-slate-400 block mb-1">TIMELINE</span>
-                  <span className="text-sm font-medium text-white">July 2025</span>
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono text-slate-400 block mb-1">ROLE</span>
-                  <span className="text-sm font-medium text-white">Independent Developer</span>
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono text-slate-400 block mb-1">PROTOCOL</span>
-                  <span className="text-sm font-mono text-cyan-400">WebSocket Full-Duplex</span>
-                </div>
-              </div>
-
-              <p className="text-base text-slate-300 leading-relaxed mb-6 max-w-2xl">
-                An emotion-aware voice assistant built using Hume AI&apos;s Empathic Voice Interface (EVI) API, enabling real-time bidirectional voice interaction, live transcription, and emotional-cue detection through WebSocket streaming.
-              </p>
-
-              <div className="flex flex-wrap gap-2 mb-8">
-                {["React.js", "TypeScript", "Hume AI", "EVI API", "WebSockets"].map(tag => (
-                  <span key={tag} className="text-xs font-mono text-slate-300 bg-white/[0.04] border border-white/10 px-3 py-1 rounded-full">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Conceptual Flow */}
-              <div className="bg-white/[0.02] border border-white/10 rounded-xl p-6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-blueprint opacity-10 pointer-events-none" />
-                <h4 className="text-xs font-mono text-cyan-400 uppercase tracking-widest mb-4 font-medium flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                  STREAMING PIPELINE ARCHITECTURE
-                </h4>
-                <div className="font-mono text-xs leading-relaxed relative z-10 text-slate-300 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-cyan-400">01.</span> Browser Microphone Audio Capture (PCM Stream)
-                  </div>
-                  <div className="text-cyan-400/60 pl-6">↓ [Low-Latency WebSocket Transport]</div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-cyan-400">02.</span> Hume AI EVI Server Pipeline
-                  </div>
-                  <div className="text-cyan-400/60 pl-6">↓ [Bidirectional Audio + Prosody Analysis]</div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-cyan-400">03.</span> Live Transcription + Prosodic Emotion Vector Streaming
-                  </div>
-                  <div className="text-cyan-400/60 pl-6">↓ [Dynamic Client State Synthesis]</div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-cyan-400">04.</span> Real-Time UI Visualizer & Synthesized Empathic Speech
-                  </div>
-                </div>
-              </div>
+          <div className="max-w-4xl rounded-2xl border border-white/10 bg-[#0E1322]/85 p-6 shadow-2xl md:p-8">
+            <dl className="mb-6 flex flex-wrap gap-8 border-b border-white/[0.08] pb-6">
+              <div><dt className="mb-1 font-mono text-[11px] uppercase text-text-tertiary">Timeline</dt><dd className="text-sm text-text">July 2025</dd></div>
+              <div><dt className="mb-1 font-mono text-[11px] uppercase text-text-tertiary">Role</dt><dd className="text-sm text-text">Independent developer</dd></div>
+              <div><dt className="mb-1 font-mono text-[11px] uppercase text-text-tertiary">Protocol</dt><dd className="font-mono text-sm text-accent-hover">WebSocket full-duplex</dd></div>
+            </dl>
+            <p className="mb-6 max-w-2xl text-body-large text-text-secondary">
+              An emotion-aware voice assistant built using Hume AI&apos;s Empathic Voice Interface (EVI) API, enabling real-time bidirectional voice interaction, live transcription, and emotional-cue detection through WebSocket streaming.
+            </p>
+            <ul className="mb-8 flex flex-wrap gap-2">
+              {["React.js", "TypeScript", "Hume AI", "EVI API", "WebSockets"].map((t) => (
+                <li key={t} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-xs text-text-secondary">{t}</li>
+              ))}
+            </ul>
+            <div className="relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] p-6">
+              <h3 className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-accent-hover">
+                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent-hover" /> Streaming pipeline
+              </h3>
+              <ol className="space-y-2 font-mono text-xs leading-relaxed text-text-secondary">
+                <li><span className="text-accent-hover">01.</span> Browser microphone audio capture (PCM stream)</li>
+                <li aria-hidden="true" className="pl-6 text-accent/70">↓ low-latency WebSocket transport</li>
+                <li><span className="text-accent-hover">02.</span> Hume AI EVI server pipeline</li>
+                <li aria-hidden="true" className="pl-6 text-accent/70">↓ bidirectional audio + prosody analysis</li>
+                <li><span className="text-accent-hover">03.</span> Live transcription + prosodic emotion vector streaming</li>
+                <li aria-hidden="true" className="pl-6 text-accent/70">↓ client state synthesis</li>
+                <li><span className="text-accent-hover">04.</span> Real-time UI visualizer & synthesized empathic speech</li>
+              </ol>
             </div>
           </div>
         </div>
