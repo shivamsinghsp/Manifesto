@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Page not found",
   description: "This page doesn't exist or has moved.",
   robots: { index: false },
+  alternates: { canonical: null },
 }
 
 export default function NotFound() {

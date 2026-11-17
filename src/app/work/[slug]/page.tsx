@@ -25,7 +25,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug } = await params
   const project = projects.find((p) => p.slug === slug)
   if (!project) return { title: "Not found" }
-  return pageMetadata({ title: `${project.title} — Case Study`, description: project.shortDescription, path: `/work/${slug}` })
+  return pageMetadata({
+    title: `${project.title} — Case Study`,
+    description: project.shortDescription,
+    path: `/work/${slug}`,
+    image: `/work/${slug}/opengraph-image`,
+  })
 }
 
 const pad = (n: number) => String(n).padStart(2, "0")

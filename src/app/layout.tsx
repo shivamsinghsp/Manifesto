@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next"
+import Script from "next/script"
 import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google"
 import "./globals.css"
 import { Header } from "@/components/layout/Header"
@@ -87,10 +88,8 @@ function JsonLd() {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning className={`${plexSerif.variable} ${plexSans.variable} ${plexMono.variable}`}>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT_SCRIPT }} />
-      </head>
       <body>
+        <Script id="motion-boot" strategy="beforeInteractive">{MOTION_BOOT_SCRIPT}</Script>
         <a
           href="#main"
           className="sr-only-focusable fixed left-4 top-3 z-[2000] rounded-lg bg-cta-bg px-4 py-3 font-mono text-xs uppercase tracking-wider text-cta-text"

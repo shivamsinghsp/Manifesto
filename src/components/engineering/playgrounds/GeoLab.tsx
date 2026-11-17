@@ -108,7 +108,7 @@ export function GeoLab() {
           aria-label="Geofence map. Arrow keys move the user by 10 metres (Shift for 50). Plus and minus change the radius."
           aria-describedby="geo-readout"
           onKeyDown={onKey}
-          className="relative h-[360px] bg-[#070A12] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent-hover sm:h-[440px] lg:col-span-8 lg:h-[560px]"
+          className="relative h-[360px] bg-[#070A12] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent-hover sm:h-[440px] lg:col-span-8 lg:h-auto lg:min-h-[600px]"
         >
           {mount === "ready" ? (
             <CanvasErrorBoundary fallback={<div className="p-6"><GeofencingLab /></div>}>

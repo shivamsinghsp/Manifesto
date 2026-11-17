@@ -10,10 +10,11 @@ import { createGlowTexture, createLabelTexture, cssFontFamily } from "./textures
 type GroupId = SkillGroup["id"]
 
 const RINGS: Record<GroupId, { radius: number; tilt: [number, number, number]; speed: number }> = {
-  frontend: { radius: 1.55, tilt: [1.2, 0, 0.15], speed: 0.16 },
-  backend: { radius: 2.25, tilt: [1.05, 0.5, -0.25], speed: -0.11 },
-  database: { radius: 2.9, tilt: [1.35, -0.6, 0.35], speed: 0.09 },
-  enterprise: { radius: 3.55, tilt: [0.95, 0.25, -0.45], speed: -0.07 },
+  // Biggest groups get the widest rings; moderate tilts keep the ellipses open so labels don't stack.
+  database: { radius: 1.35, tilt: [0.55, 0, 0.2], speed: 0.14 },
+  enterprise: { radius: 2.15, tilt: [0.8, 0.35, -0.3], speed: -0.1 },
+  backend: { radius: 2.85, tilt: [0.62, -0.45, 0.4], speed: 0.08 },
+  frontend: { radius: 3.5, tilt: [0.9, 0.2, -0.15], speed: -0.06 },
 }
 
 function Ring({ group, selected, reduced, fontFamily }: { group: SkillGroup; selected: GroupId | null; reduced: boolean; fontFamily: string }) {
@@ -50,7 +51,7 @@ function Ring({ group, selected, reduced, fontFamily }: { group: SkillGroup; sel
         </lineLoop>
         {labels.map((l, i) => {
           const a = (i / labels.length) * Math.PI * 2
-          const h = 0.3
+          const h = 0.27
           return (
             <sprite key={group.items[i]} position={[Math.cos(a) * cfg.radius, Math.sin(a) * cfg.radius, 0]} scale={[h * l.aspect, h, 1]}>
               <spriteMaterial ref={(m) => { spriteMats.current[i] = m }} map={l.texture} transparent depthWrite={false} />
@@ -116,7 +117,7 @@ function Cluster({ selected, reduced }: { selected: GroupId | null; reduced: boo
   return (
     <group ref={root}>
       <mesh>
-        <icosahedronGeometry args={[0.55, 1]} />
+        <icosahedronGeometry args={[0.45, 1]} />
         <meshBasicMaterial color="#00B8D4" wireframe transparent opacity={0.35} />
       </mesh>
       <sprite scale={2.4}>
@@ -132,7 +133,7 @@ export default function SkillsScene({ selected, reduced, active, tier }: { selec
     <Canvas
       dpr={dprFor(tier)}
       frameloop={!active ? "never" : reduced ? "demand" : "always"}
-      camera={{ position: [0, 0.4, 9], fov: 45 }}
+      camera={{ position: [0, 0.2, 10.8], fov: 45 }}
       gl={{ antialias: tier !== "low", alpha: true }}
       style={{ touchAction: "pan-y", cursor: "grab" }}
     >

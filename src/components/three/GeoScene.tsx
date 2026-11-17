@@ -138,16 +138,20 @@ function GeoWorld({ user, radius, status, distance, onUserChange, onRadiusChange
   useFrame((state, delta) => {
     const dt = Math.min(delta, 0.05)
     const aspect = size.width / Math.max(1, size.height)
-    const fit = Math.max(1, 1.45 / aspect)
+    // Frame whatever matters right now: the fence and the user, never less than ~120 m.
+    const frameUnits = Math.max(radius * 1.45, Math.hypot(user.x, user.y) * 1.2, 120) / M_PER_UNIT
+    const fit = Math.max(1, 1.25 / aspect)
     intro.current = Math.min(1, intro.current + dt * 0.55)
     const e = 1 - Math.pow(1 - intro.current, 3)
-    const alt = THREE.MathUtils.lerp(260, 50 * fit, e)
-    const back = THREE.MathUtils.lerp(10, 50 * fit, e)
+    const alt = THREE.MathUtils.lerp(260, frameUnits * 1.9 * fit, e)
+    const back = THREE.MathUtils.lerp(10, frameUnits * 1.75 * fit, e)
     const px = reduced || dragging ? 0 : pointer.current.x * 3
     const pz = reduced || dragging ? 0 : pointer.current.y * 2
+    // While dragging, hold the zoom so the map doesn't slide under the pointer.
+    const zoomRate = dragging ? 0 : 2.5
     camera.position.x = THREE.MathUtils.damp(camera.position.x, px, 3, dt)
-    camera.position.y = intro.current < 1 ? alt : THREE.MathUtils.damp(camera.position.y, alt, 3, dt)
-    camera.position.z = intro.current < 1 ? back : THREE.MathUtils.damp(camera.position.z, back + pz, 3, dt)
+    camera.position.y = intro.current < 1 ? alt : THREE.MathUtils.damp(camera.position.y, alt, zoomRate, dt)
+    camera.position.z = intro.current < 1 ? back : THREE.MathUtils.damp(camera.position.z, back + pz, zoomRate, dt)
     camera.lookAt(0, 0, 0)
 
     if (pulse.current && !reduced) {
