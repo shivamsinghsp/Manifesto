@@ -1,343 +1,234 @@
 "use client"
 
-import React, { useState, useRef } from "react"
-import { ArrowUpRight, Copy, Check, Mail, ExternalLink, AlertCircle } from "lucide-react"
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react"
+import { AlertCircle, ArrowUpRight, Check, Copy, Loader2, Mail } from "lucide-react"
+import { contactSchema, CONTACT_LIMITS, fieldErrorsFrom, type ContactField, type FieldErrors } from "@/lib/contact"
+import { mailto, site } from "@/content/site"
+import { buttonClass } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+
+type Status = "idle" | "loading" | "success" | "error"
+const EMPTY = { name: "", company: "", email: "", message: "" }
 
 export function ContactForm() {
-  const [formData, setFormData] = useState({
-    name: "",
-    company: "",
-    email: "",
-    message: "",
-  })
-  const [fieldErrors, setFieldErrors] = useState<{
-    name?: string
-    email?: string
-    message?: string
-  }>({})
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
-  const [errorMessage, setErrorMessage] = useState("")
+  const [data, setData] = useState(EMPTY)
+  const [errors, setErrors] = useState<FieldErrors>({})
+  const [status, setStatus] = useState<Status>("idle")
+  const [message, setMessage] = useState("")
   const [copied, setCopied] = useState(false)
-  
-  // Track last submission to guard against duplicate submits
-  const lastSubmissionRef = useRef<{ payload: string; timestamp: number } | null>(null)
+  const startedAt = useRef(0)
+  const honeypot = useRef<HTMLInputElement>(null)
+  const statusRef = useRef<HTMLDivElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
 
-  const directEmail = "shivamsinghabc439@gmail.com"
+  useEffect(() => { startedAt.current = Date.now() }, [])
 
-  const handleCopyEmail = async () => {
+  const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText(directEmail)
+      await navigator.clipboard.writeText(site.email)
       setCopied(true)
       setTimeout(() => setCopied(false), 2500)
     } catch {
-      const textArea = document.createElement("textarea")
-      textArea.value = directEmail
-      document.body.appendChild(textArea)
-      textArea.select()
-      document.execCommand("copy")
-      document.body.removeChild(textArea)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2500)
+      /* clipboard blocked — the mailto link remains available */
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-    // Clear field-level error on change
-    if (fieldErrors[name as keyof typeof fieldErrors]) {
-      setFieldErrors(prev => ({ ...prev, [name]: undefined }))
-    }
+    setData((d) => ({ ...d, [name]: value }))
+    if (errors[name as ContactField]) setErrors((er) => ({ ...er, [name]: undefined }))
   }
 
-  const validateForm = (): boolean => {
-    const errors: typeof fieldErrors = {}
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-    if (!formData.name.trim()) {
-      errors.name = "Full Name is required."
-    }
-    if (!formData.email.trim()) {
-      errors.email = "Email Address is required."
-    } else if (!emailRegex.test(formData.email.trim())) {
-      errors.email = "Please enter a valid email address (e.g. alex@company.com)."
-    }
-    if (!formData.message.trim()) {
-      errors.message = "Message is required."
-    } else if (formData.message.trim().length < 5) {
-      errors.message = "Message must be at least 5 characters long."
-    }
-
-    setFieldErrors(errors)
-    return Object.keys(errors).length === 0
+  const focusFirstError = (errs: FieldErrors) => {
+    const first = (["name", "email", "company", "message"] as ContactField[]).find((k) => errs[k])
+    if (first) formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus()
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    
-    // 1. Client-Side Validation
-    if (!validateForm()) {
+    if (status === "loading") return
+    const parsed = contactSchema.safeParse(data)
+    if (!parsed.success) {
+      const errs = fieldErrorsFrom(parsed.error)
+      setErrors(errs)
       setStatus("error")
-      setErrorMessage("Please correct the errors highlighted below.")
-      return
-    }
-
-    // 2. Duplicate Submission Guard
-    const currentPayload = JSON.stringify({
-      name: formData.name.trim(),
-      email: formData.email.trim(),
-      message: formData.message.trim(),
-    })
-
-    if (
-      lastSubmissionRef.current &&
-      lastSubmissionRef.current.payload === currentPayload &&
-      Date.now() - lastSubmissionRef.current.timestamp < 60000
-    ) {
-      setStatus("error")
-      setErrorMessage("This exact message was already transmitted. Please wait before submitting again or update your text.")
+      setMessage("Please correct the highlighted fields.")
+      focusFirstError(errs)
       return
     }
 
     setStatus("loading")
-    setErrorMessage("")
-
+    setMessage("")
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 15000)
     try {
-      const response = await fetch("/api/contact", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...parsed.data, website: honeypot.current?.value ?? "", startedAt: startedAt.current }),
+        signal: controller.signal,
       })
-
-      const data = await response.json().catch(() => ({}))
-
-      if (response.ok && data.success && !data.mocked) {
+      const body = await res.json().catch(() => ({}))
+      if (res.ok && body.success) {
         setStatus("success")
-        lastSubmissionRef.current = { payload: currentPayload, timestamp: Date.now() }
-        setFormData({ name: "", company: "", email: "", message: "" })
-        setFieldErrors({})
+        setMessage("Message sent — thank you. I'll get back to you soon.")
+        setData(EMPTY)
+        setErrors({})
       } else {
+        if (body.fieldErrors) {
+          setErrors(body.fieldErrors)
+          focusFirstError(body.fieldErrors)
+        }
         setStatus("error")
-        setErrorMessage(
-          data.error ||
-            "Direct transmission gateway is currently unavailable. Please use the button below to send your note directly via email."
-        )
+        setMessage(body.error || `Something went wrong. Please email ${site.email} directly.`)
       }
-    } catch {
+    } catch (err) {
       setStatus("error")
-      setErrorMessage("A network error occurred while transmitting. Please send your note directly using your email client.")
+      setMessage(
+        err instanceof DOMException && err.name === "AbortError"
+          ? "The request timed out. Please try again or email me directly."
+          : "A network error occurred. Please try again or email me directly."
+      )
+    } finally {
+      clearTimeout(timeout)
+      requestAnimationFrame(() => statusRef.current?.focus())
     }
   }
 
-  // Pre-formatted mailto link for direct fallback
-  const mailtoSubject = encodeURIComponent(`Portfolio Inquiry from ${formData.name || "Colleague"}`)
-  const mailtoBody = encodeURIComponent(
-    `Hello Shivam,\n\n${formData.message}\n\nFrom,\n${formData.name}\n${formData.company ? `Company: ${formData.company}\n` : ""}${formData.email ? `Email: ${formData.email}` : ""}`
+  const fallbackMailto = mailto(
+    `Portfolio inquiry from ${data.name || "a visitor"}`,
+    `Hello Shivam,\n\n${data.message}\n\n— ${data.name}${data.company ? `\n${data.company}` : ""}`
   )
-  const fallbackMailto = `mailto:${directEmail}?subject=${mailtoSubject}&body=${mailtoBody}`
+
+  const fieldClass = (field: ContactField) =>
+    cn(
+      "w-full rounded-xl border bg-white/[0.04] px-4 py-3 font-mono text-sm text-text transition-colors placeholder:text-text-tertiary/70 focus:border-accent-hover focus:outline-none focus:ring-1 focus:ring-accent-hover disabled:opacity-50",
+      errors[field] ? "border-rose-400/70" : "border-white/10"
+    )
+  const labelClass = "mb-2 block font-mono text-xs uppercase tracking-wider text-text-secondary"
+  const errorText = (field: ContactField) =>
+    errors[field] ? <p id={`${field}-error`} className="mt-1.5 font-mono text-xs text-rose-300">{errors[field]}</p> : null
+  const describedBy = (field: ContactField, extra?: string) => [errors[field] ? `${field}-error` : "", extra ?? ""].filter(Boolean).join(" ") || undefined
+  const loading = status === "loading"
 
   return (
-    <section className="py-16 md:py-20 lg:py-24 relative">
-      <div className="grid-container gap-y-16 lg:gap-y-0 relative z-10">
-        
-        {/* Left Editorial Info */}
+    <section className="section-y relative">
+      <div className="grid-container gap-y-14">
         <div className="col-span-full lg:col-span-5">
-          <span className="text-mono-label text-text-tertiary mb-8 block tracking-widest">{`// 04. CONTACT`}</span>
-          <h1 className="text-[clamp(3rem,6vw,80px)] font-display font-light leading-[1.05] tracking-tight mb-8">
-            Let&apos;s build <br />
-            <span className="italic text-text-secondary">systems.</span>
+          <p className="mb-8 text-mono-label text-text-tertiary">{"// 04. CONTACT"}</p>
+          <h1 className="mb-8 text-display">
+            {site.ctaHeadline.lead} <br />
+            <span className="italic text-text-secondary">{site.ctaHeadline.emphasis}</span>
           </h1>
-          <p className="text-[1.1rem] text-text-secondary leading-relaxed mb-12 max-w-md">
-            I am open to software engineering opportunities and technical collaborations. Whether you have an engineering challenge, an open role, or want to discuss full-stack architecture, send a note and I&apos;ll get back to you within 24 hours.
+          <p className="mb-12 max-w-md text-body-large text-text-secondary">
+            I&apos;m open to software engineering opportunities and technical collaborations. Whether you have an engineering challenge, an open role, or want to discuss full-stack architecture, send a note and I&apos;ll get back to you within 24 hours.
           </p>
-          
-          <div className="flex flex-col gap-6">
-            <div className="group">
-              <span className="text-mono-label text-text-tertiary block mb-2">DIRECT EMAIL</span>
+
+          <div className="flex flex-col gap-8">
+            <div>
+              <p className="mb-2 text-mono-label text-text-tertiary">Direct email</p>
               <div className="flex flex-wrap items-center gap-3">
-                <a 
-                  href={`mailto:${directEmail}`} 
-                  className="text-[1rem] sm:text-[1.15rem] text-text transition-colors hover:text-cyan-400 inline-flex items-center gap-2 focus:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 break-all sm:break-normal font-mono"
-                  aria-label="Send email to shivamsinghabc439@gmail.com"
-                >
-                  <Mail className="w-4 h-4 text-cyan-400 shrink-0" />
-                  {directEmail}
-                  <ArrowUpRight className="w-4 h-4 flex-shrink-0 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <a href={mailto()} className="group inline-flex min-h-[44px] items-center gap-2 break-all font-mono text-base text-text transition-colors hover:text-accent-hover sm:text-lg">
+                  <Mail className="h-4 w-4 shrink-0 text-accent-hover" aria-hidden="true" />
+                  {site.email}
+                  <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
                 </a>
-                
                 <button
                   type="button"
-                  onClick={handleCopyEmail}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-mono border border-white/10 bg-white/[0.04] text-slate-300 hover:text-white hover:border-cyan-400/40 hover:bg-cyan-500/10 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 active:scale-95"
-                  aria-label="Copy email address to clipboard"
+                  onClick={copyEmail}
+                  className="inline-flex min-h-[36px] items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.04] px-3 font-mono text-xs text-text-secondary transition-colors hover:border-accent/40 hover:text-text"
                 >
-                  {copied ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-emerald-300 font-semibold">COPIED</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5 text-slate-400" />
-                      <span>COPY</span>
-                    </>
-                  )}
+                  {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
+                  <span aria-live="polite">{copied ? "Copied" : "Copy"}</span>
+                  <span className="sr-only"> email address</span>
                 </button>
               </div>
             </div>
-
-            <div className="group">
-              <span className="text-mono-label text-text-tertiary block mb-2">SOCIAL & CODE</span>
+            <div>
+              <p className="mb-2 text-mono-label text-text-tertiary">Elsewhere</p>
               <div className="flex gap-6">
-                <a 
-                  href="https://github.com/shivamsinghsp"
-                  target="_blank"
-                  rel="noopener noreferrer" 
-                  className="text-[1.05rem] text-text-secondary transition-colors hover:text-white inline-flex items-center gap-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
-                >
-                  GitHub
-                  <ArrowUpRight className="w-3.5 h-3.5 text-slate-400" />
-                </a>
-                <a 
-                  href="https://www.linkedin.com/in/shivam2105-"
-                  target="_blank"
-                  rel="noopener noreferrer" 
-                  className="text-[1.05rem] text-text-secondary transition-colors hover:text-white inline-flex items-center gap-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
-                >
-                  LinkedIn
-                  <ArrowUpRight className="w-3.5 h-3.5 text-slate-400" />
-                </a>
+                {[["GitHub", site.socials.github], ["LinkedIn", site.socials.linkedin]].map(([label, href]) => (
+                  <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-1 text-text-secondary transition-colors hover:text-text">
+                    {label} <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Form Card */}
         <div className="col-span-full lg:col-span-6 lg:col-start-7">
-          <div className="rounded-2xl border border-white/10 bg-[#0E1322]/85 backdrop-blur-xl p-8 sm:p-10 md:p-12 shadow-2xl">
-            <div className="mb-6 pb-6 border-b border-white/[0.08]">
-              <h2 className="text-xl font-display font-medium text-white mb-1">
-                Initiate Contact
-              </h2>
-              <p className="text-xs font-mono text-slate-400">
-                Responses delivered within 24 hours.
-              </p>
+          <div className="rounded-2xl border border-white/10 bg-[#0E1322]/85 p-6 shadow-2xl backdrop-blur-xl sm:p-10">
+            <div className="mb-6 border-b border-white/[0.08] pb-6">
+              <h2 className="mb-1 font-display text-xl text-text">Send a message</h2>
+              <p className="font-mono text-xs text-text-secondary">Fields marked * are required.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
-              <div aria-live="polite">
-                {status === "success" && (
-                  <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 font-mono text-xs flex items-center gap-2">
-                    <Check className="w-4 h-4 shrink-0 text-emerald-400" />
-                    <span>✓ [MESSAGE_SENT] Thank you for reaching out. I will get back to you shortly.</span>
-                  </div>
-                )}
-                {status === "error" && (
-                  <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-300 font-mono text-xs flex flex-col gap-2">
-                    <div className="flex items-start gap-2">
-                      <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
-                      <span>{errorMessage || "Failed to deliver message. Please email directly."}</span>
-                    </div>
-                    {/* Fallback button if API is unconfigured */}
-                    <a
-                      href={fallbackMailto}
-                      className="mt-2 inline-flex items-center gap-1.5 self-start px-3 py-1.5 rounded-lg border border-cyan-400/40 bg-cyan-500/10 text-cyan-300 text-xs font-mono font-medium hover:bg-cyan-500/20 transition-colors"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      <span>Open in Email App with Pre-filled Message ↗</span>
+            <div ref={statusRef} tabIndex={-1} role="status" aria-live="polite" className="outline-none">
+              {status === "success" && (
+                <div className="mb-5 flex items-start gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-200">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span>{message}</span>
+                </div>
+              )}
+              {status === "error" && (
+                <div className="mb-5 flex flex-col gap-3 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+                  <p className="flex items-start gap-2">
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span>{message}</span>
+                  </p>
+                  {Object.keys(errors).filter((k) => errors[k as ContactField]).length === 0 && (
+                    <a href={fallbackMailto} className="inline-flex min-h-[36px] items-center gap-1.5 self-start rounded-lg border border-accent/40 bg-accent/10 px-3 font-mono text-xs text-accent-hover hover:bg-accent/20">
+                      Open in your email app <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                     </a>
-                  </div>
-                )}
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="name" className="text-xs font-mono tracking-wider text-slate-400">
-                    FULL NAME <span className="text-cyan-400">*</span>
-                  </label>
-                  <input 
-                    type="text" 
-                    id="name" 
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    disabled={status === "loading"}
-                    className={`rounded-xl bg-white/[0.04] border ${fieldErrors.name ? 'border-rose-500/60 ring-1 ring-rose-500/30' : 'border-white/10'} px-4 py-3 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all disabled:opacity-50 placeholder:text-slate-600 text-sm font-mono`}
-                    placeholder="e.g. Alex Morgan"
-                  />
-                  {fieldErrors.name && (
-                    <span className="text-[11px] font-mono text-rose-400">{fieldErrors.name}</span>
                   )}
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="company" className="text-xs font-mono tracking-wider text-slate-400">
-                    COMPANY / TEAM
-                  </label>
-                  <input 
-                    type="text" 
-                    id="company" 
-                    name="company"
-                    value={formData.company}
-                    onChange={handleChange}
-                    disabled={status === "loading"}
-                    className="rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all disabled:opacity-50 placeholder:text-slate-600 text-sm font-mono"
-                    placeholder="e.g. Acme Corp / Engineering Team"
-                  />
+              )}
+            </div>
+
+            <form ref={formRef} onSubmit={onSubmit} noValidate className="flex flex-col gap-5" aria-busy={loading}>
+              {/* Honeypot: hidden from people and assistive tech, tempting to bots */}
+              <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+                <label htmlFor="website">Website</label>
+                <input ref={honeypot} id="website" name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
+              </div>
+
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="name" className={labelClass}>Name <span aria-hidden="true" className="text-accent-hover">*</span></label>
+                  <input id="name" name="name" type="text" autoComplete="name" required maxLength={CONTACT_LIMITS.name} value={data.name} onChange={onChange} disabled={loading} aria-invalid={!!errors.name} aria-describedby={describedBy("name")} className={fieldClass("name")} placeholder="Alex Morgan" />
+                  {errorText("name")}
+                </div>
+                <div>
+                  <label htmlFor="company" className={labelClass}>Company / team</label>
+                  <input id="company" name="company" type="text" autoComplete="organization" maxLength={CONTACT_LIMITS.company} value={data.company} onChange={onChange} disabled={loading} aria-invalid={!!errors.company} aria-describedby={describedBy("company")} className={fieldClass("company")} placeholder="Acme Corp" />
+                  {errorText("company")}
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <label htmlFor="email" className="text-xs font-mono tracking-wider text-slate-400">
-                  EMAIL ADDRESS <span className="text-cyan-400">*</span>
-                </label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  disabled={status === "loading"}
-                  className={`rounded-xl bg-white/[0.04] border ${fieldErrors.email ? 'border-rose-500/60 ring-1 ring-rose-500/30' : 'border-white/10'} px-4 py-3 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all disabled:opacity-50 placeholder:text-slate-600 text-sm font-mono`}
-                  placeholder="e.g. alex@company.com"
-                />
-                {fieldErrors.email && (
-                  <span className="text-[11px] font-mono text-rose-400">{fieldErrors.email}</span>
-                )}
+              <div>
+                <label htmlFor="email" className={labelClass}>Email <span aria-hidden="true" className="text-accent-hover">*</span></label>
+                <input id="email" name="email" type="email" autoComplete="email" inputMode="email" required maxLength={CONTACT_LIMITS.email} value={data.email} onChange={onChange} disabled={loading} aria-invalid={!!errors.email} aria-describedby={describedBy("email")} className={fieldClass("email")} placeholder="alex@company.com" />
+                {errorText("email")}
               </div>
 
-              <div className="flex flex-col gap-2">
-                <label htmlFor="message" className="text-xs font-mono tracking-wider text-slate-400">
-                  MESSAGE <span className="text-cyan-400">*</span>
-                </label>
-                <textarea 
-                  id="message" 
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  disabled={status === "loading"}
-                  rows={4}
-                  className={`rounded-xl bg-white/[0.04] border ${fieldErrors.message ? 'border-rose-500/60 ring-1 ring-rose-500/30' : 'border-white/10'} px-4 py-3 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all resize-none disabled:opacity-50 placeholder:text-slate-600 text-sm font-mono`}
-                  placeholder="Tell me about your engineering project, team, or opportunity..."
-                />
-                {fieldErrors.message && (
-                  <span className="text-[11px] font-mono text-rose-400">{fieldErrors.message}</span>
-                )}
+              <div>
+                <label htmlFor="message" className={labelClass}>Message <span aria-hidden="true" className="text-accent-hover">*</span></label>
+                <textarea id="message" name="message" rows={5} required maxLength={CONTACT_LIMITS.messageMax} value={data.message} onChange={onChange} disabled={loading} aria-invalid={!!errors.message} aria-describedby={describedBy("message", "message-count")} className={cn(fieldClass("message"), "resize-y")} placeholder="Tell me about the role, project or problem…" />
+                <div className="mt-1.5 flex justify-between gap-4">
+                  {errorText("message") ?? <span />}
+                  <p id="message-count" className="shrink-0 font-mono text-[11px] text-text-tertiary">
+                    {data.message.trim().length}/{CONTACT_LIMITS.messageMax}
+                  </p>
+                </div>
               </div>
-              
-              <button 
-                type="submit"
-                disabled={status === "loading"}
-                className="mt-2 inline-flex items-center justify-center font-mono font-bold text-xs uppercase tracking-wider rounded-xl bg-white text-slate-950 hover:bg-cyan-300 transition-all h-12 px-8 self-start shadow-lg hover:shadow-cyan-500/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span>{status === "loading" ? "TRANSMITTING..." : "SEND MESSAGE ↗"}</span>
+
+              <button type="submit" disabled={loading} className={buttonClass("primary", "md", "mt-1 self-start")}>
+                {loading ? (<><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Sending…</>) : (<>Send message <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></>)}
               </button>
             </form>
           </div>
         </div>
-
       </div>
     </section>
   )
