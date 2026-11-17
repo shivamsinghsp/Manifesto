@@ -8,6 +8,7 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: { xs: "420px" },
       colors: {
         bg: "var(--color-bg)",
         surface: "var(--color-surface)",
@@ -61,6 +62,7 @@ const config: Config = {
       transitionTimingFunction: {
         standard: "var(--ease-standard)",
         smooth: "var(--ease-smooth)",
+        "out-expo": "var(--ease-out-expo)",
       },
       transitionDuration: {
         fast: "var(--duration-fast)",
