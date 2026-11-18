@@ -60,6 +60,20 @@ export function CareerLog({
                     {e.client && <span className="text-text-tertiary"> · client: {e.client}</span>}
                     {e.kind === "work" && !current && <span className="sr-only"> (ended)</span>}
                   </p>
+                  {(e.status || e.grade) && (
+                    <p className="mt-2 font-mono text-xs text-text-secondary">
+                      {[e.status, e.grade].filter(Boolean).join(" · ")}
+                    </p>
+                  )}
+                  {e.phases && e.phases.length > 0 && (
+                    <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-text-tertiary">
+                      {e.phases.map((ph) => (
+                        <li key={ph.label}>
+                          {ph.label}: {periodLabel(ph.period)}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   <p className="text-body-small mt-3 max-w-2xl text-text-secondary">{e.summary}</p>
 
                   {!compact && e.projects && e.projects.length > 0 && (

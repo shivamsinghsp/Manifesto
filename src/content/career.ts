@@ -31,6 +31,12 @@ export interface ProjectRole {
   summary: string
 }
 
+/** A sub-period inside an engagement, e.g. internship vs. training. */
+export interface Phase {
+  label: string
+  period: Period
+}
+
 export interface Engagement {
   id: string
   kind: EngagementKind
@@ -44,6 +50,12 @@ export interface Engagement {
   tags: string[]
   /** Projects delivered during this engagement (in delivery order). */
   projects?: ProjectRole[]
+  /** Distinct sub-periods (shown so a training period is not presented as employment). */
+  phases?: Phase[]
+  /** Education only. */
+  grade?: string
+  /** Education only: "Graduated" etc. */
+  status?: string
 }
 
 export interface IndependentProject extends ProjectRole {
@@ -65,17 +77,18 @@ export const engagements: Engagement[] = [
   {
     id: "rapsora",
     kind: "work",
-    title: "Software Engineering Intern",
+    // Owner-confirmed title (supersedes earlier "Software Engineering Intern" / "Full Stack Developer Intern").
+    title: "Full Stack Developer",
     organization: { name: RAPSORA, monogram: "RT", location: "Kanpur, India" },
     period: { start: "2026-01", end: "2026-10", confirmed: true },
     summary:
-      "One continuous engagement in which I delivered client and product work end to end: two solo full-stack builds, the sole development of an association website, enterprise SharePoint frontend work, and QA for a Government of Uttar Pradesh portal.",
+      "Delivered client and product work end to end over one continuous engagement: two solo full-stack builds, the sole development of an association website, enterprise SharePoint frontend work, and QA for a Government of Uttar Pradesh portal.",
     highlights: [
       "Solo developer of the Shynr HRMS & Job Portal (Next.js, MongoDB, NextAuth, geofenced attendance).",
       "Sole developer of the Kanpur Architect Association website.",
       "Solo full-stack developer of AaoSeekhe.",
-      "Frontend contributor on an enterprise SharePoint Knowledge Hub (SPFx, React, TypeScript).",
-      "QA engineer (QA only) for the PLEDGE portal: functional, workflow and regression testing.",
+      "Contributed SPFx 1.20 web parts (React, TypeScript) to an enterprise SharePoint Knowledge Hub.",
+      "Performed functional, workflow and regression testing (QA only) of the PLEDGE portal.",
     ],
     tags: [
       "Next.js",
@@ -101,14 +114,14 @@ export const engagements: Engagement[] = [
         role: "Frontend contributor (SPFx / React)",
         period: { start: null, end: null, confirmed: false },
         summary:
-          "Contributed SPFx web parts for the Homepage, Library and SME Finder (Phase 2B) of an enterprise SharePoint Knowledge Hub.",
+          "Contributed SPFx 1.20 web parts for the Homepage, Library and SME Finder (Phase 2B), with lazy loading via .getPaged().",
       },
       {
         slug: "pledge-portal-qa",
         role: "QA engineer (QA only)",
         period: { start: "2026-03", end: "2026-05", confirmed: true },
         summary:
-          "Functional, workflow and regression testing of a public Government of Uttar Pradesh portal. Did not build the portal.",
+          "Performed functional, workflow and regression testing of a public Government of Uttar Pradesh portal. Did not build the portal.",
       },
       {
         slug: "kanpur-architects-association",
@@ -136,12 +149,17 @@ export const engagements: Engagement[] = [
   {
     id: "androcoders",
     kind: "work",
-    title: "Web Developer Intern",
+    title: "Software Engineering Intern",
     organization: { name: "Androcoders", monogram: "AC" },
-    period: { start: "2025-05", end: "2025-07", confirmed: true },
+    period: { start: "2025-05", end: "2025-09", confirmed: true },
+    // Certificate: internship 15 May – 15 Jul 2025; further training through Sep 2025.
+    phases: [
+      { label: "Internship", period: { start: "2025-05-15", end: "2025-07-15", confirmed: true } },
+      { label: "Training", period: { start: "2025-07", end: "2025-09", confirmed: true } },
+    ],
     client: "Crowe Oman",
     summary:
-      "Developed and maintained 15+ web pages in Sitecore CMS for the Crowe Oman client, working in a 5-member development team.",
+      "Developed and maintained 15+ web pages in Sitecore CMS for the Crowe Oman client in a 5-member development team (internship, followed by further training).",
     highlights: [
       "Built reusable UI components, responsive layouts and CMS-driven page structures.",
       "Collaborated with a 5-member development team.",
@@ -158,6 +176,8 @@ export const engagements: Engagement[] = [
       location: "Kanpur, Uttar Pradesh",
     },
     period: { start: "2022-10", end: "2026-07", confirmed: true },
+    grade: "CGPA 7.24 / 10",
+    status: "Graduated",
     summary:
       "Bachelor of Technology in Information Technology: software engineering, data structures, algorithms and system design.",
     highlights: [],
@@ -171,7 +191,7 @@ export const independentProjects: IndependentProject[] = [
     slug: "hume-voice-assistant",
     title: "Real-time AI voice assistant (Hume EVI)",
     role: "Independent developer",
-    // From the owner's resume; not yet confirmed by commit history or project records.
+    // Owner confirms the project exists; date (resume says Jul 2025) and source repo are unverified.
     period: { start: "2025-07", end: "2025-07", confirmed: false },
     summary:
       "A separate calling-agent experiment on Hume AI's Empathic Voice Interface: real-time voice, live transcripts and emotional cues over WebSockets.",

@@ -5,10 +5,11 @@ import { Timeline } from "@/components/ui/Timeline"
 import { CareerLog } from "@/components/ui/CareerLog"
 import { pageMetadata } from "@/lib/seo"
 
+const [rapsoraRole, androcodersRole] = work
+
 export const metadata = pageMetadata({
   title: "Experience",
-  description:
-    "Software Engineering Intern at Rapsora Technologies, Web Developer Intern at Androcoders, B.Tech in Information Technology, and recognition — Shivam Singh's career log.",
+  description: `${rapsoraRole.title} at ${rapsoraRole.organization.name}, ${androcodersRole.title} at ${androcodersRole.organization.name}, ${education[0].title} (${education[0].status}) — Shivam Singh's career log.`,
   path: "/experience",
 })
 

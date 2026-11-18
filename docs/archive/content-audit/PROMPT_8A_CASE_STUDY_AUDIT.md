@@ -169,11 +169,11 @@ An engineering manager could determine that Shivam worked on a CMS project. They
 
 ### Full Audit
 
-**Context:** "Modernizing an internal knowledge base to improve discoverability and reduce onboarding time for new employees at British American Tobacco (BAT)."
+**Context:** "Modernizing an internal knowledge base to improve discoverability and reduce onboarding time for new employees at [confidential client]."
 
 **Assessment:** MODERATE. We know what the project is, who it's for, and the general goal. However, "improve discoverability" and "reduce onboarding time" are vague claims with no evidence.
 
-> **⚠ FLAG: The project references "British American Tobacco (BAT)" by name. This is a real Fortune 500 company. The experience data says Shivam's second internship was at "Androcoders" — this project was presumably done as part of client work at Androcoders. The relationship (Shivam → Androcoders → BAT client work) is not explained anywhere. This could appear as overclaiming a direct BAT association.**
+> **⚠ FLAG: The project references "[confidential client]" by name. This is a real Fortune 500 company. The experience data says Shivam's second internship was at "Androcoders" — this project was presumably done as part of client work at Androcoders. The relationship (Shivam → Androcoders → [client] client work) is not explained anywhere. This could appear as overclaiming a direct [client] association.**
 
 **Problem:** Not defined.
 
@@ -208,7 +208,7 @@ The reader knows Shivam worked on a SharePoint-based knowledge base. They cannot
 | Claim | Classification |
 |---|---|
 | "Internal knowledge base" | INFERRED |
-| "British American Tobacco (BAT)" | **NEEDS VERIFICATION** — was this direct BAT employment or Androcoders client work? |
+| "[confidential client]" | **NEEDS VERIFICATION** — was this direct [client] employment or Androcoders client work? |
 | "Legacy SharePoint infrastructure" | INFERRED |
 | "Advanced search capabilities" | UNSUPPORTED |
 | "Responsive, accessible interface" | UNSUPPORTED |

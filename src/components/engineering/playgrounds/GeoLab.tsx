@@ -351,6 +351,10 @@ export function GeoLab() {
         <p className="mt-1">
           accept ⇔ d ≤ radius · caution zone ⇔ d ≥ 0.82 · radius or radius − d ≤ 20 m
         </p>
+        <p className="mt-3 font-body text-[12px] normal-case leading-relaxed text-text-tertiary">
+          Note: this checks the distance of the coordinates the browser reports. It does not prove
+          the GPS reading is genuine, so on its own it does not stop location spoofing.
+        </p>
       </div>
       <p className="sr-only" aria-live="polite">
         {announce}

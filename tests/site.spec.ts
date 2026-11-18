@@ -223,8 +223,20 @@ test("career facts come from one source and the Rapsora role is not current", as
 })
 
 test("no confidential client name appears on the Knowledge Hub page", async ({ page }) => {
+  // The client's name must never be written in this public repo, so compare SHA-256 hashes
+  // of the page's words and three-word phrases instead.
+  const FORBIDDEN = new Set([
+    "ca5bcec12f716f44d9745d349cc80422f0d14cbab09329caf533bef7c2d952eb",
+    "13a7b2f7e97bd78cf62b0ec52429ae5e9dc90e70f1c18cf73e971161306d2b16",
+  ])
   await page.goto("/work/sharepoint-knowledge-hub")
-  await expect(page.locator("body")).not.toContainText(/\bBAT\b|British American/)
+  const words = (await page.locator("body").innerText()).toLowerCase().match(/[a-z]+/g) ?? []
+  const phrases = new Set([...words, ...words.map((w, i) => words.slice(i, i + 3).join(" "))])
+  const { createHash } = await import("node:crypto")
+  const hits = [...phrases].filter((t) =>
+    FORBIDDEN.has(createHash("sha256").update(t).digest("hex"))
+  )
+  expect(hits.length, "confidential client name found on the page").toBe(0)
   const imgs = await page
     .locator("img")
     .evaluateAll((els) =>

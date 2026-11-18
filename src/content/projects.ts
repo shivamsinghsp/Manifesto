@@ -185,7 +185,7 @@ const projectData: ProjectData[] = [
         title: "GEOSPATIAL ATTENDANCE",
         navLabel: "Geofenced attendance",
         content:
-          "The attendance flow validates the employee's browser location against active company locations using Haversine spherical trigonometric calculation.",
+          "The attendance flow takes the coordinates the browser reports and checks their Haversine distance from each active company location against its allowed radius. This confirms proximity of the reported coordinates; it does not by itself prove the GPS reading is genuine, so it is not a defence against location spoofing.",
         image: {
           src: "/images/projects/shynr/11-admin-attendance-locations.png",
           alt: "Admin Attendance Locations Configuration",
@@ -259,15 +259,15 @@ const projectData: ProjectData[] = [
         content:
           "Visitors can browse the association's executives and an alphabetical members directory (A–Z index) with a profile page for each architect, and read about membership.",
         image: {
-          src: "/images/projects/kanpur-architects-association/02-members.png",
+          src: "/images/projects/kanpur-architects-association/02-members-redacted.png",
           alt: "Members directory with an A–Z index",
-          caption: "Members directory with an A–Z index.",
+          caption: "Members directory with an A–Z index (personal details blurred).",
         },
         gallery: [
           {
-            src: "/images/projects/kanpur-architects-association/03-members-details.png",
+            src: "/images/projects/kanpur-architects-association/03-members-details-redacted.png",
             alt: "Architect profile page",
-            caption: "Architect profile page.",
+            caption: "Architect profile page (contact details blurred).",
           },
         ],
       },
@@ -302,10 +302,9 @@ const projectData: ProjectData[] = [
         content:
           "A separate admin panel lets the association run the site without a developer: a dashboard with totals and recent activity, member management with a live membership-card preview, a leadership content editor for the homepage profiles, and event management.",
         image: {
-          src: "/images/projects/kanpur-architects-association/07-admin-dashboards.png",
+          src: "/images/projects/kanpur-architects-association/07-admin-dashboards-redacted.png",
           alt: "Admin dashboard with totals and recent activity",
-          caption:
-            "Dashboard: registered architects, upcoming events, unread inquiries, active ads.",
+          caption: "Dashboard: totals and recent activity (names blurred).",
         },
         gallery: [
           {
@@ -314,9 +313,9 @@ const projectData: ProjectData[] = [
             caption: "Add member, with a live membership-card preview.",
           },
           {
-            src: "/images/projects/kanpur-architects-association/09-admin-leadership-management.png",
+            src: "/images/projects/kanpur-architects-association/09-admin-leadership-management-redacted.png",
             alt: "Leadership content editor",
-            caption: "Leadership content editor for homepage profiles.",
+            caption: "Leadership content editor (names and photos blurred).",
           },
           {
             src: "/images/projects/kanpur-architects-association/11-admin-events-management.png",
@@ -437,32 +436,23 @@ const projectData: ProjectData[] = [
   // ─────────────────────────────────────────────
   {
     slug: "sharepoint-knowledge-hub",
-    title: "Enterprise Knowledge Hub",
+    title: "Enterprise SharePoint Knowledge Hub",
     category: "Enterprise Project",
     shortDescription:
-      "A SharePoint Online knowledge hub for a large enterprise: a homepage, a metadata-driven document library and an SME Finder enriched with Microsoft Graph.",
+      "A SharePoint Online knowledge hub for a large enterprise client: a homepage, a filterable document library and an SME Finder, built as SPFx 1.20 web parts in React and TypeScript.",
     longDescription: [
-      "The Knowledge Hub is a SharePoint Online application built from SPFx web parts. It addresses knowledge scattered across OneDrive, Teams and email, which made templates, current document versions and subject-matter experts hard to find.",
-      "During my engagement at Rapsora Technologies I contributed SPFx 1.20 web parts in React and TypeScript for the Homepage, the Library and the SME Finder (Phase 2B). The client is confidential, so it is not named here and the visuals are original illustrations rather than screenshots.",
+      "The Knowledge Hub is a SharePoint Online application built from SPFx web parts. It brings an enterprise's templates, documents and subject-matter experts into one place, so people stop hunting across scattered sources.",
+      "During my engagement at Rapsora Technologies I contributed SPFx 1.20 web parts in React and TypeScript for the Homepage, the Library and the SME Finder (Phase 2B), including lazy loading of large lists with .getPaged(). The client is confidential, so it is not named here and the visuals are original illustrations rather than screenshots.",
     ],
     notice:
-      "Confidential enterprise client. The client is not named, and no internal data, URLs or people are shown.",
-    tags: [
-      "SharePoint Online",
-      "SPFx 1.20",
-      "React",
-      "TypeScript",
-      "Fluent UI",
-      "PnPjs",
-      "Microsoft Graph",
-    ],
+      "Confidential enterprise client. The client is not named, and no internal screenshots, data, URLs or people are shown.",
+    // Pending owner confirmation, not shown publicly: PnPjs, CAML, Microsoft Graph,
+    // live presence, the four-month duration claim, "0 external backends", "3 data sources", "5,000+" scale figure.
+    tags: ["SharePoint Online", "SPFx 1.20", "React", "TypeScript"],
     outcomes: [
       { value: "3", label: "Areas contributed: Homepage, Library, SME Finder (Phase 2B)" },
       { value: "SPFx 1.20", label: "Web parts in React and TypeScript" },
-      {
-        value: "M365",
-        label: "Runs inside SharePoint Online, on the existing M365 security model",
-      },
+      { value: ".getPaged()", label: "Lazy loading so large lists load page by page" },
     ],
     heroImage: {
       // Original illustration. Real screenshots show the confidential client's branding.
@@ -472,72 +462,46 @@ const projectData: ProjectData[] = [
     caseStudy: [
       {
         type: "product-feature",
-        title: "KNOWLEDGE LIBRARY & DISCOVERY",
+        title: "HOMEPAGE",
+        navLabel: "Homepage",
+        content:
+          "The landing page introduces the hub and surfaces pinned items and the main content areas, so people can reach what they need in one or two clicks.",
+        image: {
+          src: "/diagrams/projects/sharepoint-knowledge-hub/hero.svg",
+          alt: "Illustration of the homepage with a welcome banner, pinned items and content areas (not a screenshot)",
+          caption: "Illustration, not a screenshot: homepage layout.",
+        },
+      },
+      {
+        type: "product-feature",
+        title: "LIBRARY",
         navLabel: "Library",
         content:
-          "A real-time, multi-dimensional discovery experience allowing users to filter governed documents across specific metadata dimensions (Category, Document Type, Capability, Market).",
+          "A document library with search and metadata filters (such as category, document type and date). Results load page by page with .getPaged(), so large libraries stay responsive instead of fetching everything up front.",
         image: {
           src: "/diagrams/projects/sharepoint-knowledge-hub/library-ui.svg",
           alt: "Illustration of the library with search and metadata filters (not a screenshot)",
           caption: "Illustration, not a screenshot: search with metadata filters.",
         },
-        diagram: {
-          src: "/diagrams/projects/sharepoint-knowledge-hub/knowledge-discovery.svg",
-          alt: "Knowledge Hub Discovery Flow",
-          caption: "Metadata-driven discovery workflow without external databases.",
-          width: 800,
-          height: 740,
-        },
         implementation: [
-          "React / SPFx",
-          "PnPjs Data Access Layer",
-          "SharePoint APIs / Search API / CAML",
-          "Dynamic Library Filtering",
+          "User opens the Library web part",
+          "First page of items requested",
+          ".getPaged() returns a page + next-page handle",
+          "Next page fetched on demand",
+          "Filters narrow the visible results",
         ],
       },
       {
         type: "product-feature",
-        title: "SME FINDER",
+        title: "SME FINDER (PHASE 2B)",
         navLabel: "SME Finder",
         content:
-          "An expert directory backed by a SharePoint List, enriched with live organizational data to help users find domain experts.",
+          "An expert directory where people search subject-matter experts and contact them directly by email or Teams from the profile card.",
         image: {
           src: "/diagrams/projects/sharepoint-knowledge-hub/sme-finder-ui.svg",
-          alt: "Illustration of SME Finder profile cards with presence and contact actions (not a screenshot)",
-          caption: "Illustration, not a screenshot: expert profiles with presence.",
+          alt: "Illustration of SME Finder profile cards with email and Teams actions (not a screenshot)",
+          caption: "Illustration, not a screenshot: expert profile cards.",
         },
-        diagram: {
-          src: "/diagrams/projects/sharepoint-knowledge-hub/sme-finder.svg",
-          alt: "SME Finder Data Architecture",
-          caption: "Data merging from SharePoint Lists and Microsoft Graph API.",
-          width: 800,
-          height: 460,
-        },
-        implementation: [
-          "SharePoint List (Profiles & Capabilities)",
-          "Microsoft Graph API Integration",
-          "Live User Photos",
-          "Real-time Presence Status (Available/Busy/Away)",
-        ],
-      },
-      {
-        type: "diagram",
-        title: "SYSTEM ARCHITECTURE",
-        navLabel: "Architecture",
-        diagram: {
-          src: "/diagrams/projects/sharepoint-knowledge-hub/architecture.svg",
-          alt: "Knowledge Hub SharePoint Architecture",
-          caption: "Fully integrated M365 architecture running strictly within SharePoint Online.",
-          width: 800,
-          height: 720,
-        },
-      },
-      {
-        type: "text",
-        title: "ENGINEERING CHALLENGES",
-        navLabel: "Challenges",
-        content:
-          "01\nSharePoint API throttling and pagination limits.\n→ Optimized PnPjs queries with robust error handling and caching.\n\n02\nCombining disparate API structures (REST, Graph, CAML).\n→ Unified data layer abstraction smoothing out response formats.",
       },
     ],
   },

@@ -28,15 +28,15 @@ Your experience entry prioritizes the HRMS/job portal at Rapsora: *"Developed an
 - Can you describe the geofencing system in detail?
 - Was the HRMS deployed and used?
 
-### Q3: KNOWLEDGE HUB — What is the relationship to BAT?
+### Q3: KNOWLEDGE HUB — What is the relationship to [client]?
 
-The project says "British American Tobacco (BAT)" but your experience lists "Androcoders" as the employer.
+The project says "[confidential client]" but your experience lists "Androcoders" as the employer.
 
 **Answer:**
-- Was BAT a client of Androcoders?
-- Did you work on-site at BAT or remotely?
-- How should this relationship be described? (e.g., "Built for BAT as part of Androcoders engagement")
-- Can you name BAT in your portfolio, or is there an NDA?
+- Was [client] a client of Androcoders?
+- Did you work on-site at [client] or remotely?
+- How should this relationship be described? (e.g., "Built for [client] as part of Androcoders engagement")
+- Can you name [client] in your portfolio, or is there an NDA?
 - What exactly did the "Knowledge Hub" replace or improve?
 
 ### Q4: KNOWLEDGE HUB — What was the "advanced search"?
@@ -97,7 +97,7 @@ For each project:
 - What was your approach to making SharePoint data accessible via a modern React frontend?
 - What Sitecore CMS components did you build? (Experience mentions Sitecore for Crowe Oman — is Knowledge Hub the same project or different?)
 
-> **⚠ IMPORTANT: The experience entry for Androcoders says "Sitecore CMS for the Crowe Oman client" but the project says "SharePoint infrastructure" for BAT. Are these TWO different projects at Androcoders, or is there a conflation?**
+> **⚠ IMPORTANT: The experience entry for Androcoders says "Sitecore CMS for the Crowe Oman client" but the project says "SharePoint infrastructure" for [client]. Are these TWO different projects at Androcoders, or is there a conflation?**
 
 ### Q10: [REMOVED: sme-expert-platform] — Technical Details
 

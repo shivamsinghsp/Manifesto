@@ -39,7 +39,7 @@ This document identifies every piece of visual and documentary evidence needed t
 | K3 | **Architecture diagram** — React ↔ SharePoint API integration | Shows how the modern frontend communicates with the legacy SharePoint backend. | P0 |
 | K4 | **Search implementation detail** — What technology powered the "advanced search"? | Was it SharePoint Search API, Elasticsearch, custom indexing, or something else? | P0 |
 | K5 | **Accessibility evidence** — WCAG compliance level, audit results, or specific accommodations made | The tags mention "Accessibility" — this needs substantiation. | P1 |
-| K6 | **Client relationship clarification** — Androcoders → BAT | Was this Androcoders client work? How should the relationship be described? | P0 |
+| K6 | **Client relationship clarification** — Androcoders → [client] | Was this Androcoders client work? How should the relationship be described? | P0 |
 | K7 | **Quantitative or qualitative outcomes** — adoption, usage, feedback | Any evidence that the new interface was actually used and improved the experience. | P1 |
 
 ---

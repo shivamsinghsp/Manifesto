@@ -412,7 +412,7 @@ type Burst = {
 export default function WavingPortfolioLanding({
   name = "Shivam",
   year = "2026",
-  roles = ["Full Stack Engineer", "Systems Architect"],
+  roles = ["Software Engineer", "Full-Stack Developer"],
   lettersLeft = ["P", "F"],
   giantLetter = "O",
   lettersRight = ["RT", "LIO"],

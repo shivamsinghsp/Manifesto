@@ -55,15 +55,7 @@ export const skillGroups: SkillGroup[] = [
     id: "enterprise",
     label: "Enterprise / CMS",
     color: "var(--skill-enterprise)",
-    items: [
-      "SharePoint Online",
-      "SPFx",
-      "Microsoft Graph",
-      "PnPjs",
-      "Fluent UI",
-      "CAML",
-      "Sitecore CMS",
-    ],
+    items: ["SharePoint Online", "SPFx", "Microsoft Graph", "Sitecore CMS"],
   },
 ]
 

@@ -85,6 +85,11 @@ function JsonLd() {
         },
         ...(edu && {
           alumniOf: { "@type": "CollegeOrUniversity", name: edu.organization.name },
+          hasCredential: {
+            "@type": "EducationalOccupationalCredential",
+            credentialCategory: "degree",
+            name: edu.title,
+          },
         }),
         knowsAbout: skillGroups.flatMap((g) => g.items).slice(0, 20),
         sameAs: [site.socials.github, site.socials.linkedin],

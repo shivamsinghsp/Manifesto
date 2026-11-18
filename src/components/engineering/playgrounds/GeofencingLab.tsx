@@ -232,7 +232,7 @@ export function GeofencingLab() {
                 status === "outside" && "text-error"
               )}
             >
-              {status === "in_range" && "PERIMETER SECURE"}
+              {status === "in_range" && "INSIDE PERIMETER"}
               {status === "near_edge" && "PERIMETER CAUTION (NEAR EDGE)"}
               {status === "outside" && "OUTSIDE PERIMETER"}
             </span>

@@ -111,12 +111,16 @@ export default function AboutPage() {
                   className="rounded-2xl border border-border bg-surface p-6 md:p-8"
                   data-reveal
                 >
-                  <p className="text-mono-label text-text-secondary">{periodLabel(e.period)}</p>
+                  <p className="text-mono-label text-text-secondary">
+                    {periodLabel(e.period)}
+                    {e.status && ` · ${e.status}`}
+                  </p>
                   <h3 className="text-subheading mt-3 text-text">{e.title}</h3>
                   <p className="mt-1 font-mono text-xs uppercase tracking-wider text-accent-hover">
                     {e.organization.name}
                   </p>
                   <p className="text-body-small mt-4 text-text-secondary">{e.summary}</p>
+                  {e.grade && <p className="text-body-small mt-2 text-text">{e.grade}</p>}
                 </li>
               ))}
             </ul>

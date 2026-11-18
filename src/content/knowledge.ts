@@ -110,41 +110,25 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
   // SHAREPOINT
   {
     id: "sharepoint-overview",
-    keywords: [
-      "sharepoint",
-      "spfx",
-      "microsoft",
-      "m365",
-      "fluent ui",
-      "enterprise",
-      "confidential",
-    ],
+    keywords: ["sharepoint", "spfx", "microsoft", "m365", "enterprise", "confidential"],
     projectSlug: "sharepoint-knowledge-hub",
     answer: `During his ${RAPSORA_SHORT} engagement, Shivam contributed SPFx 1.20 web parts in React and TypeScript to an enterprise SharePoint Knowledge Hub: the Homepage, Library and SME Finder (Phase 2B). The client is confidential.`,
     sourceSection: "CONTEXT",
   },
   {
     id: "sharepoint-search",
-    keywords: ["search", "knowledge hub", "metadata", "filtering", "caml", "pnpjs", "discovery"],
+    keywords: ["search", "knowledge hub", "metadata", "filtering", "discovery"],
     projectSlug: "sharepoint-knowledge-hub",
     answer:
-      "The Knowledge Library features real-time, multi-dimensional discovery. The data layer combines PnPjs, SharePoint REST, Search APIs, and CAML queries to filter documents by category, capability, and market.",
+      "The Knowledge Hub Library combines search with metadata filters (such as category, document type and date) and loads large lists page by page with .getPaged() so it stays responsive.",
     sourceSection: "SEARCH + DISCOVERY",
   },
   {
     id: "sharepoint-sme",
-    keywords: [
-      "sme",
-      "expert",
-      "microsoft graph",
-      "graph api",
-      "presence",
-      "directory",
-      "profiles",
-    ],
+    keywords: ["sme", "expert", "directory", "profiles"],
     projectSlug: "sharepoint-knowledge-hub",
     answer:
-      "The SME Finder is an expert directory backed by a SharePoint List. It integrates with the Microsoft Graph API to enrich profiles with live user data, photos, and real-time presence (available/busy).",
+      "The SME Finder (Phase 2B) is an expert directory: people search subject-matter experts and contact them by email or Teams from the profile card.",
     sourceSection: "SME FINDER",
   },
 
@@ -274,7 +258,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
       "prisma",
     ],
     answer:
-      "Shivam's primary database specialization is MongoDB / NoSQL, utilizing Mongoose for schema modeling, indexes and document references. In enterprise settings, he has also worked with SharePoint Lists and CAML querying.",
+      "Shivam's main database is MongoDB with Mongoose (schemas, indexes and document references). In SharePoint work he has used SharePoint lists as the data store for SPFx web parts.",
     sourceSection: "DATA STORAGE & MODELING",
   },
   {
@@ -316,7 +300,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
   {
     id: "profile-education",
     keywords: ["education", "college", "degree", "university", "btech", "csjm", "academics", "gpa"],
-    answer: `${edu.title} at ${edu.organization.name}, ${edu.organization.location} (${periodLabel(edu.period)}).`,
+    answer: `${edu.title} at ${edu.organization.name}, ${edu.organization.location} (${periodLabel(edu.period)}). ${edu.status}, ${edu.grade}.`,
     sourceSection: "ACADEMIC BACKGROUND",
   },
   {

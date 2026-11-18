@@ -15,8 +15,23 @@ const walk = (dir: string): string[] =>
 describe("career facts (single source of truth)", () => {
   it("Rapsora engagement is Jan 2026 – Oct 2026 and has ended", () => {
     expect(rapsora.period).toMatchObject({ start: "2026-01", end: "2026-10" })
-    expect(rapsora.title).toBe("Software Engineering Intern")
+    expect(rapsora.title).toBe("Full Stack Developer")
     expect(isCurrent(rapsora, new Date("2026-11-18"))).toBe(false)
+  })
+
+  it("Androcoders is a separate Software Engineering Intern role, May – Sep 2025, with internship and training phases", () => {
+    const a = engagements.find((e) => e.id === "androcoders")!
+    expect(a.title).toBe("Software Engineering Intern")
+    expect(a.period).toMatchObject({ start: "2025-05", end: "2025-09" })
+    expect(a.phases?.map((p) => p.label)).toEqual(["Internship", "Training"])
+    expect(a.projects ?? []).toHaveLength(0)
+  })
+
+  it("education is CSJMU B.Tech IT, Oct 2022 – Jul 2026, graduated, CGPA 7.24", () => {
+    const e = engagements.find((x) => x.id === "csjmu")!
+    expect(e.period).toMatchObject({ start: "2022-10", end: "2026-07" })
+    expect(e.status).toBe("Graduated")
+    expect(e.grade).toMatch(/7\.24/)
   })
 
   it("every project has a career context and vice versa", () => {
