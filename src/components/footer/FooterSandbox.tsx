@@ -1,11 +1,28 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useEffect, useRef, useState } from "react"
+import { Component, useEffect, useRef, useState, type ErrorInfo, type ReactNode } from "react"
 import { getPerfTier, type PerfTier } from "@/lib/device"
 import { useReducedMotion } from "@/lib/motion-preference"
 
 const ChipPhysics = dynamic(() => import("./ChipPhysics"), { ssr: false })
+
+/** Catches runtime errors from ChipPhysics (e.g. matter-js chunk load failure in headless CI). */
+class PhysicsErrorBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.warn("[FooterSandbox] physics failed to load, falling back to static grid:", error, info)
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children
+  }
+}
 
 /** Loads the physics sandbox only when the footer is near; static grid otherwise. */
 export function FooterSandbox({ chips }: { chips: string[] }) {
@@ -38,6 +55,8 @@ export function FooterSandbox({ chips }: { chips: string[] }) {
     </ul>
   )
 
+  const staticFallback = <div aria-hidden={!reduced}>{staticGrid}</div>
+
   return (
     <div ref={ref}>
       {/* Screen readers always get the plain list. */}
@@ -47,9 +66,11 @@ export function FooterSandbox({ chips }: { chips: string[] }) {
         ))}
       </ul>
       {near && !reduced ? (
-        <ChipPhysics chips={chips} tier={tier} />
+        <PhysicsErrorBoundary fallback={staticFallback}>
+          <ChipPhysics chips={chips} tier={tier} />
+        </PhysicsErrorBoundary>
       ) : (
-        <div aria-hidden={!reduced}>{staticGrid}</div>
+        staticFallback
       )}
     </div>
   )
