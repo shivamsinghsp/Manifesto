@@ -704,6 +704,27 @@ html[data-motion="reduce"] ::view-transition-new(*) {
   font-weight: 500;
 }
 
+/* Corner-bracket frame on project imagery */
+.bracket {
+  position: absolute;
+  z-index: 10;
+  width: 14px;
+  height: 14px;
+  border-color: rgb(var(--c-accent));
+  opacity: 0.75;
+  pointer-events: none;
+  transition:
+    width 300ms var(--ease-out-expo),
+    height 300ms var(--ease-out-expo),
+    opacity 300ms;
+}
+.group:hover .bracket,
+.group:focus-visible .bracket {
+  width: 24px;
+  height: 24px;
+  opacity: 1;
+}
+
 /* Tilt cards */
 .tilt-card {
   --rx: 0deg;

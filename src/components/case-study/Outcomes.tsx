@@ -1,4 +1,5 @@
 import type { ProjectOutcome } from "@/content/projects"
+import { CountUp } from "./CountUp"
 
 /** Outcomes / impact grid. Values come verbatim from the project record. */
 export function Outcomes({ items }: { items: ProjectOutcome[] }) {
@@ -13,7 +14,7 @@ export function Outcomes({ items }: { items: ProjectOutcome[] }) {
             {String(i + 1).padStart(2, "0")}
           </span>
           <p className="mt-5 font-display text-[clamp(2rem,1.6rem+1.6vw,3rem)] leading-none text-text">
-            {o.value}
+            {/^\d+$/.test(o.value) ? <CountUp value={Number(o.value)} /> : o.value}
           </p>
           <p className="text-body-small mt-3 text-text-secondary">{o.label}</p>
         </li>

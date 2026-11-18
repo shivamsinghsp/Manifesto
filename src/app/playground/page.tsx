@@ -85,8 +85,8 @@ export default function PlaygroundPage() {
               ATS pipeline board
             </h2>
             <p className="text-body-large max-w-3xl text-text-secondary">
-              Shynr&apos;s applicant tracking moves candidates from Pending to Reviewed to Shortlisted.
-              Drag a card, or use its arrow buttons from the keyboard.
+              Shynr&apos;s applicant tracking moves candidates from Pending to Reviewed to
+              Shortlisted. Drag a card, or use its arrow buttons from the keyboard.
             </p>
           </div>
           <AtsBoard />

@@ -87,7 +87,7 @@ export function QaStateMachine() {
                 type="button"
                 role="radio"
                 aria-checked={role === r}
-               
+
                 onClick={() => setRole(r)}
                 className={chipBtn}
               >

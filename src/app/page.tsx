@@ -299,10 +299,7 @@ export default function Home() {
         className="section-y border-b border-border bg-surface/60"
       >
         <div className="grid-container items-center gap-y-10">
-          <div
-            className="col-span-full w-full min-w-0 lg:col-span-6"
-            data-reveal
-          >
+          <div className="col-span-full w-full min-w-0 lg:col-span-6" data-reveal>
             <ProfileCard />
           </div>
           <div className="col-span-full lg:col-span-5 lg:col-start-8" data-reveal>

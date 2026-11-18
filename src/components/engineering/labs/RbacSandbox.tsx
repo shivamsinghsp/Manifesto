@@ -40,7 +40,7 @@ export function RbacSandbox() {
             type="button"
             role="radio"
             aria-checked={role.name === r.name}
-           
+
             onClick={() => setRole(r)}
             className={chipBtn}
           >
