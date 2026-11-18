@@ -14,15 +14,15 @@ cp .env.example .env.local   # then fill in values (see below)
 npm run dev                  # http://localhost:3000
 ```
 
-| Script | What it does |
-| --- | --- |
-| `npm run dev` | Dev server |
-| `npm run build` / `npm start` | Production build / serve it |
-| `npm run lint` | ESLint (`next/core-web-vitals` + TypeScript), zero warnings allowed |
-| `npm run type-check` | `tsc --noEmit` |
-| `npm test` | Vitest unit tests (geo maths, contact validation, rate limiting, search, content integrity) |
-| `npm run test:e2e` | Playwright suite on desktop + mobile (starts `npm start`; run `npm run build` first) |
-| `npm run format` / `format:check` | Prettier (with Tailwind class sorting) |
+| Script                            | What it does                                                                                |
+| --------------------------------- | ------------------------------------------------------------------------------------------- |
+| `npm run dev`                     | Dev server                                                                                  |
+| `npm run build` / `npm start`     | Production build / serve it                                                                 |
+| `npm run lint`                    | ESLint (`next/core-web-vitals` + TypeScript), zero warnings allowed                         |
+| `npm run type-check`              | `tsc --noEmit`                                                                              |
+| `npm test`                        | Vitest unit tests (geo maths, contact validation, rate limiting, search, content integrity) |
+| `npm run test:e2e`                | Playwright suite on desktop + mobile (starts `npm start`; run `npm run build` first)        |
+| `npm run format` / `format:check` | Prettier (with Tailwind class sorting)                                                      |
 
 CI (`.github/workflows/playwright.yml`) runs lint → types → unit → build → e2e on pushes and PRs to `main`.
 
@@ -32,12 +32,12 @@ CI (`.github/workflows/playwright.yml`) runs lint → types → unit → build �
 
 ## Environment variables
 
-| Name | Required | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical origin (no trailing slash). Drives canonical tags, `og:url`, sitemap, robots and JSON-LD. Defaults to `https://myportfolio-gilt-xi-63.vercel.app`. |
-| `RESEND_API_KEY` | For the contact form | API key from [resend.com](https://resend.com). Without it the form shows an honest "email me directly" fallback. |
-| `CONTACT_TO_EMAIL` | Optional | Inbox that receives messages (defaults to the email in `src/content/site.ts`). |
-| `CONTACT_FROM_EMAIL` | Optional, but needed for real delivery | Sender address on a **domain verified in Resend**, e.g. `Portfolio <hello@yourdomain.com>`. The default `onboarding@resend.dev` only delivers to the Resend account owner's address. |
+| Name                   | Required                               | Purpose                                                                                                                                                                              |
+| ---------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `NEXT_PUBLIC_SITE_URL` | Recommended                            | Canonical origin (no trailing slash). Drives canonical tags, `og:url`, sitemap, robots and JSON-LD. Defaults to `https://myportfolio-gilt-xi-63.vercel.app`.                         |
+| `RESEND_API_KEY`       | For the contact form                   | API key from [resend.com](https://resend.com). Without it the form shows an honest "email me directly" fallback.                                                                     |
+| `CONTACT_TO_EMAIL`     | Optional                               | Inbox that receives messages (defaults to the email in `src/content/site.ts`).                                                                                                       |
+| `CONTACT_FROM_EMAIL`   | Optional, but needed for real delivery | Sender address on a **domain verified in Resend**, e.g. `Portfolio <hello@yourdomain.com>`. The default `onboarding@resend.dev` only delivers to the Resend account owner's address. |
 
 Set these in **Vercel → Project → Settings → Environment Variables** for Production and Preview. Never commit `.env*` files; only `.env.example` is tracked.
 
@@ -47,14 +47,23 @@ Set these in **Vercel → Project → Settings → Environment Variables** for P
 
 All content is typed and lives in `src/content/`. Pages, metadata, JSON-LD, the sitemap and OG images all read from these files.
 
-| File | What's in it |
-| --- | --- |
-| `site.ts` | Name, title, email, socials, resume path, nav, closing CTA line, **profile photo path** |
-| `projects.ts` | Case studies: category, role, engagement, timeline, tags, links, **outcomes**, sections (`product-feature`, `text`, `diagram`, `image`, `two-column`) |
-| `experience.ts` | Work, education and recognition timeline |
-| `skills.ts` | Stack groups shown in the 3D orbit and the accessible list (only list technologies you've actually used) |
-| `knowledge.ts` | Answers behind "Ask Shivam's Work" (keyword-scored; see `src/lib/search.ts`) |
-| `hero.ts` | The five-step IDEA → PRODUCT sequence |
+| File            | What's in it                                                                                                                                                                                              |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `site.ts`       | Name, title, email, socials, resume path, nav, closing CTA line, **profile photo path**                                                                                                                   |
+| **`career.ts`** | **Single source of truth for career facts**: engagements (Rapsora, Androcoders), education, the role and dates of every project, independent work, recognitions and availability. Durations are computed. |
+| `projects.ts`   | Case-study content: category, description, tags, links, **outcomes**, sections (`product-feature`, `text`, `diagram`, `image`, `two-column`). Role, engagement and timeline are pulled from `career.ts`.  |
+| `skills.ts`     | Stack groups shown in the 3D orbit and the accessible list (only list technologies you've actually used)                                                                                                  |
+| `knowledge.ts`  | Answers behind "Ask Shivam's Work" (keyword-scored; see `src/lib/search.ts`). Career answers are generated from `career.ts`.                                                                              |
+| `hero.ts`       | The five-step IDEA → PRODUCT sequence                                                                                                                                                                     |
+
+### Editing career facts (`src/content/career.ts`)
+
+- Dates are `"YYYY-MM"` or `"YYYY-MM-DD"`. Durations ("10 mos", "26 days (≈4 weeks)") and labels ("Jan 2026 – Oct 2026") are computed in `src/lib/dates.ts`.
+- Unknown dates: `{ start: null, end: null, confirmed: false }` renders **"Dates to be confirmed"**.
+- Unverified dates: `confirmed: false` adds "(to be confirmed)". Approximate dates: `approximate: true` plus optional `startQualifier` / `endQualifier` ("mid", "early").
+- To add a project, add a `ProjectRole` under its engagement (or `independentProjects`) **and** a matching entry in `projects.ts`. The build fails if they don't match.
+- `src/content/career.test.ts` fails if any other source file states a month-year date, a "N months/weeks" duration or a year range. That keeps facts in one place.
+- `public/resume.pdf` is maintained by hand and is **not** generated from this file.
 
 **Rules for content:** outcomes and metrics must be facts stated in the project record or the resume. Case-study sections are numbered automatically (01 Overview, 02 Outcomes, then each section in order). A `text` section written as `01\nProblem\n→ Solution` renders as structured challenge cards.
 
@@ -63,6 +72,13 @@ All content is typed and lives in `src/content/`. Pages, metadata, JSON-LD, the 
 **Adding a project:** add an entry to `projects.ts`, put screenshots in `public/images/projects/<slug>/` and diagrams in `public/diagrams/projects/<slug>/`, and include each diagram's viewBox `width`/`height`. The route, sitemap entry and OG image are generated automatically.
 
 ---
+
+## Theming
+
+- Light / Dark / System via `next-themes` (`data-theme` on `<html>`, saved in `localStorage["theme"]`, applied before first paint).
+- All colours are CSS variables in `src/app/globals.css`, stored as RGB channels (`--c-text: 20 23 31`) so Tailwind opacity modifiers work (`bg-accent/10`). Don't hard-code hex values in components; add a token.
+- Diagrams in `public/diagrams` use `dg-*` classes backed by `--dg-*` variables and are inlined at build time (`src/lib/svg.ts`), so they follow the theme. They still render (dark) as standalone files.
+- 3D scenes read `--canvas-*` variables through `useScenePalette()`; toggling updates materials in place without remounting the canvas.
 
 ## Structure
 
@@ -76,13 +92,15 @@ src/
     engineering/          WorkAssistant ("Ask Shivam's Work"), ArchitectureDiagram, playgrounds/ (GeoLab 3D + GeofencingLab 2D fallback)
     three/                R3F scenes (HeroScene, SkillsScene, GeoScene) + canvas governor, lazy mount, textures, error boundary
     motion/               SmoothScroll (Lenis), ScrollEffects (reveals/parallax), Preloader, RouteTransition, TransitionLink (View Transitions), Cursor, Magnetic, MotionToggle
-    ui/                   ProjectCard, TiltCard, Timeline, SectionHeading, EmailLink, ProfilePhoto, buttons
+    theme/                ThemeProvider (next-themes), ThemeToggle, useThemeSwitch (View Transitions reveal)
+    ui/                   ProjectCard, ProjectMedia, CareerLog, TiltCard, Timeline, SectionHeading, EmailLink, ProfilePhoto, buttons
   content/                typed content (see above)
   lib/                    geo (Haversine + projection), contact schema, rate limiter, seo, device tiering, motion preference, search
 tests/site.spec.ts        Playwright e2e
 ```
 
 ### How the 3D stays fast and accessible
+
 - Every canvas is decorative (`aria-hidden`); the real information is always HTML (step rail, stack list, geofence readout).
 - Scenes load through `next/dynamic` (`ssr: false`) and mount only once the section is near the viewport **and** the visitor has interacted (or after an idle fallback), so they never compete with LCP or input readiness.
 - Device pixel ratio is capped at 1 on low-end devices, 1.5 on touch/mid-range and 2 on desktop. Particle counts scale with the device tier. There is no post-processing: glow comes from additive sprites.
@@ -91,13 +109,15 @@ tests/site.spec.ts        Playwright e2e
 - `prefers-reduced-motion` and the on-site **Reduce motion** switch (saved in `localStorage`) turn off smooth scrolling, reveals, the hero pin, the cursor, tilt and magnetic effects, and switch scenes to on-demand rendering.
 
 ### Contact form
+
 Client and server share one zod schema (`src/lib/contact.ts`). The API adds a body-size cap, a honeypot plus a time-to-submit trap, a per-IP rate limit (5 per 10 minutes, kept in memory per instance — swap in Upstash Redis for strict global limits) and a 10 s send timeout. It returns field-level errors.
 
 ### Notable dependencies
-| Package | Why |
-| --- | --- |
+
+| Package                                            | Why                                                                                                                                                                                                       |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `three`, `@react-three/fiber`, `@react-three/drei` | Declarative WebGL scenes with React lifecycle (automatic disposal, suspense, performance monitor). `three` is pinned to 0.182 because later versions log a deprecation warning from R3F's internal clock. |
-| `gsap` (+ ScrollTrigger) | Scroll-linked hero progress and parallax |
-| `lenis` | Smooth wheel scrolling on desktop (off on touch and with reduced motion) |
-| `zod` | One validation schema for client and server |
-| `resend` | Email delivery for the contact form |
+| `gsap` (+ ScrollTrigger)                           | Scroll-linked hero progress and parallax                                                                                                                                                                  |
+| `lenis`                                            | Smooth wheel scrolling on desktop (off on touch and with reduced motion)                                                                                                                                  |
+| `zod`                                              | One validation schema for client and server                                                                                                                                                               |
+| `resend`                                           | Email delivery for the contact form                                                                                                                                                                       |

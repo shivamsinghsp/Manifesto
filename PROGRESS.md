@@ -1,38 +1,41 @@
 # PROGRESS
 
-Resume point for the 3D playful upgrade. Details: `docs/AUDIT.md` (Phase 1), `docs/PLAN.md` (Phase 2).
+Resume point for the 3D playful upgrade. Details: `docs/AUDIT.md` (Phase 1), `docs/PLAN.md` (Phase 2), `docs/OWNER_TODO.md` (things only the owner can do).
 
-## Status: ⛔ waiting at Gate A (audit + plan)
+## Status: ⛔ waiting at Gate B (foundation + theme system + template migration)
 
 ## Done
 
-- Phase 1 audit (read-only). Baseline on `main` @ 0ef2530: build, lint, types and 23/23 unit tests all pass.
-- `design-references/` added to `.gitignore`. The folder isn't present in the repo.
-- Git history secret scan: clean.
+- **Gate A** approved, with owner clarifications (title, dates, repos, Knowledge Hub = Rapsora + confidential, Kanpur claims).
+- **Single source of truth:** `src/content/career.ts` + `src/lib/dates.ts`. `experience.ts` is deleted. Projects, knowledge base, JSON-LD, timeline and /playground all derive from it. Guard test: `src/content/career.test.ts`.
+- **Content fact-check:** Kanpur (sole developer at Rapsora, kanpurarchitects.in, screenshot-verified features only, new site-map diagram). PLEDGE (QA-only notice, public context, Public portal link, original hero). AaoSeekhe and Shynr (solo developer at Rapsora; private repos shown as chips). Knowledge Hub (Rapsora, SPFx 1.20, Phase 2B, client unnamed).
+- **Confidentiality:** the six Knowledge Hub screenshots showed the client's branding and people. Removed from `public/` and replaced with original illustrations. An e2e test guards it.
+- **Theme system:** next-themes Light/Dark/System with no flash. RGB-channel tokens. AA-checked light palette. Theme menu with View Transitions circular reveal. theme-color sync. Diagrams inlined and themed. 3D palette updates materials without remounting.
+- **Fixes:** TOC acronyms (`navLabel` + `titleCase`). Same-month periods. Skip link focus (Lenis anchors removed). Theme menu focus no longer scrolls. Mobile menu `inert`.
+- **career.log** timeline on Home and /experience.
 
-## Next (after Gate A approval)
+## Verification at Gate B
 
-1. `src/content/career.ts` single source of truth + derived content + duration utils + tests.
-2. Content and privacy fixes (Kanpur screenshots, PLEDGE context, role wording, TOC labels).
-3. Theme system → Gate B.
+- build ✅ · lint ✅ (0 warnings) · type-check ✅ · vitest 34/34 ✅ · Playwright e2e 55 passed / 3 skipped (device-specific).
+- Screenshot matrix: 13 routes × 6 widths × 2 themes = 156 renders, 0 console errors, 0 failed requests, 0 horizontal overflow, 1 h1 each.
+- Theme checks: saved theme applied at DOMContentLoaded (no flash). Toggle persists across reload. Meta theme-color follows the choice. Same `<canvas>` element survives a toggle. No errors.
+- Lighthouse mobile (local prod build), P / A / BP / SEO:
+  - light: `/` 96/100/100/100 · `/work/shynr` 93/100/100/100 · `/experience` 97/100/100/100 · `/playground` 94/100/100/100 · `/contact` 97/100/100/100
+  - dark: `/` 93/100/100/100 · `/work/shynr` 93/100/100/100 · `/experience` 96/100/100/100 · `/playground` 95/100/100/100 · `/contact` 94/100/100/100
+
+## Next (after Gate B)
+
+1. Floating pill nav + Ctrl/Cmd+K palette (cmdk) wired to "Ask Shivam's Work", theme and motion.
+2. Hero: status chips, typed terminal intro, profile.json card from career.ts, build-cube scene (Option A), mascot → **Gate C**.
 
 ## Decisions
 
-- `main` already has the new template on every route. The live site is stale (check Vercel deployments).
-- Job title "Software Engineering Intern", supported by `docs/archive/content-audit/USER_INPUT_REQUIRED.md`. The resume PDF says "Full Stack Developer Intern", so confirmation is still needed.
-- Hero = Option A (build cube), evolving the existing HeroScene.
-- Add next-themes, cmdk, matter-js (lazy). Skip Framer Motion, rapier, postprocessing.
-- Light palette: warm paper `#F6F4EF`. All text tokens ≥ 4.5:1.
-- Kanpur screenshots 02, 03, 07 and 09 contain personal data and will no longer be displayed.
-- Branch: `claude/portfolio-3d-dark-light-lk25tq` (session policy).
+- Branch `claude/portfolio-3d-dark-light-lk25tq` (session policy).
+- Rapsora title "Software Engineering Intern" (owner-confirmed).
+- Private repos are rendered as non-link chips, not removed.
+- 3D material colours for the geofence city are paired per theme inside `GeoScene.tsx` (scene art, not UI tokens).
+- Intro-poster palettes are artwork presets. Their controls sit on a fixed dark scrim in both themes.
 
-## Open questions for owner
+## Open questions
 
-1. Rapsora job title: "Software Engineering Intern" (site, input doc) vs "Full Stack Developer Intern" (resume)?
-2. Kanpur + AaoSeekhe dates: no repos are accessible to me, so I can't read commit history. Kanpur stays "mid-May – early Sep 2026 (to be confirmed)", from screenshot evidence. AaoSeekhe: "to be confirmed". Add the repos to the session, or give me the dates.
-3. AaoSeekhe domain: `aaoseekhe.com` (current link) or `aaoseekhe.in`? Its GitHub link (`shivamsinghsp/Aao-Seekhe`) isn't visible to me. Is it private, renamed or deleted?
-4. Shynr GitHub: `shivamsinghsp/Shynr-Productions` or `rapsoratechnologies/Shynr-`?
-5. Hume AI: is `shivamsinghsp/new-hume-ai` the project? Is "July 2025" correct?
-6. Enterprise Knowledge Hub: part of the Rapsora engagement or separate?
-7. Kanpur unverifiable claims (geo-search/2dsphere, TOTP/OTP auth, 12 models, ISR): remove, or point me to the code?
-8. Should the personal-data Kanpur screenshots be deleted from the repo too? They'd remain in git history.
+See `docs/OWNER_TODO.md`.
