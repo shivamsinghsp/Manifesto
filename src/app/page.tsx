@@ -12,6 +12,7 @@ import { ProfilePhoto } from "@/components/ui/ProfilePhoto"
 import { buttonClass } from "@/components/ui/button"
 import { Magnetic } from "@/components/motion/Magnetic"
 import { HeroCanvas } from "@/components/sections/HeroCanvas"
+import { Mascot } from "@/components/ui/Mascot"
 import { HeroSteps } from "@/components/sections/HeroSteps"
 import { SkillsSection } from "@/components/sections/SkillsSection"
 import { WorkAssistant } from "@/components/engineering/WorkAssistant"
@@ -81,6 +82,9 @@ export default function Home() {
             </div>
             <div className="relative col-span-full h-[340px] overflow-hidden rounded-2xl border border-border bg-surface/60 sm:h-[420px] lg:col-span-6 lg:h-[min(640px,76vh)] lg:border-transparent lg:bg-transparent">
               <HeroCanvas />
+              {site.features.mascot && (
+                <Mascot className="absolute bottom-3 left-3 z-10 h-[72px] w-[66px] sm:h-[96px] sm:w-[88px] lg:bottom-8 lg:left-2" />
+              )}
             </div>
           </div>
           <p

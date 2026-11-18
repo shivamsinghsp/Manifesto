@@ -27,6 +27,8 @@ export const site = {
     github: "https://github.com/shivamsinghsp",
     linkedin: "https://www.linkedin.com/in/shivam2105-",
   },
+  /** Feature switches. The mascot is awaiting owner approval (Gate C): set to false to remove it. */
+  features: { mascot: true },
   /** Shared closing line used by the homepage CTA and the Contact page. */
   ctaHeadline: { lead: "Let's build", emphasis: "systems." },
 } as const
