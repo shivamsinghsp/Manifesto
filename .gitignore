@@ -44,3 +44,6 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 .next-dev
+
+# design references (never commit)
+design-references/
