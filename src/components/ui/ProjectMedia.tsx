@@ -13,12 +13,15 @@ export function ProjectMedia({
   priority = false,
   className,
   parallax = false,
+  fit = "cover",
 }: {
   image: ProjectImage
   sizes: string
   priority?: boolean
   className?: string
   parallax?: boolean
+  /** SVG only: crop to fill (hero) or show whole (in-page figures). */
+  fit?: "cover" | "contain"
 }) {
   if (image.src.endsWith(".svg")) {
     return (
@@ -29,7 +32,7 @@ export function ProjectMedia({
         dangerouslySetInnerHTML={{
           __html: readPublicSvg(image.src).replace(
             "<svg ",
-            '<svg preserveAspectRatio="xMidYMid slice" '
+            `<svg preserveAspectRatio="xMidYMid ${fit === "cover" ? "slice" : "meet"}" `
           ),
         }}
       />

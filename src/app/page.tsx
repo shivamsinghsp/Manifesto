@@ -79,7 +79,7 @@ export default function Home() {
                 <HeroSteps />
               </div>
             </div>
-            <div className="relative col-span-full h-[340px] overflow-hidden rounded-2xl border border-white/10 bg-[#0E1322]/60 sm:h-[420px] lg:col-span-6 lg:h-[min(640px,76vh)] lg:border-transparent lg:bg-transparent">
+            <div className="relative col-span-full h-[340px] overflow-hidden rounded-2xl border border-border bg-surface/60 sm:h-[420px] lg:col-span-6 lg:h-[min(640px,76vh)] lg:border-transparent lg:bg-transparent">
               <HeroCanvas />
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function Home() {
       {/* ── 03 Recent ── */}
       <section
         aria-labelledby="recent-h"
-        className="section-y bg-surface/60 border-b border-border"
+        className="section-y border-b border-border bg-surface/60"
       >
         <div className="container-x">
           <SectionHeading
@@ -169,7 +169,7 @@ export default function Home() {
             action={<CtaLink href="/playground">Enter labs</CtaLink>}
           />
           <div
-            className="bg-surface/70 hover:border-accent/30 group rounded-2xl border border-white/10 p-6 shadow-2xl transition-colors duration-300 md:p-12"
+            className="group rounded-2xl border border-border bg-surface/70 p-6 shadow-2xl transition-colors duration-300 hover:border-accent/30 md:p-12"
             data-reveal
           >
             <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2">
@@ -190,7 +190,7 @@ export default function Home() {
               </div>
               <div
                 aria-hidden="true"
-                className="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#070A12]"
+                className="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-border bg-surface-alt"
                 data-parallax="0.12"
               >
                 <div className="bg-blueprint absolute inset-0 opacity-20" />
@@ -200,31 +200,35 @@ export default function Home() {
                     cy="50"
                     r="30"
                     fill="none"
-                    stroke="#00B8D4"
+                    className="origin-center stroke-accent motion-safe:animate-[spin_20s_linear_infinite]"
                     strokeWidth="0.8"
                     strokeDasharray="3 3"
-                    className="origin-center motion-safe:animate-[spin_20s_linear_infinite]"
                     opacity="0.8"
                   />
                   <circle
                     cx="50"
                     cy="50"
                     r="18"
-                    fill="rgba(0,184,212,0.08)"
-                    stroke="#00B8D4"
+                    className="fill-accent/10 stroke-accent"
                     strokeWidth="0.5"
                   />
-                  <circle cx="50" cy="50" r="2" fill="#FFFFFF" />
+                  <circle cx="50" cy="50" r="2" className="fill-text" />
                   <line
                     x1="50"
                     y1="50"
                     x2="68"
                     y2="68"
-                    stroke="rgba(255,255,255,0.4)"
+                    className="stroke-text-tertiary"
                     strokeWidth="0.5"
                     strokeDasharray="1 1"
                   />
-                  <circle cx="68" cy="68" r="4" fill="#070A12" stroke="#00B8D4" strokeWidth="1" />
+                  <circle
+                    cx="68"
+                    cy="68"
+                    r="4"
+                    className="fill-surface-alt stroke-accent"
+                    strokeWidth="1"
+                  />
                 </svg>
               </div>
             </div>
@@ -257,7 +261,7 @@ export default function Home() {
       <section
         id="about"
         aria-labelledby="about-h"
-        className="section-y bg-surface/60 border-b border-border"
+        className="section-y border-b border-border bg-surface/60"
       >
         <div className="grid-container items-center gap-y-10">
           <div

@@ -8,11 +8,7 @@ import { heroSteps } from "@/content/hero"
 import { heroState } from "@/lib/hero-store"
 import { dprFor, type PerfTier } from "@/lib/device"
 import { createGlowTexture, createLabelTexture, cssFontFamily } from "./textures"
-
-const CYAN = new THREE.Color("#00E5FF")
-const WHITE = new THREE.Color("#F1F3F7")
-const DIM = new THREE.Color("#3A4A66")
-const LABEL_DIM = new THREE.Color("#8590A4")
+import { useScenePalette } from "./palette"
 
 interface SceneProps {
   tier: PerfTier
@@ -44,6 +40,11 @@ function useNodePositions() {
 
 function SystemGraph({ tier, reduced }: SceneProps) {
   const positions = useNodePositions()
+  const pal = useScenePalette()
+  const CYAN = pal.accent
+  const WHITE = pal.ink
+  const DIM = pal.line
+  const LABEL_DIM = pal.ink
   const curve = useMemo(
     () => new THREE.CatmullRomCurve3(positions, false, "catmullrom", 0.5),
     [positions]
@@ -180,7 +181,12 @@ function SystemGraph({ tier, reduced }: SceneProps) {
       const halo = haloRefs.current[i]
       if (halo) {
         const m = halo.material as THREE.SpriteMaterial
-        m.opacity = THREE.MathUtils.damp(m.opacity, isActive ? 0.95 : passed ? 0.45 : 0.22, 6, dt)
+        m.opacity = THREE.MathUtils.damp(
+          m.opacity,
+          (isActive ? 0.95 : passed ? 0.45 : 0.22) * pal.glow,
+          6,
+          dt
+        )
         m.color.lerp(isActive || passed ? CYAN : WHITE, 0.1)
       }
       const shell = shellRefs.current[i]
@@ -251,9 +257,14 @@ function SystemGraph({ tier, reduced }: SceneProps) {
 
   return (
     <>
-      <fog attach="fog" args={["#0A0E17", 7, 17]} />
+      <fog attach="fog" args={[pal.fog, 7, 17]} />
       <mesh geometry={tubeBase}>
-        <meshBasicMaterial color="#00B8D4" transparent opacity={0.18} depthWrite={false} />
+        <meshBasicMaterial
+          color={CYAN}
+          transparent
+          opacity={pal.dark ? 0.18 : 0.3}
+          depthWrite={false}
+        />
       </mesh>
       <mesh geometry={tubeLit}>
         <meshBasicMaterial
@@ -295,9 +306,9 @@ function SystemGraph({ tier, reduced }: SceneProps) {
               map={glow}
               color={WHITE}
               transparent
-              opacity={0.25}
+              opacity={0.25 * pal.glow}
               depthWrite={false}
-              blending={THREE.AdditiveBlending}
+              blending={pal.blending}
               toneMapped={false}
             />
           </sprite>
@@ -328,9 +339,9 @@ function SystemGraph({ tier, reduced }: SceneProps) {
           size={0.09}
           sizeAttenuation
           transparent
-          opacity={0.9}
+          opacity={pal.dark ? 0.9 : 0.75}
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={pal.blending}
           toneMapped={false}
         />
       </points>
@@ -338,13 +349,13 @@ function SystemGraph({ tier, reduced }: SceneProps) {
         <points ref={dustRef} geometry={dust}>
           <pointsMaterial
             map={glow}
-            color="#7C9CFF"
+            color={pal.accent2}
             size={0.05}
             sizeAttenuation
             transparent
-            opacity={0.45}
+            opacity={pal.dark ? 0.45 : 0.3}
             depthWrite={false}
-            blending={THREE.AdditiveBlending}
+            blending={pal.blending}
           />
         </points>
       )}

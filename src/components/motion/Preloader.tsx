@@ -54,10 +54,10 @@ export function Preloader() {
       onTransitionEnd={() => done && setProgress(null)}
     >
       <div
-        className="h-[2px] origin-left bg-accent-hover shadow-[0_0_12px_rgba(0,229,255,0.7)]"
+        className="h-[2px] origin-left bg-accent-hover shadow-[0_0_12px_rgb(var(--c-glow)/0.6)]"
         style={{ transform: `scaleX(${progress / 100})` }}
       />
-      <div className="bg-bg/80 absolute right-4 top-3 rounded-md border border-white/10 px-2 py-1 font-mono text-[11px] tracking-widest text-accent-hover backdrop-blur">
+      <div className="absolute right-4 top-3 rounded-md border border-border bg-bg/80 px-2 py-1 font-mono text-[11px] tracking-widest text-accent-hover backdrop-blur">
         BOOT {String(Math.round(progress)).padStart(3, "0")}%
       </div>
     </div>

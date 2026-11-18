@@ -56,7 +56,7 @@ export function SectionNav({ sections }: { sections: NavSection[] }) {
       {/* Mobile / tablet chip bar */}
       <nav
         aria-label="Case study sections"
-        className="bg-bg/90 sticky top-[var(--header-h)] z-[880] border-b border-border backdrop-blur-md 2xl:hidden"
+        className="sticky top-[var(--header-h)] z-[880] border-b border-border bg-bg/90 backdrop-blur-md 2xl:hidden"
       >
         <div
           ref={chipBar}
@@ -73,7 +73,7 @@ export function SectionNav({ sections }: { sections: NavSection[] }) {
                 "inline-flex min-h-[36px] shrink-0 items-center gap-1.5 rounded-full border px-3 font-mono text-[11px] uppercase tracking-wider transition-colors",
                 s.on
                   ? "border-accent/50 bg-accent/10 text-accent-hover"
-                  : "border-white/10 text-text-secondary"
+                  : "border-border text-text-secondary"
               )}
             >
               <span className="text-text-tertiary">{s.index}</span>
@@ -88,7 +88,7 @@ export function SectionNav({ sections }: { sections: NavSection[] }) {
         aria-label="Case study sections"
         className="fixed left-6 top-1/2 z-[880] hidden -translate-y-1/2 2xl:block"
       >
-        <ol className="flex flex-col gap-1 border-l border-white/10">
+        <ol className="flex flex-col gap-1 border-l border-border">
           {items.map((s) => (
             <li key={s.id}>
               <a
@@ -106,7 +106,7 @@ export function SectionNav({ sections }: { sections: NavSection[] }) {
                 <span
                   className={cn(
                     "truncate transition-opacity",
-                    "bg-bg/90 rounded px-1 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+                    "rounded bg-bg/90 px-1 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
                   )}
                 >
                   {s.label}

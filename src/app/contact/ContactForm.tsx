@@ -114,13 +114,13 @@ export function ContactForm() {
 
   const fieldClass = (field: ContactField) =>
     cn(
-      "w-full rounded-xl border bg-white/[0.04] px-4 py-3 font-mono text-sm text-text transition-colors placeholder:text-text-tertiary/70 focus:border-accent-hover focus:outline-none focus:ring-1 focus:ring-accent-hover disabled:opacity-50",
-      errors[field] ? "border-rose-400/70" : "border-white/10"
+      "w-full rounded-xl border bg-chip px-4 py-3 font-mono text-sm text-text transition-colors placeholder:text-text-tertiary/70 focus:border-accent-hover focus:outline-none focus:ring-1 focus:ring-accent-hover disabled:opacity-50",
+      errors[field] ? "border-error/70" : "border-border"
     )
   const labelClass = "mb-2 block font-mono text-xs uppercase tracking-wider text-text-secondary"
   const errorText = (field: ContactField) =>
     errors[field] ? (
-      <p id={`${field}-error`} className="mt-1.5 font-mono text-xs text-rose-300">
+      <p id={`${field}-error`} className="mt-1.5 font-mono text-xs text-error">
         {errors[field]}
       </p>
     ) : null
@@ -161,10 +161,10 @@ export function ContactForm() {
                 <button
                   type="button"
                   onClick={copyEmail}
-                  className="hover:border-accent/40 inline-flex min-h-[36px] items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.04] px-3 font-mono text-xs text-text-secondary transition-colors hover:text-text"
+                  className="inline-flex min-h-[36px] items-center gap-1.5 rounded-md border border-border bg-chip px-3 font-mono text-xs text-text-secondary transition-colors hover:border-accent/40 hover:text-text"
                 >
                   {copied ? (
-                    <Check className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" />
+                    <Check className="h-3.5 w-3.5 text-success" aria-hidden="true" />
                   ) : (
                     <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                   )}
@@ -197,8 +197,8 @@ export function ContactForm() {
         </div>
 
         <div className="col-span-full lg:col-span-6 lg:col-start-7">
-          <div className="rounded-2xl border border-white/10 bg-[#0E1322]/85 p-6 shadow-2xl backdrop-blur-xl sm:p-10">
-            <div className="mb-6 border-b border-white/[0.08] pb-6">
+          <div className="rounded-2xl border border-border bg-surface/90 p-6 shadow-2xl backdrop-blur-xl sm:p-10">
+            <div className="mb-6 border-b border-border pb-6">
               <h2 className="mb-1 font-display text-xl text-text">Send a message</h2>
               <p className="font-mono text-xs text-text-secondary">Fields marked * are required.</p>
             </div>
@@ -211,13 +211,13 @@ export function ContactForm() {
               className="outline-none"
             >
               {status === "success" && (
-                <div className="mb-5 flex items-start gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-200">
+                <div className="mb-5 flex items-start gap-2 rounded-xl border border-success/40 bg-success/10 p-4 text-sm text-success">
                   <Check className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                   <span>{message}</span>
                 </div>
               )}
               {status === "error" && (
-                <div className="mb-5 flex flex-col gap-3 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+                <div className="mb-5 flex flex-col gap-3 rounded-xl border border-error/40 bg-error/10 p-4 text-sm text-error">
                   <p className="flex items-start gap-2">
                     <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                     <span>{message}</span>
@@ -225,7 +225,7 @@ export function ContactForm() {
                   {Object.keys(errors).filter((k) => errors[k as ContactField]).length === 0 && (
                     <a
                       href={fallbackMailto}
-                      className="border-accent/40 bg-accent/10 hover:bg-accent/20 inline-flex min-h-[36px] items-center gap-1.5 self-start rounded-lg border px-3 font-mono text-xs text-accent-hover"
+                      className="inline-flex min-h-[36px] items-center gap-1.5 self-start rounded-lg border border-accent/40 bg-accent/10 px-3 font-mono text-xs text-accent-hover hover:bg-accent/20"
                     >
                       Open in your email app{" "}
                       <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />

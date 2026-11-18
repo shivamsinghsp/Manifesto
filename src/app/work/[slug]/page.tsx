@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import NextLink from "next/link"
 import { notFound } from "next/navigation"
 import { Fragment, type ReactNode } from "react"
@@ -54,18 +53,16 @@ function Paragraphs({ content }: { content?: string | string[] }) {
 function Screenshot({ image, small = false }: { image: ProjectImage; small?: boolean }) {
   return (
     <figure className="w-full" data-reveal>
-      <div className="bg-surface/70 relative overflow-hidden rounded-2xl border border-white/10 p-2 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-surface/70 p-2 shadow-2xl">
         <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-surface-alt">
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
+          <ProjectMedia
+            image={image}
+            fit="contain"
             sizes={
               small
                 ? "(max-width: 640px) 92vw, (max-width: 1280px) 33vw, 430px"
                 : "(max-width: 768px) 92vw, (max-width: 1280px) 66vw, 860px"
             }
-            className="object-cover object-top"
           />
         </div>
       </div>
@@ -274,7 +271,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
           {project.notice && (
             <p
               role="note"
-              className="text-body-small border-warning/40 bg-warning/10 col-span-full mt-8 rounded-lg border px-4 py-3 text-text"
+              className="text-body-small col-span-full mt-8 rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-text"
             >
               <span className="mr-2 font-mono text-xs uppercase tracking-wider text-text-secondary">
                 Note
@@ -325,7 +322,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
           />
           <div
             aria-hidden="true"
-            className="from-bg/70 pointer-events-none absolute inset-0 bg-gradient-to-t via-transparent to-transparent"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/70 via-transparent to-transparent"
           />
         </div>
       </div>
@@ -353,7 +350,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
           <div className="col-span-full grid grid-cols-1 gap-4 md:grid-cols-2">
             <NextLink
               href={`/work/${prev.slug}`}
-              className="hover:border-accent/50 group flex min-h-[44px] flex-col gap-2 rounded-xl border border-border p-6 transition-colors"
+              className="group flex min-h-[44px] flex-col gap-2 rounded-xl border border-border p-6 transition-colors hover:border-accent/50"
             >
               <span className="text-mono-label inline-flex items-center gap-2 text-text-tertiary">
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Previous
@@ -364,7 +361,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
             </NextLink>
             <NextLink
               href={`/work/${next.slug}`}
-              className="hover:border-accent/50 group flex min-h-[44px] flex-col items-end gap-2 rounded-xl border border-border p-6 text-right transition-colors"
+              className="group flex min-h-[44px] flex-col items-end gap-2 rounded-xl border border-border p-6 text-right transition-colors hover:border-accent/50"
             >
               <span className="text-mono-label inline-flex items-center gap-2 text-text-tertiary">
                 Next <ArrowRight className="h-4 w-4" aria-hidden="true" />

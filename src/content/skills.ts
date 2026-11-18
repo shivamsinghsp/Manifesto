@@ -1,13 +1,14 @@
 /**
  * Technology clusters for the Stack section.
  * Every entry appears in at least one project's `tags`/implementation in projects.ts,
- * in experience.ts, or in the "Technical Skills" section of public/resume.pdf.
+ * in career.ts, or in the "Technical Skills" section of public/resume.pdf.
  * Java, SQL, MySQL and AWS are listed on the resume but not shown in any project here,
  * so they are intentionally left out until confirmed (see README → Content TODOs).
  */
 export interface SkillGroup {
   id: "frontend" | "backend" | "database" | "enterprise"
   label: string
+  /** CSS custom property holding the group colour (themed in globals.css). */
   color: string
   items: string[]
 }
@@ -16,7 +17,7 @@ export const skillGroups: SkillGroup[] = [
   {
     id: "frontend",
     label: "Frontend",
-    color: "#00E5FF",
+    color: "var(--skill-frontend)",
     items: [
       "React",
       "Next.js",
@@ -32,7 +33,7 @@ export const skillGroups: SkillGroup[] = [
   {
     id: "backend",
     label: "Backend",
-    color: "#7C9CFF",
+    color: "var(--skill-backend)",
     items: [
       "Node.js",
       "REST APIs",
@@ -47,13 +48,13 @@ export const skillGroups: SkillGroup[] = [
   {
     id: "database",
     label: "Database",
-    color: "#34D399",
+    color: "var(--skill-database)",
     items: ["MongoDB", "Mongoose", "2dsphere Geo Queries", "Text Indexes"],
   },
   {
     id: "enterprise",
     label: "Enterprise / CMS",
-    color: "#F2C069",
+    color: "var(--skill-enterprise)",
     items: [
       "SharePoint Online",
       "SPFx",

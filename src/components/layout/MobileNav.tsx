@@ -70,7 +70,7 @@ export function MobileNav() {
         aria-modal="true"
         aria-label="Site menu"
         className={cn(
-          "bg-bg/[0.98] fixed inset-0 z-[1000] flex-col backdrop-blur-xl",
+          "fixed inset-0 z-[1000] flex-col bg-bg/[0.98] backdrop-blur-xl",
           open ? "flex" : "hidden"
         )}
       >

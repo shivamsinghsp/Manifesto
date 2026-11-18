@@ -17,7 +17,7 @@ export function ProjectCard({ project, featured = false, priority = false, class
   const href = `/work/${project.slug}`
   const image = (
     <div
-      className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-surface-alt"
+      className="relative w-full overflow-hidden rounded-xl border border-border bg-surface-alt"
       style={{ viewTransitionName: `project-${project.slug}` }}
     >
       <div
@@ -39,7 +39,7 @@ export function ProjectCard({ project, featured = false, priority = false, class
       </div>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0A0E17]/60 via-transparent to-transparent"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-overlay via-transparent to-transparent"
       />
     </div>
   )
@@ -49,7 +49,7 @@ export function ProjectCard({ project, featured = false, priority = false, class
       <TiltCard max={3} className={cn("rounded-2xl", className)}>
         <TransitionLink
           href={href}
-          className="bg-surface/70 hover:border-accent/40 group block h-full rounded-2xl border border-white/10 p-5 shadow-xl transition-[border-color,box-shadow] duration-300 hover:shadow-[0_16px_40px_-8px_rgba(0,184,212,0.18)] sm:p-8 md:p-10"
+          className="group block h-full rounded-2xl border border-border bg-surface/70 p-5 shadow-xl transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-[0_16px_40px_-8px_rgb(var(--c-glow)/0.18)] sm:p-8 md:p-10"
         >
           <article className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-7">{image}</div>
@@ -80,7 +80,7 @@ export function ProjectCard({ project, featured = false, priority = false, class
     <TiltCard className={cn("rounded-2xl", className)}>
       <TransitionLink
         href={href}
-        className="bg-surface/70 hover:border-accent/40 group flex h-full flex-col rounded-2xl border border-white/10 p-4 shadow-lg transition-[border-color,box-shadow] duration-300 hover:shadow-[0_12px_32px_-6px_rgba(0,184,212,0.15)] sm:p-6"
+        className="group flex h-full flex-col rounded-2xl border border-border bg-surface/70 p-4 shadow-lg transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-[0_12px_32px_-6px_rgba(0,184,212,0.15)] sm:p-6"
       >
         <article className="flex h-full flex-col">
           <div className="mb-5">{image}</div>
@@ -95,7 +95,7 @@ export function ProjectCard({ project, featured = false, priority = false, class
           <p className="text-body-small mb-6 line-clamp-3 flex-grow text-text-secondary">
             {project.shortDescription}
           </p>
-          <div className="mt-auto flex items-center justify-between border-t border-white/[0.08] pt-4">
+          <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
             <span className="font-mono text-xs text-text-secondary transition-colors group-hover:text-accent-hover">
               Read case study
             </span>

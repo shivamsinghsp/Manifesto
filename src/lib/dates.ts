@@ -81,7 +81,9 @@ export function formatPeriod(p: Period, style: "short" | "long" = "short"): stri
   const b = parseIso(p.end)
   const months = style === "short" ? MONTHS_SHORT : MONTHS_LONG
   let label: string
-  if (a.d && b.d && a.y === b.y) {
+  if (p.start === p.end) {
+    label = formatDate(p.start, style)
+  } else if (a.d && b.d && a.y === b.y) {
     label = `${months[a.m - 1]} ${a.d} – ${months[b.m - 1]} ${b.d}, ${b.y}`
   } else if (p.approximate && a.y === b.y) {
     label = `${qualify(p.startQualifier, months[a.m - 1])} – ${qualify(p.endQualifier, months[b.m - 1])} ${b.y}`

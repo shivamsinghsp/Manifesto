@@ -24,9 +24,9 @@ export function CareerLog({
     <div className={cn("overflow-hidden rounded-card border border-border bg-surface", className)}>
       <div className="flex items-center gap-2 border-b border-border bg-surface-alt px-4 py-2.5">
         <span aria-hidden="true" className="flex gap-1.5">
-          <span className="bg-text-tertiary/40 h-2.5 w-2.5 rounded-full" />
-          <span className="bg-text-tertiary/40 h-2.5 w-2.5 rounded-full" />
-          <span className="bg-text-tertiary/40 h-2.5 w-2.5 rounded-full" />
+          <span className="h-2.5 w-2.5 rounded-full bg-text-tertiary/40" />
+          <span className="h-2.5 w-2.5 rounded-full bg-text-tertiary/40" />
+          <span className="h-2.5 w-2.5 rounded-full bg-text-tertiary/40" />
         </span>
         <span className="font-mono text-xs text-text-secondary">~/shivam/career.log</span>
       </div>
@@ -70,7 +70,7 @@ export function CareerLog({
                           <li key={pr.slug}>
                             <NextLink
                               href={`/work/${pr.slug}`}
-                              className="bg-surface-alt/60 group flex flex-col gap-1 rounded-subtle border border-border px-4 py-3 transition-colors hover:border-accent sm:flex-row sm:items-center sm:justify-between"
+                              className="group flex flex-col gap-1 rounded-subtle border border-border bg-surface-alt/60 px-4 py-3 transition-colors hover:border-accent sm:flex-row sm:items-center sm:justify-between"
                             >
                               <span>
                                 <span className="text-body-small font-medium text-text group-hover:text-accent-text">

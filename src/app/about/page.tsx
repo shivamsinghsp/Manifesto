@@ -86,7 +86,7 @@ export default function AboutPage() {
             </p>
             <a
               href={site.resumePath}
-              className="hover:border-accent/50 inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 font-mono text-xs uppercase tracking-wider text-text transition-colors hover:text-accent-hover"
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-border bg-chip px-5 font-mono text-xs uppercase tracking-wider text-text transition-colors hover:border-accent/50 hover:text-accent-hover"
             >
               Resume (PDF){" "}
               <span aria-hidden="true" className="text-accent-hover">
@@ -98,7 +98,7 @@ export default function AboutPage() {
       </section>
 
       {education.length > 0 && (
-        <section aria-labelledby="edu-h" className="section-y bg-surface/60 border-b border-border">
+        <section aria-labelledby="edu-h" className="section-y border-b border-border bg-surface/60">
           <div className="container-x">
             <p className="text-mono-label mb-3 text-text-tertiary">{"// 02. EDUCATION"}</p>
             <h2 id="edu-h" className="text-display-secondary mb-10">

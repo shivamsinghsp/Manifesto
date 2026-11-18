@@ -42,15 +42,15 @@ export function WorkAssistant() {
   }
 
   return (
-    <div className="w-full rounded-2xl border border-white/10 bg-[#0E1322]/85 p-6 shadow-2xl backdrop-blur-xl md:p-10">
+    <div className="w-full rounded-2xl border border-border bg-surface/90 p-6 shadow-2xl backdrop-blur-xl md:p-10">
       <div className="mb-6">
         <div className="mb-2 flex items-center gap-2">
-          <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-400"></span>
+          <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-accent"></span>
           <h3 className="font-mono text-xs font-medium uppercase tracking-widest text-accent-hover">
             Ask Shivam&apos;s work
           </h3>
         </div>
-        <p className="text-sm text-slate-300">
+        <p className="text-sm text-text-secondary">
           Ask a question about projects, technologies or roles. Answers come only from the verified
           portfolio data on this site.
         </p>
@@ -63,13 +63,13 @@ export function WorkAssistant() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Ask about projects, technologies, or architecture..."
-          className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3.5 pr-28 font-mono text-sm text-white transition-all placeholder:text-text-tertiary focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400"
+          className="w-full rounded-xl border border-border bg-chip px-4 py-3.5 pr-28 font-mono text-sm text-text transition-all placeholder:text-text-tertiary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           aria-label="Ask about Shivam's work"
         />
         <button
           type="submit"
           disabled={!query.trim()}
-          className="absolute bottom-2 right-2 top-2 rounded-lg bg-cyan-400 px-4 font-mono text-xs font-bold uppercase tracking-wider text-slate-950 shadow-md transition-all hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-40"
+          className="absolute bottom-2 right-2 top-2 rounded-lg bg-accent px-4 font-mono text-xs font-bold uppercase tracking-wider text-bg shadow-md transition-all hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-40"
         >
           SEARCH
         </button>
@@ -78,7 +78,7 @@ export function WorkAssistant() {
       <div aria-live="polite">
         {!hasSearched ? (
           <div>
-            <span className="mb-2.5 block font-mono text-[10px] uppercase tracking-wider text-slate-400">
+            <span className="mb-2.5 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary">
               Suggested Queries:
             </span>
             <div className="flex flex-wrap gap-2">
@@ -86,7 +86,7 @@ export function WorkAssistant() {
                 <button
                   key={i}
                   onClick={() => handleSuggestionClick(suggestion)}
-                  className="rounded-full border border-white/10 bg-white/[0.02] px-3.5 py-2 font-mono text-xs text-slate-300 transition-all hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300"
+                  className="rounded-full border border-border bg-chip px-3.5 py-2 font-mono text-xs text-text-secondary transition-all hover:border-accent hover:bg-accent/10 hover:text-accent-text"
                 >
                   {suggestion}
                 </button>
@@ -95,16 +95,16 @@ export function WorkAssistant() {
           </div>
         ) : (
           <div
-            className="animate-reveal-up mt-8 border-t border-white/[0.08] pt-6"
+            className="animate-reveal-up mt-8 border-t border-border pt-6"
             style={{ animationDuration: "300ms" }}
           >
             <div className="mb-5 flex items-center justify-between">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-slate-400">
+              <h4 className="font-mono text-xs uppercase tracking-wider text-text-tertiary">
                 VERIFIED ANSWER
               </h4>
               <button
                 onClick={handleReset}
-                className="font-mono text-xs text-cyan-400 transition-colors hover:text-white"
+                className="font-mono text-xs text-accent-text transition-colors hover:text-text"
               >
                 [ CLEAR SEARCH ]
               </button>
@@ -115,24 +115,24 @@ export function WorkAssistant() {
                 {results.slice(0, 2).map((result, i) => (
                   <div
                     key={i}
-                    className="rounded-xl border border-l-4 border-white/10 border-l-cyan-400 bg-white/[0.03] p-5 shadow-lg"
+                    className="rounded-xl border border-l-4 border-border border-l-accent bg-chip p-5 shadow-lg"
                   >
-                    <p className="mb-4 text-sm leading-relaxed text-slate-200">{result.answer}</p>
+                    <p className="mb-4 text-sm leading-relaxed text-text">{result.answer}</p>
 
                     {result.projectSlug && (
-                      <div className="flex flex-col justify-between gap-3 border-t border-white/[0.08] pt-3.5 sm:flex-row sm:items-center">
+                      <div className="flex flex-col justify-between gap-3 border-t border-border pt-3.5 sm:flex-row sm:items-center">
                         <div className="flex flex-col">
                           <span className="font-mono text-[10px] uppercase text-text-tertiary">
                             VERIFIED IN
                           </span>
-                          <span className="font-mono text-xs text-cyan-300">
+                          <span className="font-mono text-xs text-accent-text">
                             {result.projectSlug.replace(/-/g, " ").toUpperCase()}
                             {result.sourceSection && ` / ${result.sourceSection}`}
                           </span>
                         </div>
                         <NextLink
                           href={`/work/${result.projectSlug}`}
-                          className="inline-flex items-center gap-1.5 font-mono text-xs text-cyan-400 transition-colors hover:text-white"
+                          className="inline-flex items-center gap-1.5 font-mono text-xs text-accent-text transition-colors hover:text-text"
                         >
                           VIEW CASE STUDY ↗
                         </NextLink>
@@ -142,65 +142,65 @@ export function WorkAssistant() {
                 ))}
 
                 {results.length > 2 && (
-                  <p className="text-mono text-xs text-slate-400">
+                  <p className="text-mono text-xs text-text-tertiary">
                     + {results.length - 2} other potential matches found.
                   </p>
                 )}
               </div>
             ) : (
-              <div className="rounded-xl border border-l-4 border-white/10 border-l-slate-600 bg-white/[0.03] p-6 text-left">
+              <div className="rounded-xl border border-l-4 border-border border-l-text-tertiary bg-chip p-6 text-left">
                 <div className="mb-3 flex items-center gap-2">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-cyan-400"></span>
-                  <span className="font-mono text-xs uppercase tracking-wider text-slate-400">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent"></span>
+                  <span className="font-mono text-xs uppercase tracking-wider text-text-tertiary">
                     CORE TECH STACK CONTEXT
                   </span>
                 </div>
-                <p className="mb-4 text-sm leading-relaxed text-slate-300">
+                <p className="mb-4 text-sm leading-relaxed text-text-secondary">
                   No direct case study match found for &ldquo;
-                  <span className="font-mono text-cyan-300">{query}</span>&rdquo;. Shivam&apos;s
+                  <span className="font-mono text-accent-text">{query}</span>&rdquo;. Shivam&apos;s
                   verified production stack is heavily specialized in{" "}
                   <strong className="text-white">
                     TypeScript, Next.js, React, Node.js, and MongoDB
                   </strong>{" "}
                   for full-stack engineering and enterprise platforms.
                 </p>
-                <p className="mb-3 font-mono text-[11px] uppercase tracking-wider text-slate-400">
+                <p className="mb-3 font-mono text-[11px] uppercase tracking-wider text-text-tertiary">
                   EXPLORE VERIFIED TOPICS:
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => handleSuggestionClick("TypeScript")}
-                    className="rounded-full border border-white/10 bg-white/[0.02] px-3 py-1 font-mono text-xs text-slate-300 transition-colors hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300"
+                    className="rounded-full border border-border bg-chip px-3 py-1 font-mono text-xs text-text-secondary transition-colors hover:border-accent hover:bg-accent/10 hover:text-accent-text"
                   >
                     &quot;TypeScript&quot;
                   </button>
                   <button
                     onClick={() => handleSuggestionClick("Next.js")}
-                    className="rounded-full border border-white/10 bg-white/[0.02] px-3 py-1 font-mono text-xs text-slate-300 transition-colors hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300"
+                    className="rounded-full border border-border bg-chip px-3 py-1 font-mono text-xs text-text-secondary transition-colors hover:border-accent hover:bg-accent/10 hover:text-accent-text"
                   >
                     &quot;Next.js&quot;
                   </button>
                   <button
                     onClick={() => handleSuggestionClick("MongoDB")}
-                    className="rounded-full border border-white/10 bg-white/[0.02] px-3 py-1 font-mono text-xs text-slate-300 transition-colors hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300"
+                    className="rounded-full border border-border bg-chip px-3 py-1 font-mono text-xs text-text-secondary transition-colors hover:border-accent hover:bg-accent/10 hover:text-accent-text"
                   >
                     &quot;MongoDB&quot;
                   </button>
                   <button
                     onClick={() => handleSuggestionClick("Automation")}
-                    className="rounded-full border border-white/10 bg-white/[0.02] px-3 py-1 font-mono text-xs text-slate-300 transition-colors hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300"
+                    className="rounded-full border border-border bg-chip px-3 py-1 font-mono text-xs text-text-secondary transition-colors hover:border-accent hover:bg-accent/10 hover:text-accent-text"
                   >
                     &quot;Automation&quot;
                   </button>
                   <button
                     onClick={() => handleSuggestionClick("Geofencing")}
-                    className="rounded-full border border-white/10 bg-white/[0.02] px-3 py-1 font-mono text-xs text-slate-300 transition-colors hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300"
+                    className="rounded-full border border-border bg-chip px-3 py-1 font-mono text-xs text-text-secondary transition-colors hover:border-accent hover:bg-accent/10 hover:text-accent-text"
                   >
                     &quot;Geofencing&quot;
                   </button>
                   <button
                     onClick={() => handleSuggestionClick("Experience")}
-                    className="rounded-full border border-white/10 bg-white/[0.02] px-3 py-1 font-mono text-xs text-slate-300 transition-colors hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:text-cyan-300"
+                    className="rounded-full border border-border bg-chip px-3 py-1 font-mono text-xs text-text-secondary transition-colors hover:border-accent hover:bg-accent/10 hover:text-accent-text"
                   >
                     &quot;Experience&quot;
                   </button>

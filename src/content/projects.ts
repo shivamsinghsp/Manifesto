@@ -443,7 +443,7 @@ const projectData: ProjectData[] = [
       "A SharePoint Online knowledge hub for a large enterprise: a homepage, a metadata-driven document library and an SME Finder enriched with Microsoft Graph.",
     longDescription: [
       "The Knowledge Hub is a SharePoint Online application built from SPFx web parts. It addresses knowledge scattered across OneDrive, Teams and email, which made templates, current document versions and subject-matter experts hard to find.",
-      "During my engagement at Rapsora Technologies I contributed SPFx 1.20 web parts in React and TypeScript for the Homepage, the Library and the SME Finder (Phase 2B). The client is confidential, so it is not named here and the screenshots are limited to UI.",
+      "During my engagement at Rapsora Technologies I contributed SPFx 1.20 web parts in React and TypeScript for the Homepage, the Library and the SME Finder (Phase 2B). The client is confidential, so it is not named here and the visuals are original illustrations rather than screenshots.",
     ],
     notice:
       "Confidential enterprise client. The client is not named, and no internal data, URLs or people are shown.",
@@ -465,8 +465,9 @@ const projectData: ProjectData[] = [
       },
     ],
     heroImage: {
-      src: "/images/projects/sharepoint-knowledge-hub/01-home.png",
-      alt: "Enterprise Knowledge Hub homepage",
+      // Original illustration. Real screenshots show the confidential client's branding.
+      src: "/diagrams/projects/sharepoint-knowledge-hub/hero.svg",
+      alt: "Illustration of the Knowledge Hub homepage layout (not a screenshot)",
     },
     caseStudy: [
       {
@@ -476,9 +477,9 @@ const projectData: ProjectData[] = [
         content:
           "A real-time, multi-dimensional discovery experience allowing users to filter governed documents across specific metadata dimensions (Category, Document Type, Capability, Market).",
         image: {
-          src: "/images/projects/sharepoint-knowledge-hub/02-knowledge-library.png",
-          alt: "Knowledge Library Discovery Interface",
-          caption: "Metadata-driven search without external databases.",
+          src: "/diagrams/projects/sharepoint-knowledge-hub/library-ui.svg",
+          alt: "Illustration of the library with search and metadata filters (not a screenshot)",
+          caption: "Illustration, not a screenshot: search with metadata filters.",
         },
         diagram: {
           src: "/diagrams/projects/sharepoint-knowledge-hub/knowledge-discovery.svg",
@@ -501,9 +502,9 @@ const projectData: ProjectData[] = [
         content:
           "An expert directory backed by a SharePoint List, enriched with live organizational data to help users find domain experts.",
         image: {
-          src: "/images/projects/sharepoint-knowledge-hub/03-sme-finder.png",
-          alt: "SME Finder Interface",
-          caption: "Subject Matter Expert directory showing capabilities and presence.",
+          src: "/diagrams/projects/sharepoint-knowledge-hub/sme-finder-ui.svg",
+          alt: "Illustration of SME Finder profile cards with presence and contact actions (not a screenshot)",
+          caption: "Illustration, not a screenshot: expert profiles with presence.",
         },
         diagram: {
           src: "/diagrams/projects/sharepoint-knowledge-hub/sme-finder.svg",

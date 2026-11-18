@@ -18,6 +18,11 @@ describe("dates", () => {
       /to be confirmed/
     )
   })
+  it("collapses single-month periods", () => {
+    expect(formatPeriod({ start: "2025-07", end: "2025-07", confirmed: false })).toBe(
+      "Jul 2025 (to be confirmed)"
+    )
+  })
   it("formats approximate ranges with qualifiers", () => {
     expect(
       formatPeriod({

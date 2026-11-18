@@ -27,7 +27,15 @@ export function cssFontFamily(variable: string, fallback = "monospace") {
 /** Renders a text label to a texture. Returns the texture and its aspect ratio. */
 export function createLabelTexture(
   text: string,
-  opts: { color?: string; font?: string; px?: number; pill?: boolean; tracking?: number } = {}
+  opts: {
+    color?: string
+    font?: string
+    px?: number
+    pill?: boolean
+    tracking?: number
+    pillBg?: string
+    pillBorder?: string
+  } = {}
 ) {
   const px = opts.px ?? 40
   const font = `500 ${px}px ${opts.font ?? "monospace"}`
@@ -48,11 +56,11 @@ export function createLabelTexture(
     (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing =
       `${opts.tracking}px`
   if (pill) {
-    ctx.fillStyle = "rgba(10,14,23,0.78)"
+    ctx.fillStyle = opts.pillBg ?? "rgba(10,14,23,0.78)"
     ctx.beginPath()
     ctx.roundRect(1, 1, w - 2, h - 2, h / 2)
     ctx.fill()
-    ctx.strokeStyle = "rgba(255,255,255,0.14)"
+    ctx.strokeStyle = opts.pillBorder ?? "rgba(255,255,255,0.14)"
     ctx.lineWidth = 2
     ctx.stroke()
   }

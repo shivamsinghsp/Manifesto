@@ -5,6 +5,7 @@ import "./globals.css"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { ClientChrome } from "@/components/motion/ClientChrome"
+import { ThemeProvider } from "@/components/theme/ThemeProvider"
 import { MOTION_BOOT_SCRIPT } from "@/lib/motion-preference"
 import { metadataBase, pageMetadata } from "@/lib/seo"
 import { SITE_URL, site } from "@/content/site"
@@ -45,8 +46,11 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#0A0E17",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F6F4EF" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0E17" },
+  ],
+  colorScheme: "dark light",
   width: "device-width",
   initialScale: 1,
 }
@@ -103,22 +107,24 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       className={`${plexSerif.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
       <body>
-        <Script id="motion-boot" strategy="beforeInteractive">
-          {MOTION_BOOT_SCRIPT}
-        </Script>
-        <a
-          href="#main"
-          className="sr-only-focusable fixed left-4 top-3 z-[2000] rounded-lg bg-cta-bg px-4 py-3 font-mono text-xs uppercase tracking-wider text-cta-text"
-        >
-          Skip to content
-        </a>
-        <JsonLd />
-        <Header />
-        <main id="main" tabIndex={-1} className="min-h-[60vh] outline-none">
-          {children}
-        </main>
-        <Footer />
-        <ClientChrome />
+        <ThemeProvider>
+          <Script id="motion-boot" strategy="beforeInteractive">
+            {MOTION_BOOT_SCRIPT}
+          </Script>
+          <a
+            href="#main"
+            className="sr-only-focusable fixed left-4 top-3 z-[2000] rounded-lg bg-cta-bg px-4 py-3 font-mono text-xs uppercase tracking-wider text-cta-text"
+          >
+            Skip to content
+          </a>
+          <JsonLd />
+          <Header />
+          <main id="main" tabIndex={-1} className="min-h-[60vh] outline-none">
+            {children}
+          </main>
+          <Footer />
+          <ClientChrome />
+        </ThemeProvider>
       </body>
     </html>
   )

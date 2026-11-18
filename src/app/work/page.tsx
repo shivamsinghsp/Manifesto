@@ -60,7 +60,7 @@ export default function WorkPage() {
               <li key={p.slug}>
                 <NextLink
                   href={`/work/${p.slug}`}
-                  className="hover:bg-surface-alt/40 group grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 border-b border-border py-5 transition-colors md:grid-cols-[3rem_1.2fr_2fr_auto] md:px-4"
+                  className="group grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 border-b border-border py-5 transition-colors hover:bg-surface-alt/40 md:grid-cols-[3rem_1.2fr_2fr_auto] md:px-4"
                 >
                   <span className="text-mono-label text-text-tertiary">
                     {String(i + 1).padStart(2, "0")}

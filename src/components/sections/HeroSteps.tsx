@@ -59,8 +59,8 @@ export function HeroSteps() {
                 aria-hidden="true"
                 className={cn(
                   "h-[2px] w-full origin-left rounded-full transition-all duration-500 ease-out-expo",
-                  i <= active ? "bg-accent-hover" : "bg-white/10",
-                  i === active && "shadow-[0_0_10px_rgba(0,229,255,0.8)]"
+                  i <= active ? "bg-accent-hover" : "bg-text/10",
+                  i === active && "shadow-[0_0_10px_rgb(var(--c-glow)/0.6)]"
                 )}
               />
               <span className="font-mono text-[11px] leading-tight tracking-wide">

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { MobileNav } from "./MobileNav"
 import { NAV_LINKS, site } from "@/content/site"
 import { MotionToggle } from "@/components/motion/MotionToggle"
+import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { cn } from "@/lib/utils"
 
 export function Header() {
@@ -23,7 +24,7 @@ export function Header() {
     <header
       className={cn(
         "sticky top-0 z-[900] flex h-[var(--header-h)] items-center justify-between border-b px-[var(--gutter)] backdrop-blur-md transition-colors duration-300",
-        scrolled ? "border-white/[0.08] bg-[#0A0E17]/85" : "border-transparent bg-[#0A0E17]/40"
+        scrolled ? "border-border bg-header" : "bg-header/0 border-transparent"
       )}
     >
       <NextLink
@@ -68,11 +69,15 @@ export function Header() {
             })}
           </ul>
         </nav>
-        <span aria-hidden="true" className="mx-1 h-5 w-px bg-white/10" />
+        <span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
         <MotionToggle compact />
+        <ThemeToggle />
       </div>
 
-      <MobileNav />
+      <div className="flex items-center gap-1 md:hidden">
+        <ThemeToggle />
+        <MobileNav />
+      </div>
     </header>
   )
 }

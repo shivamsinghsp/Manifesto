@@ -6,39 +6,213 @@
    Design tokens
    ───────────────────────────────────────────────────────────── */
 @layer base {
-  :root {
+  :root,
+  :root[data-theme="dark"] {
     color-scheme: dark;
-
-    /* Surfaces — obsidian & midnight */
-    --color-bg: #0a0e17;
-    --color-surface: #111728;
-    --color-surface-alt: #162036;
-
-    /* Text — all pairs ≥ 4.5:1 on every surface (tertiary: 5.0:1 on surface-alt) */
-    --color-text: #f1f3f7;
-    --color-text-secondary: #a8afbf;
-    --color-text-tertiary: #8590a4;
-
-    /* Accent — luminous cyan */
-    --color-accent: #00b8d4;
-    --color-accent-hover: #00e5ff;
-    --color-accent-muted: rgba(0, 184, 212, 0.15);
-
-    --color-cta-bg: #f1f3f7;
-    --color-cta-text: #0a0e17;
-    --color-cta-hover: #ffffff;
-
-    --color-success: #10b981;
-    --color-warning: #f59e0b;
-    --color-error: #f43f5e;
+    /* Channels (R G B) so Tailwind opacity modifiers work: bg-accent/10 */
+    --c-bg: 10 14 23;
+    --c-surface: 17 23 40;
+    --c-surface-alt: 22 32 54;
+    --c-text: 241 243 247;
+    --c-text-secondary: 168 175 191; /* 7.4–8.8:1 */
+    --c-text-tertiary: 133 144 164; /* 5.0–6.0:1 */
+    --c-accent: 0 184 212;
+    --c-accent-hover: 0 229 255;
+    --c-accent-text: 0 229 255; /* 10.5:1+ */
+    --c-cta-bg: 241 243 247;
+    --c-cta-text: 10 14 23;
+    --c-cta-hover: 255 255 255;
+    --c-success: 16 185 129;
+    --c-warning: 245 158 11;
+    --c-error: 244 63 94;
+    --c-glow: 0 184 212;
 
     --color-border: rgba(255, 255, 255, 0.1);
     --color-border-muted: rgba(255, 255, 255, 0.05);
-
-    /* Accent used for text (meets AA on every surface) and chips */
-    --color-accent-text: #00e5ff;
     --color-chip: rgba(255, 255, 255, 0.04);
-    --color-chip-text: #a8afbf;
+    --color-header: rgba(10, 14, 23, 0.72);
+    --color-footer: rgba(7, 10, 18, 0.95);
+    --color-overlay: rgba(10, 14, 23, 0.6);
+    --color-selection: rgba(0, 229, 255, 0.28);
+    --atmo: 1;
+    --grain-opacity: 0.035;
+
+    --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.5), 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 20px -4px rgba(0, 0, 0, 0.6), 0 2px 8px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 12px 32px -8px rgba(0, 0, 0, 0.7), 0 4px 16px -4px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 48px -12px rgba(0, 0, 0, 0.8), 0 8px 24px -4px rgba(0, 0, 0, 0.6);
+
+    /* Diagrams (inline SVG) */
+    --dg-text: #f1f3f7;
+    --dg-text-2: #a8afbf;
+    --dg-text-3: #8590a4;
+    --dg-line: rgba(255, 255, 255, 0.28);
+    --dg-line-soft: rgba(255, 255, 255, 0.1);
+    --dg-line-strong: #334155;
+    --dg-panel: rgba(255, 255, 255, 0.03);
+    --dg-surface: #111728;
+    --dg-bg: #162036;
+    --dg-accent: #00e5ff;
+    --dg-accent-soft: rgba(0, 229, 255, 0.07);
+    --dg-ok: #10b981;
+    --dg-warn: #f59e0b;
+
+    /* 3D scenes read these at runtime (see useThemeColors) */
+    --canvas-ink: #e6ecf5;
+    --canvas-line: #3b4a66;
+    --canvas-accent: #00e5ff;
+    --canvas-accent-2: #6366f1;
+    --canvas-ground: #0e1322;
+    --canvas-fog: #0a0e17;
+    --canvas-glow: 1;
+    --skill-frontend: #00e5ff;
+    --skill-backend: #7c9cff;
+    --skill-database: #34d399;
+    --skill-enterprise: #f2c069;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --c-bg: 246 244 239;
+    --c-surface: 255 255 255;
+    --c-surface-alt: 238 235 227;
+    --c-text: 20 23 31; /* 15–18:1 */
+    --c-text-secondary: 61 68 82; /* 8.2–9.8:1 */
+    --c-text-tertiary: 90 97 112; /* 5.2–6.2:1 */
+    --c-accent: 0 117 138; /* 4.5:1+ (fills, borders, large text) */
+    --c-accent-hover: 0 95 112;
+    --c-accent-text: 0 95 112; /* 6.1–7.3:1 */
+    --c-cta-bg: 20 23 31;
+    --c-cta-text: 255 255 255;
+    --c-cta-hover: 0 0 0;
+    --c-success: 4 120 87;
+    --c-warning: 180 83 9;
+    --c-error: 190 18 60;
+    --c-glow: 0 117 138;
+
+    --color-border: rgba(20, 23, 31, 0.14);
+    --color-border-muted: rgba(20, 23, 31, 0.07);
+    --color-chip: rgba(20, 23, 31, 0.04);
+    --color-header: rgba(246, 244, 239, 0.78);
+    --color-footer: rgba(238, 235, 227, 0.96);
+    --color-overlay: rgba(20, 23, 31, 0.18);
+    --color-selection: rgba(0, 117, 138, 0.22);
+    --atmo: 0.55;
+    --grain-opacity: 0.02;
+
+    --shadow-sm: 0 1px 2px rgba(20, 23, 31, 0.06), 0 1px 3px rgba(20, 23, 31, 0.08);
+    --shadow-md: 0 4px 14px -4px rgba(20, 23, 31, 0.12), 0 2px 6px -2px rgba(20, 23, 31, 0.08);
+    --shadow-lg: 0 12px 28px -10px rgba(20, 23, 31, 0.16), 0 4px 10px -4px rgba(20, 23, 31, 0.08);
+    --shadow-xl: 0 24px 48px -16px rgba(20, 23, 31, 0.2), 0 8px 18px -6px rgba(20, 23, 31, 0.1);
+
+    --dg-text: #14171f;
+    --dg-text-2: #3d4452;
+    --dg-text-3: #5a6170;
+    --dg-line: rgba(20, 23, 31, 0.35);
+    --dg-line-soft: rgba(20, 23, 31, 0.1);
+    --dg-line-strong: #9aa3b2;
+    --dg-panel: rgba(255, 255, 255, 0.85);
+    --dg-surface: #ffffff;
+    --dg-bg: #eeebe3;
+    --dg-accent: #00758a;
+    --dg-accent-soft: rgba(0, 117, 138, 0.08);
+    --dg-ok: #047857;
+    --dg-warn: #b45309;
+
+    --canvas-ink: #1b2130;
+    --canvas-line: #a9b1bf;
+    --canvas-accent: #00758a;
+    --canvas-accent-2: #4f46e5;
+    --canvas-ground: #e7e3d9;
+    --canvas-fog: #f6f4ef;
+    --canvas-glow: 0.25;
+    --skill-frontend: #00758a;
+    --skill-backend: #4338ca;
+    --skill-database: #047857;
+    --skill-enterprise: #92400e;
+  }
+  /* No-JS / pre-hydration fallback follows the OS */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      color-scheme: light;
+      --c-bg: 246 244 239;
+      --c-surface: 255 255 255;
+      --c-surface-alt: 238 235 227;
+      --c-text: 20 23 31; /* 15–18:1 */
+      --c-text-secondary: 61 68 82; /* 8.2–9.8:1 */
+      --c-text-tertiary: 90 97 112; /* 5.2–6.2:1 */
+      --c-accent: 0 117 138; /* 4.5:1+ (fills, borders, large text) */
+      --c-accent-hover: 0 95 112;
+      --c-accent-text: 0 95 112; /* 6.1–7.3:1 */
+      --c-cta-bg: 20 23 31;
+      --c-cta-text: 255 255 255;
+      --c-cta-hover: 0 0 0;
+      --c-success: 4 120 87;
+      --c-warning: 180 83 9;
+      --c-error: 190 18 60;
+      --c-glow: 0 117 138;
+
+      --color-border: rgba(20, 23, 31, 0.14);
+      --color-border-muted: rgba(20, 23, 31, 0.07);
+      --color-chip: rgba(20, 23, 31, 0.04);
+      --color-header: rgba(246, 244, 239, 0.78);
+      --color-footer: rgba(238, 235, 227, 0.96);
+      --color-overlay: rgba(20, 23, 31, 0.18);
+      --color-selection: rgba(0, 117, 138, 0.22);
+      --atmo: 0.55;
+      --grain-opacity: 0.02;
+
+      --shadow-sm: 0 1px 2px rgba(20, 23, 31, 0.06), 0 1px 3px rgba(20, 23, 31, 0.08);
+      --shadow-md: 0 4px 14px -4px rgba(20, 23, 31, 0.12), 0 2px 6px -2px rgba(20, 23, 31, 0.08);
+      --shadow-lg: 0 12px 28px -10px rgba(20, 23, 31, 0.16), 0 4px 10px -4px rgba(20, 23, 31, 0.08);
+      --shadow-xl: 0 24px 48px -16px rgba(20, 23, 31, 0.2), 0 8px 18px -6px rgba(20, 23, 31, 0.1);
+
+      --dg-text: #14171f;
+      --dg-text-2: #3d4452;
+      --dg-text-3: #5a6170;
+      --dg-line: rgba(20, 23, 31, 0.35);
+      --dg-line-soft: rgba(20, 23, 31, 0.1);
+      --dg-line-strong: #9aa3b2;
+      --dg-panel: rgba(255, 255, 255, 0.85);
+      --dg-surface: #ffffff;
+      --dg-bg: #eeebe3;
+      --dg-accent: #00758a;
+      --dg-accent-soft: rgba(0, 117, 138, 0.08);
+      --dg-ok: #047857;
+      --dg-warn: #b45309;
+
+      --canvas-ink: #1b2130;
+      --canvas-line: #a9b1bf;
+      --canvas-accent: #00758a;
+      --canvas-accent-2: #4f46e5;
+      --canvas-ground: #e7e3d9;
+      --canvas-fog: #f6f4ef;
+      --canvas-glow: 0.25;
+      --skill-frontend: #00758a;
+      --skill-backend: #4338ca;
+      --skill-database: #047857;
+      --skill-enterprise: #92400e;
+    }
+  }
+
+  :root {
+    --color-bg: rgb(var(--c-bg));
+    --color-surface: rgb(var(--c-surface));
+    --color-surface-alt: rgb(var(--c-surface-alt));
+    --color-text: rgb(var(--c-text));
+    --color-text-secondary: rgb(var(--c-text-secondary));
+    --color-text-tertiary: rgb(var(--c-text-tertiary));
+    --color-accent: rgb(var(--c-accent));
+    --color-accent-hover: rgb(var(--c-accent-hover));
+    --color-accent-text: rgb(var(--c-accent-text));
+    --color-accent-muted: rgb(var(--c-accent) / 0.14);
+    --color-cta-bg: rgb(var(--c-cta-bg));
+    --color-cta-text: rgb(var(--c-cta-text));
+    --color-cta-hover: rgb(var(--c-cta-hover));
+    --color-success: rgb(var(--c-success));
+    --color-warning: rgb(var(--c-warning));
+    --color-error: rgb(var(--c-error));
+    --color-focus: rgb(var(--c-accent-text));
+    --color-chip-text: rgb(var(--c-text-secondary));
 
     /* Spacing — 4px scale */
     --space-0: 0px;
@@ -74,11 +248,6 @@
     --radius-image: 12px;
     --radius-subtle: 8px;
     --border-width: 1px;
-
-    --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.5), 0 1px 4px -1px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 20px -4px rgba(0, 0, 0, 0.6), 0 2px 8px -2px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 12px 32px -8px rgba(0, 0, 0, 0.7), 0 4px 16px -4px rgba(0, 0, 0, 0.5);
-    --shadow-xl: 0 20px 48px -12px rgba(0, 0, 0, 0.8), 0 8px 24px -4px rgba(0, 0, 0, 0.6);
 
     /* Motion — three durations, one curve */
     --ease-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
@@ -132,9 +301,21 @@
   body {
     background-color: var(--color-bg);
     background-image:
-      radial-gradient(ellipse 90% 55% at 50% -10%, rgba(0, 184, 212, 0.12), transparent 70%),
-      radial-gradient(ellipse 60% 40% at 85% 50%, rgba(59, 130, 246, 0.06), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 15% 85%, rgba(99, 102, 241, 0.05), transparent 60%);
+      radial-gradient(
+        ellipse 90% 55% at 50% -10%,
+        rgb(var(--c-glow) / calc(0.12 * var(--atmo))),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 60% 40% at 85% 50%,
+        rgb(59 130 246 / calc(0.06 * var(--atmo))),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 60% 40% at 15% 85%,
+        rgb(99 102 241 / calc(0.05 * var(--atmo))),
+        transparent 60%
+      );
     background-attachment: fixed;
     color: var(--color-text);
     font-family: var(--font-body);
@@ -147,13 +328,13 @@
   }
 
   ::selection {
-    background: rgba(0, 229, 255, 0.28);
-    color: #fff;
+    background: var(--color-selection);
+    color: var(--color-text);
   }
 
   /* Visible, consistent keyboard focus everywhere */
   :focus-visible {
-    outline: 2px solid var(--color-accent-hover);
+    outline: 2px solid var(--color-focus);
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -257,11 +438,15 @@
     background:
       radial-gradient(
         ellipse 85% 60% at 50% 0%,
-        rgba(0, 184, 212, 0.15) 0%,
-        rgba(59, 130, 246, 0.06) 45%,
+        rgb(var(--c-glow) / calc(0.15 * var(--atmo))) 0%,
+        rgb(59 130 246 / calc(0.06 * var(--atmo))) 45%,
         transparent 80%
       ),
-      radial-gradient(ellipse 50% 40% at 85% 65%, rgba(99, 102, 241, 0.06) 0%, transparent 60%);
+      radial-gradient(
+        ellipse 50% 40% at 85% 65%,
+        rgb(99 102 241 / calc(0.06 * var(--atmo))) 0%,
+        transparent 60%
+      );
   }
   .tech-frame {
     position: relative;
@@ -358,7 +543,6 @@
     animation-delay: calc(var(--i, 0) * 90ms + 120ms);
   }
 
-  /* Diagram reveal, toggled by IntersectionObserver */
   /* Self-drawing diagrams: strokes trace in, then labels fade up.
      Only "armed" by JS, so diagrams stay visible if scripts fail. */
   @media (prefers-reduced-motion: no-preference) {
@@ -392,8 +576,15 @@
   inset: 0;
   z-index: 1200;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: var(--grain-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Theme switch: circular reveal (the animation is driven from useThemeSwitch) */
+html.theme-vt::view-transition-old(root),
+html.theme-vt::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 /* Shared-element transition for project imagery (View Transitions API) */
@@ -430,9 +621,6 @@ html[data-motion="reduce"] ::after {
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
 }
-html[data-motion="reduce"] .diagram-reveal {
-  clip-path: none;
-}
 html[data-motion="reduce"] ::view-transition-group(*),
 html[data-motion="reduce"] ::view-transition-old(*),
 html[data-motion="reduce"] ::view-transition-new(*) {
@@ -458,8 +646,8 @@ html[data-motion="reduce"] ::view-transition-new(*) {
   font-size: 11px;
   letter-spacing: 0.12em;
   color: var(--color-text-secondary);
-  background: rgba(10, 14, 23, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgb(var(--c-surface) / 0.88);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
   padding: 3px 8px;
   user-select: none;
@@ -492,7 +680,7 @@ html[data-motion="reduce"] ::view-transition-new(*) {
   opacity: 0;
   background: radial-gradient(
     500px circle at var(--mx) var(--my),
-    rgba(0, 229, 255, 0.1),
+    rgb(var(--c-glow) / 0.1),
     transparent 45%
   );
   transition: opacity 300ms;

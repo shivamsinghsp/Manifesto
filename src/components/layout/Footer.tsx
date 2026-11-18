@@ -8,7 +8,7 @@ const linkClass =
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t border-white/[0.08] bg-[#070A12]/95 pb-8 pt-16">
+    <footer className="relative overflow-hidden border-t border-border bg-footer pb-8 pt-16">
       <div
         aria-hidden="true"
         className="bg-blueprint pointer-events-none absolute inset-0 opacity-10"
