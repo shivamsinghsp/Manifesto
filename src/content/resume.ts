@@ -34,7 +34,7 @@ export interface ResumeRole {
 
 const androcoders = work.find((e) => e.id === "androcoders")!
 const edu = education[0]
-/** "Solo developer · shynr.in · Jan 15 – Feb 9, 2026" (period only when known). */
+/** Role · extra · period (the period only when known). */
 const meta = (slug: string, extra: string) => {
   const p = projectContext(slug)?.projectRole
   const when = p?.period.start ? periodLabel(p.period) : null
