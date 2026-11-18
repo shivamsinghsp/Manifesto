@@ -27,6 +27,7 @@ export function RouteTransition() {
   if (key === 0) return null
   return (
     <div
+      data-print-hide
       key={key}
       aria-hidden="true"
       className="route-curtain pointer-events-none fixed inset-0 z-[1100]"

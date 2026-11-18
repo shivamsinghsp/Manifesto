@@ -49,6 +49,7 @@ export function Preloader() {
   const done = progress >= 99.5
   return (
     <div
+      data-print-hide
       aria-hidden="true"
       className={`pointer-events-none fixed inset-x-0 top-0 z-[1250] transition-opacity duration-500 ${done ? "opacity-0" : "opacity-100"}`}
       onTransitionEnd={() => done && setProgress(null)}
