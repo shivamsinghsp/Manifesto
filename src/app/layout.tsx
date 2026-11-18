@@ -112,7 +112,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       suppressHydrationWarning
       className={`${plexSerif.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
-      <body>
+      <body suppressHydrationWarning>
         <ThemeProvider>
           <Script id="motion-boot" strategy="beforeInteractive">
             {MOTION_BOOT_SCRIPT}
