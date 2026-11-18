@@ -1,4 +1,8 @@
 import { GeoLab } from "@/components/engineering/playgrounds/GeoLab"
+import { RbacSandbox } from "@/components/engineering/labs/RbacSandbox"
+import { AtsBoard } from "@/components/engineering/labs/AtsBoard"
+import { QaStateMachine } from "@/components/engineering/labs/QaStateMachine"
+import { RateLimiterLab } from "@/components/engineering/labs/RateLimiterLab"
 import { pageMetadata } from "@/lib/seo"
 import { independentProjects, periodLabel } from "@/content/career"
 
@@ -7,7 +11,7 @@ const hume = independentProjects.find((p) => p.slug === "hume-voice-assistant")!
 export const metadata = pageMetadata({
   title: "Engineering Playground",
   description:
-    "Interactive models of systems Shivam Singh has built — including a 3D geofencing lab demonstrating Haversine distance validation.",
+    "Interactive models of systems Shivam Singh has built: a 3D geofencing lab, an RBAC sandbox, an ATS pipeline board, a QA state-machine simulator and a rate-limiter visualiser.",
   path: "/playground",
 })
 
@@ -47,11 +51,95 @@ export default function PlaygroundPage() {
         </div>
       </section>
 
+      <section aria-labelledby="rbac-h" className="section-y border-b border-border bg-surface/60">
+        <div className="container-x">
+          <div className="mb-8">
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              <p className="text-mono-label text-text-tertiary">{"// MODEL_02"}</p>
+              <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-text">
+                Interactive model
+              </span>
+            </div>
+            <h2 id="rbac-h" className="text-display-secondary mb-4">
+              RBAC sandbox
+            </h2>
+            <p className="text-body-large max-w-3xl text-text-secondary">
+              Shynr authorises with a numeric role hierarchy, so every permission check is one
+              comparison. Switch roles and watch the access table change.
+            </p>
+          </div>
+          <RbacSandbox />
+        </div>
+      </section>
+
+      <section aria-labelledby="ats-h" className="section-y border-b border-border">
+        <div className="container-x">
+          <div className="mb-8">
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              <p className="text-mono-label text-text-tertiary">{"// MODEL_03"}</p>
+              <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-text">
+                Interactive model
+              </span>
+            </div>
+            <h2 id="ats-h" className="text-display-secondary mb-4">
+              ATS pipeline board
+            </h2>
+            <p className="text-body-large max-w-3xl text-text-secondary">
+              Shynr&apos;s applicant tracking moves candidates from Pending to Reviewed to Shortlisted.
+              Drag a card, or use its arrow buttons from the keyboard.
+            </p>
+          </div>
+          <AtsBoard />
+        </div>
+      </section>
+
+      <section aria-labelledby="qa-h" className="section-y border-b border-border bg-surface/60">
+        <div className="container-x">
+          <div className="mb-8">
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              <p className="text-mono-label text-text-tertiary">{"// MODEL_04"}</p>
+              <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-text">
+                Interactive model
+              </span>
+            </div>
+            <h2 id="qa-h" className="text-display-secondary mb-4">
+              QA state-machine simulator
+            </h2>
+            <p className="text-body-large max-w-3xl text-text-secondary">
+              In PLEDGE QA every transition was tried as every role, and only legal (state, role)
+              pairs may pass. Try to break it.
+            </p>
+          </div>
+          <QaStateMachine />
+        </div>
+      </section>
+
+      <section aria-labelledby="rate-h" className="section-y border-b border-border">
+        <div className="container-x">
+          <div className="mb-8">
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              <p className="text-mono-label text-text-tertiary">{"// MODEL_05"}</p>
+              <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-text">
+                Interactive model
+              </span>
+            </div>
+            <h2 id="rate-h" className="text-display-secondary mb-4">
+              Rate-limiter visualiser
+            </h2>
+            <p className="text-body-large max-w-3xl text-text-secondary">
+              The contact form on this site allows five messages per window per IP. This runs the
+              same fixed-window algorithm, sped up.
+            </p>
+          </div>
+          <RateLimiterLab />
+        </div>
+      </section>
+
       <section aria-labelledby="voice-h" className="section-y border-b border-border bg-surface/60">
         <div className="container-x">
           <div className="mb-10">
             <div className="mb-3 flex flex-wrap items-center gap-3">
-              <p className="text-mono-label text-text-tertiary">{"// EXPERIMENT_02"}</p>
+              <p className="text-mono-label text-text-tertiary">{"// EXPERIMENT_06"}</p>
               <span className="rounded border border-border bg-surface-alt px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-text-secondary">
                 Experiment
               </span>
