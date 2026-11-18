@@ -34,14 +34,15 @@ function Section({
   )
 }
 
-function Item({ item }: { item: ResumeItem }) {
+function Item({ item, level = 4 }: { item: ResumeItem; level?: 3 | 4 }) {
+  const H = `h${level}` as "h3" | "h4"
   return (
     <div className="resume-item">
       {item.heading && (
-        <h4 className="text-[0.95rem] font-medium text-text">
+        <H className="text-[0.95rem] font-medium text-text">
           {item.heading}
           {item.meta && <span className="font-normal text-text-secondary"> · {item.meta}</span>}
-        </h4>
+        </H>
       )}
       <ul className="mt-1 list-disc space-y-1 pl-5 marker:text-text-tertiary">
         {item.bullets.map((b) => (
@@ -149,7 +150,7 @@ export default function ResumePage() {
 
           <Section id="projects" title="Projects">
             {r.projects.map((p) => (
-              <Item key={p.heading} item={p} />
+              <Item key={p.heading} item={p} level={3} />
             ))}
           </Section>
 
