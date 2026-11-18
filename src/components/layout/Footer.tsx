@@ -2,13 +2,34 @@ import NextLink from "next/link"
 import { NAV_LINKS, site } from "@/content/site"
 import { EmailLink } from "@/components/ui/EmailLink"
 import { IntroPosterButton } from "@/components/ui/IntroPosterButton"
+import { Marquee } from "@/components/footer/Marquee"
+import { FooterSandbox } from "@/components/footer/FooterSandbox"
+import { skillGroups } from "@/content/skills"
+
+const stack = skillGroups.flatMap((g) => g.items)
 
 const linkClass =
-  "inline-flex min-h-[32px] items-center text-body-small text-text-secondary transition-colors duration-200 hover:text-accent-hover"
+  "inline-flex min-h-[32px] items-center text-body-small text-text-secondary transition-colors duration-200 hover:text-accent-text"
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t border-border bg-footer pb-8 pt-16">
+    <footer className="relative overflow-hidden border-t border-border bg-footer pb-8">
+      <Marquee items={stack} />
+      <section aria-labelledby="sandbox-h" className="container-x relative z-10 pb-4 pt-14">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-mono-label mb-2 text-text-tertiary">{"// stack.drop()"}</p>
+            <h2 id="sandbox-h" className="text-headline text-text">
+              Things I build with
+            </h2>
+          </div>
+          <p className="text-body-small max-w-sm text-text-secondary">
+            Grab a chip and throw it. Every one is a tool from a real project or my resume.
+          </p>
+        </div>
+        <FooterSandbox chips={stack} />
+      </section>
+      <div className="h-12" />
       <div
         aria-hidden="true"
         className="bg-blueprint pointer-events-none absolute inset-0 opacity-10"
@@ -98,6 +119,12 @@ export function Footer() {
           <p className="text-mono-label text-text-tertiary">{`// END_OF_DOCUMENT`}</p>
         </div>
       </div>
+      <p
+        aria-hidden="true"
+        className="footer-name pointer-events-none relative z-0 mt-10 select-none whitespace-nowrap text-center font-display leading-none"
+      >
+        {site.name}
+      </p>
     </footer>
   )
 }

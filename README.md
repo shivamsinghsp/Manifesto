@@ -97,7 +97,12 @@ src/
     sections/             Hero (canvas, steps, fallback), SkillsSection
     case-study/           SectionNav, ReadingProgress, Outcomes, Challenges
     engineering/          WorkAssistant ("Ask Shivam's Work"), ArchitectureDiagram, playgrounds/ (GeoLab 3D + GeofencingLab 2D fallback)
-    three/                R3F scenes (HeroScene, SkillsScene, GeoScene) + canvas governor, lazy mount, textures, error boundary
+    three/                R3F scenes (BuildCubeScene, SkillsScene, GeoScene) + theme palette, canvas governor, lazy mount, textures, error boundary
+    command/              Ctrl/Cmd+K command palette (cmdk): pages, case studies, "Ask Shivam's Work", actions
+    hero/                 TypedLine (decorative terminal), SayHiChip, ProfileCard (profile.json from career.ts)
+    engineering/labs/     RBAC sandbox, ATS board, QA state machine, rate-limiter visualiser
+    footer/               Marquee, FooterSandbox + ChipPhysics (matter-js, lazy)
+    resume/               CopyMarkdown
     motion/               SmoothScroll (Lenis), ScrollEffects (reveals/parallax), Preloader, RouteTransition, TransitionLink (View Transitions), Cursor, Magnetic, MotionToggle
     theme/                ThemeProvider (next-themes), ThemeToggle, useThemeSwitch (View Transitions reveal)
     ui/                   ProjectCard, ProjectMedia, CareerLog, TiltCard, Timeline, SectionHeading, EmailLink, ProfilePhoto, buttons
@@ -126,5 +131,8 @@ Client and server share one zod schema (`src/lib/contact.ts`). The API adds a bo
 | `three`, `@react-three/fiber`, `@react-three/drei` | Declarative WebGL scenes with React lifecycle (automatic disposal, suspense, performance monitor). `three` is pinned to 0.182 because later versions log a deprecation warning from R3F's internal clock. |
 | `gsap` (+ ScrollTrigger)                           | Scroll-linked hero progress and parallax                                                                                                                                                                  |
 | `lenis`                                            | Smooth wheel scrolling on desktop (off on touch and with reduced motion)                                                                                                                                  |
+| `next-themes`                                      | Light / Dark / System with no flash of the wrong theme                                                                                                                                                    |
+| `cmdk`                                             | Accessible command palette (combobox semantics, keyboard navigation)                                                                                                                                      |
+| `matter-js`                                        | 2D physics for the footer chip sandbox; loaded only when the footer is near, never under reduced motion                                                                                                   |
 | `zod`                                              | One validation schema for client and server                                                                                                                                                               |
 | `resend`                                           | Email delivery for the contact form                                                                                                                                                                       |

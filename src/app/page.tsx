@@ -8,10 +8,12 @@ import { ProjectCard } from "@/components/ui/ProjectCard"
 import { CareerLog } from "@/components/ui/CareerLog"
 import { CtaLink } from "@/components/ui/Link"
 import { SectionHeading } from "@/components/ui/SectionHeading"
-import { ProfilePhoto } from "@/components/ui/ProfilePhoto"
 import { buttonClass } from "@/components/ui/button"
 import { Magnetic } from "@/components/motion/Magnetic"
 import { HeroCanvas } from "@/components/sections/HeroCanvas"
+import { TypedLine } from "@/components/hero/TypedLine"
+import { SayHiChip } from "@/components/hero/SayHiChip"
+import { ProfileCard } from "@/components/hero/ProfileCard"
 import { Mascot } from "@/components/ui/Mascot"
 import { HeroSteps } from "@/components/sections/HeroSteps"
 import { SkillsSection } from "@/components/sections/SkillsSection"
@@ -37,7 +39,36 @@ export default function Home() {
         <div className="lg:sticky lg:top-[var(--header-h)] lg:h-[calc(100svh-var(--header-h))] lg:min-h-[560px]">
           <div className="grid-container h-full items-center gap-y-10 py-12 md:py-16 lg:py-0">
             <div className="relative z-10 col-span-full flex flex-col items-start lg:col-span-6">
-              <p className="text-mono-label animate-reveal-fade mb-6 text-text-tertiary">{`// ${site.jobTitle} · Full-stack`}</p>
+              <ul
+                className="animate-reveal-fade mb-4 flex flex-wrap items-center gap-2"
+                aria-label="Status"
+              >
+                <li className="inline-flex min-h-[30px] items-center gap-2 rounded-full border border-success/40 bg-success/10 px-3 font-mono text-[11px] text-text">
+                  <span aria-hidden="true" className="relative inline-flex h-2 w-2">
+                    <span className="absolute inset-0 rounded-full bg-success opacity-60 motion-safe:animate-ping" />
+                    <span className="relative h-2 w-2 rounded-full bg-success" />
+                  </span>
+                  {availability.label}
+                </li>
+                <li className="inline-flex min-h-[30px] items-center rounded-full border border-border bg-chip px-3 font-mono text-[11px] text-chip-text">
+                  ~/shivam · Kanpur, IN
+                </li>
+                <li className="inline-flex min-h-[30px] items-center rounded-full border border-border bg-chip px-3 font-mono text-[11px] text-chip-text">
+                  {site.jobTitle} · Full-stack
+                </li>
+                <li>
+                  <SayHiChip className="inline-flex min-h-[30px] items-center gap-1.5 rounded-full border border-dashed border-border px-3 font-mono text-[11px] text-text-secondary transition-colors hover:border-accent hover:text-accent-text" />
+                </li>
+              </ul>
+              <div className="mb-6 h-5 w-full overflow-hidden">
+                <TypedLine
+                  lines={[
+                    "whoami  # software engineer, full-stack",
+                    "cat stack.txt  # next.js · react · typescript · mongodb",
+                    "ls ~/work  # shynr  kanpur-architect  aaoseekhe  knowledge-hub  pledge-qa",
+                  ]}
+                />
+              </div>
               <h1 id="hero-title" className="text-display mb-7 text-text">
                 <span className="line-mask">
                   <span style={line(0)}>Engineering </span>
@@ -268,13 +299,10 @@ export default function Home() {
         className="section-y border-b border-border bg-surface/60"
       >
         <div className="grid-container items-center gap-y-10">
-          <div
-            className="col-span-full mx-auto w-full max-w-[340px] md:col-span-3 lg:col-span-4 lg:max-w-[380px]"
-            data-reveal
-          >
-            <ProfilePhoto />
+          <div className="col-span-full w-full min-w-0 lg:col-span-6" data-reveal>
+            <ProfileCard />
           </div>
-          <div className="col-span-full md:col-span-5 lg:col-span-7 lg:col-start-6" data-reveal>
+          <div className="col-span-full lg:col-span-5 lg:col-start-8" data-reveal>
             <p className="text-mono-label mb-3 text-text-tertiary">{"// 07. ABOUT"}</p>
             <h2 id="about-h" className="text-display-secondary mb-6">
               Systems <span className="italic text-text-secondary">over</span> symptoms.

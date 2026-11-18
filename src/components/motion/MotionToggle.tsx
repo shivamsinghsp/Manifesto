@@ -37,7 +37,7 @@ export function MotionToggle({
           )}
         />
       </span>
-      <span className={compact ? "sr-only xl:not-sr-only" : undefined}>Reduce motion</span>
+      <span className={compact ? "sr-only" : undefined}>Reduce motion</span>
     </button>
   )
 }

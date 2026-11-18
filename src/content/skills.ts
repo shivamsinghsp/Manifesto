@@ -2,8 +2,7 @@
  * Technology clusters for the Stack section.
  * Every entry appears in at least one project's `tags`/implementation in projects.ts,
  * in career.ts, or in the "Technical Skills" section of public/resume.pdf.
- * Java, SQL, MySQL and AWS are listed on the resume but not shown in any project here,
- * so they are intentionally left out until confirmed (see README → Content TODOs).
+ * Java and MySQL come from the owner's resume (skills section).
  */
 export interface SkillGroup {
   id: "frontend" | "backend" | "database" | "enterprise"
@@ -25,8 +24,6 @@ export const skillGroups: SkillGroup[] = [
       "JavaScript",
       "Tailwind CSS",
       "Framer Motion",
-      "TanStack Query",
-      "ShadCN UI",
       "HTML5 / CSS3",
     ],
   },
@@ -36,6 +33,7 @@ export const skillGroups: SkillGroup[] = [
     color: "var(--skill-backend)",
     items: [
       "Node.js",
+      "Java",
       "REST APIs",
       "NextAuth.js",
       "Zod",
@@ -49,7 +47,7 @@ export const skillGroups: SkillGroup[] = [
     id: "database",
     label: "Database",
     color: "var(--skill-database)",
-    items: ["MongoDB", "Mongoose", "2dsphere Geo Queries", "Text Indexes"],
+    items: ["MongoDB", "Mongoose", "MongoDB Text Search", "MySQL"],
   },
   {
     id: "enterprise",

@@ -121,7 +121,7 @@ export const resume = {
   projects: [
     {
       heading: "Real-Time AI Voice Assistant (Hume EVI)",
-      meta: hume.tags.join(", "),
+      meta: `${hume.tags.join(", ")} · ${periodLabel(hume.period)}`,
       bullets: [
         "Built an emotion-aware voice assistant on Hume AI's Empathic Voice Interface: real-time voice interaction, live transcripts and emotional cues over WebSockets.",
       ],
