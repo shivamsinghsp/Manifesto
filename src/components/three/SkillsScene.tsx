@@ -6,6 +6,7 @@ import * as THREE from "three"
 import { skillGroups, type SkillGroup } from "@/content/skills"
 import { dprFor, type PerfTier } from "@/lib/device"
 import { createGlowTexture, createLabelTexture, cssFontFamily } from "./textures"
+import { cssColor, useScenePalette } from "./palette"
 
 type GroupId = SkillGroup["id"]
 
@@ -30,13 +31,24 @@ function Ring({
 }) {
   const cfg = RINGS[group.id]
   const spin = useRef<THREE.Group>(null)
-  const color = useMemo(() => new THREE.Color(group.color), [group.color])
+  const pal = useScenePalette()
+  const color = useMemo(
+    () => new THREE.Color(cssColor(group.color, pal.hex.accent)),
+    // Re-resolve the CSS variable whenever the theme palette changes.
+    [group.color, pal]
+  )
   const labels = useMemo(
     () =>
       group.items.map((item) =>
-        createLabelTexture(item, { font: fontFamily, color: "#F1F3F7", px: 36 })
+        createLabelTexture(item, {
+          font: fontFamily,
+          color: pal.hex.ink,
+          px: 36,
+          pillBg: pal.dark ? "rgba(10,14,23,0.78)" : "rgba(255,255,255,0.92)",
+          pillBorder: pal.dark ? "rgba(255,255,255,0.14)" : "rgba(20,23,31,0.16)",
+        })
       ),
-    [group.items, fontFamily]
+    [group.items, fontFamily, pal]
   )
   const ringGeo = useMemo(() => {
     const pts = new THREE.EllipseCurve(0, 0, cfg.radius, cfg.radius, 0, Math.PI * 2).getPoints(160)
@@ -105,6 +117,7 @@ function Ring({
 
 function Cluster({ selected, reduced }: { selected: GroupId | null; reduced: boolean }) {
   const root = useRef<THREE.Group>(null)
+  const pal = useScenePalette()
   const glow = useMemo(() => createGlowTexture(), [])
   useEffect(() => () => glow.dispose(), [glow])
   const [fontFamily, setFontFamily] = useState<string | null>(null)
@@ -166,15 +179,15 @@ function Cluster({ selected, reduced }: { selected: GroupId | null; reduced: boo
     <group ref={root}>
       <mesh>
         <icosahedronGeometry args={[0.45, 1]} />
-        <meshBasicMaterial color="#00B8D4" wireframe transparent opacity={0.35} />
+        <meshBasicMaterial color={pal.accent} wireframe transparent opacity={0.35} />
       </mesh>
       <sprite scale={2.4}>
         <spriteMaterial
           map={glow}
-          color="#00E5FF"
+          color={pal.accent}
           transparent
-          opacity={0.5}
-          blending={THREE.AdditiveBlending}
+          opacity={0.5 * pal.glow}
+          blending={pal.blending}
           depthWrite={false}
         />
       </sprite>

@@ -24,7 +24,7 @@ export function Challenges({ content }: { content: string }) {
         return (
           <li
             key={i}
-            className="bg-surface/60 grid grid-cols-[auto_1fr] gap-x-5 rounded-xl border border-border p-5 md:p-7"
+            className="grid grid-cols-[auto_1fr] gap-x-5 rounded-xl border border-border bg-surface/60 p-5 md:p-7"
           >
             <span className="font-mono text-sm text-accent-hover">{index}</span>
             <div>

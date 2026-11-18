@@ -73,9 +73,10 @@ export function Cursor() {
   if (!enabled) return null
   return (
     <div
+      data-print-hide
       ref={ring}
       aria-hidden="true"
-      className="border-accent-hover/70 data-[active=true]:bg-accent-hover/15 pointer-events-none fixed left-0 top-0 z-[1300] h-8 w-8 rounded-full border opacity-0 mix-blend-difference transition-[opacity,background-color,scale] duration-200"
+      className="pointer-events-none fixed left-0 top-0 z-[1300] h-8 w-8 rounded-full border border-accent-hover/70 opacity-0 mix-blend-difference transition-[opacity,background-color,scale] duration-200 data-[active=true]:bg-accent-hover/15"
       style={{ willChange: "transform" }}
     />
   )

@@ -16,7 +16,7 @@ export function ProfilePhoto({
   return (
     <figure
       className={cn(
-        "relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/10 bg-surface",
+        "relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-border bg-surface",
         className
       )}
     >
@@ -35,8 +35,8 @@ export function ProfilePhoto({
           role="img"
           aria-label={`${site.name} monogram`}
         >
-          <div className="absolute inset-6 rounded-xl border border-dashed border-white/10" />
-          <span className="text-text-secondary/80 font-display text-[clamp(4rem,12vw,7rem)] italic">
+          <div className="absolute inset-6 rounded-xl border border-dashed border-border" />
+          <span className="font-display text-[clamp(4rem,12vw,7rem)] italic text-text-secondary/80">
             SS
           </span>
           <span className="absolute bottom-4 left-4 font-mono text-[11px] tracking-widest text-text-tertiary">

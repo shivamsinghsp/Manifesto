@@ -111,7 +111,7 @@ displaying a placeholder.
 ## Knowledge Hub
 
 Company:
-British American Tobacco (BAT)
+[confidential client]
 
 Project:
 Knowledge Hub

@@ -1,13 +1,15 @@
 import { Award } from "lucide-react"
-import { experiences } from "@/content/experience"
+import { education, recognitions, work, independentProjects, periodLabel } from "@/content/career"
 import { site } from "@/content/site"
 import { Timeline } from "@/components/ui/Timeline"
+import { CareerLog } from "@/components/ui/CareerLog"
 import { pageMetadata } from "@/lib/seo"
+
+const [rapsoraRole, androcodersRole] = work
 
 export const metadata = pageMetadata({
   title: "Experience",
-  description:
-    "Internships at Rapsora Technologies and Androcoders, B.Tech in Information Technology, and recognition — Shivam Singh's engineering timeline.",
+  description: `${rapsoraRole.title} at ${rapsoraRole.organization.name}, ${androcodersRole.title} at ${androcodersRole.organization.name}, ${education[0].title} (${education[0].status}) — Shivam Singh's career log.`,
   path: "/experience",
 })
 
@@ -43,30 +45,17 @@ function Category({
 }
 
 export default function ExperiencePage() {
-  const work = experiences
-    .filter((e) => e.type === "Work")
-    .map((e) => ({
-      date: e.dateRange,
-      title: e.title,
-      subtitle: e.organization,
-      description: e.description,
-      projects: e.projects,
-    }))
-  const edu = experiences
-    .filter((e) => e.type === "Education")
-    .map((e) => ({
-      date: e.dateRange,
-      title: e.title,
-      subtitle: e.organization,
-      description: e.description,
-    }))
-  const rec = experiences
-    .filter((e) => e.type === "Recognition")
-    .map((e) => ({
-      title: e.title,
-      subtitle: e.organization,
-      description: e.description,
-    }))
+  const rec = recognitions.map((r) => ({
+    title: r.title,
+    subtitle: r.organization,
+    description: r.description,
+  }))
+  const indie = independentProjects.map((p) => ({
+    date: periodLabel(p.period),
+    title: p.title,
+    subtitle: p.role,
+    description: p.summary,
+  }))
 
   return (
     <>
@@ -77,12 +66,12 @@ export default function ExperiencePage() {
           </p>
           <h1 className="text-display mb-8">Experience</h1>
           <p className="text-body-large mb-8 max-w-2xl text-text-secondary">
-            A chronological ledger of my professional journey — the teams I&apos;ve worked with and
-            the systems we built.
+            A ledger of where I&apos;ve worked, what I built there and what I studied. Every date
+            and duration on this page comes from one data file.
           </p>
           <a
             href={site.resumePath}
-            className="hover:border-accent/50 inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 font-mono text-xs uppercase tracking-wider text-text transition-colors hover:text-accent-hover"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-border bg-chip px-5 font-mono text-xs uppercase tracking-wider text-text transition-colors hover:border-accent/50 hover:text-accent-hover"
           >
             Resume (PDF){" "}
             <span aria-hidden="true" className="text-accent-hover">
@@ -92,10 +81,13 @@ export default function ExperiencePage() {
         </div>
       </section>
       <Category id="work-h" title="Professional">
-        <Timeline items={work} />
+        <CareerLog items={work} />
       </Category>
       <Category id="edu-h" title="Education">
-        <Timeline items={edu} />
+        <CareerLog items={education} />
+      </Category>
+      <Category id="indie-h" title="Independent">
+        <Timeline items={indie} />
       </Category>
       <Category
         id="rec-h"

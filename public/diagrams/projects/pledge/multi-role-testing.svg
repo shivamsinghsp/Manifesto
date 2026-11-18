@@ -1,58 +1,68 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" width="100%" height="100%" fill="none">
-  <rect width="800" height="360" rx="12" fill="#0A0E17"/>
-  <rect x="0.5" y="0.5" width="799" height="359" rx="11.5" stroke="#1E293B"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" fill="none"><style>
+.dg-f-text{fill:var(--dg-text,#f1f3f7)}.dg-f-text2{fill:var(--dg-text-2,#a8afbf)}.dg-f-text3{fill:var(--dg-text-3,#8590a4)}
+.dg-f-line{fill:var(--dg-line,rgba(255,255,255,.28))}.dg-f-panel{fill:var(--dg-panel,rgba(255,255,255,.03))}
+.dg-f-surface{fill:var(--dg-surface,#111728)}.dg-f-bg{fill:var(--dg-bg,#0a0e17)}
+.dg-f-accent{fill:var(--dg-accent,#00e5ff)}.dg-f-accent-soft{fill:var(--dg-accent-soft,rgba(0,229,255,.07))}
+.dg-f-ok{fill:var(--dg-ok,#10b981)}.dg-f-warn{fill:var(--dg-warn,#f59e0b)}
+.dg-s-line{stroke:var(--dg-line,rgba(255,255,255,.28))}.dg-s-line-soft{stroke:var(--dg-line-soft,rgba(255,255,255,.12))}
+.dg-s-line-strong{stroke:var(--dg-line-strong,#334155)}.dg-s-accent{stroke:var(--dg-accent,#00e5ff)}
+.dg-s-ok{stroke:var(--dg-ok,#10b981)}.dg-s-text2{stroke:var(--dg-text-2,#a8afbf)}
+
+</style>
+  <rect class="dg-f-bg" width="800" height="360" rx="12"/>
+  <rect class="dg-s-line-soft" x="0.5" y="0.5" width="799" height="359" rx="11.5"/>
 
   <defs>
-    <pattern id="grid2" width="20" height="20" patternUnits="userSpaceOnUse">
-      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1E293B" stroke-width="0.5" opacity="0.4"/>
+    <pattern id="pledge-multi-role-testing-grid2" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path class="dg-s-line-soft" d="M 20 0 L 0 0 0 20" fill="none" stroke-width="0.5" opacity="0.4"/>
     </pattern>
   </defs>
-  <rect width="800" height="360" fill="url(#grid2)" />
+  <rect width="800" height="360" fill="url(#pledge-multi-role-testing-grid2)" />
 
   <!-- Header -->
-  <text x="40" y="45" fill="#00E5FF" font-family="monospace" font-size="12" letter-spacing="2">PLEDGE PORTAL // MULTI-TIER ROLE VALIDATION MATRIX</text>
-  <text x="40" y="68" fill="#F1F5F9" font-family="serif" font-size="18" font-weight="bold">Citizen to Administration Verification Pipeline</text>
+  <text class="dg-f-accent" x="40" y="45" font-family="monospace" font-size="12" letter-spacing="2">PLEDGE PORTAL // MULTI-TIER ROLE VALIDATION MATRIX</text>
+  <text class="dg-f-text" x="40" y="68" font-family="serif" font-size="18" font-weight="bold">Citizen to Administration Verification Pipeline</text>
 
   <!-- Role 1: Citizen Applicant -->
   <g transform="translate(40, 110)">
-    <rect width="215" height="150" rx="8" fill="#0F172A" stroke="#334155" stroke-width="1"/>
-    <text x="16" y="30" fill="#00E5FF" font-family="monospace" font-size="11" font-weight="bold">TIER 1: CITIZEN APPLICANT</text>
-    <text x="16" y="55" fill="#F1F5F9" font-family="sans-serif" font-size="13" font-weight="600">Application &amp; Form Submission</text>
-    <text x="16" y="80" fill="#94A3B8" font-family="sans-serif" font-size="11">• Input sanitization &amp; boundary tests</text>
-    <text x="16" y="100" fill="#94A3B8" font-family="sans-serif" font-size="11">• Required field validation checks</text>
-    <text x="16" y="120" fill="#94A3B8" font-family="sans-serif" font-size="11">• File attachment format handling</text>
-    <text x="16" y="140" fill="#10B981" font-family="monospace" font-size="10">✓ Submission Flow Verified</text>
+    <rect class="dg-f-surface dg-s-line-strong" width="215" height="150" rx="8" stroke-width="1"/>
+    <text class="dg-f-accent" x="16" y="30" font-family="monospace" font-size="11" font-weight="bold">TIER 1: CITIZEN APPLICANT</text>
+    <text class="dg-f-text" x="16" y="55" font-family="sans-serif" font-size="13" font-weight="600">Application &amp; Form Submission</text>
+    <text class="dg-f-text2" x="16" y="80" font-family="sans-serif" font-size="11">• Input sanitization &amp; boundary tests</text>
+    <text class="dg-f-text2" x="16" y="100" font-family="sans-serif" font-size="11">• Required field validation checks</text>
+    <text class="dg-f-text2" x="16" y="120" font-family="sans-serif" font-size="11">• File attachment format handling</text>
+    <text class="dg-f-ok" x="16" y="140" font-family="monospace" font-size="10">✓ Submission Flow Verified</text>
   </g>
 
   <!-- Flow connector 1-2 -->
-  <path d="M 260 185 L 295 185" stroke="#00E5FF" stroke-width="1.5" stroke-dasharray="2 2"/>
-  <polygon points="295,182 302,185 295,188" fill="#00E5FF"/>
+  <path class="dg-s-accent" d="M 260 185 L 295 185" stroke-width="1.5" stroke-dasharray="2 2"/>
+  <polygon class="dg-f-accent" points="295,182 302,185 295,188"/>
 
   <!-- Role 2: Department Approver -->
   <g transform="translate(305, 110)">
-    <rect width="215" height="150" rx="8" fill="#0F172A" stroke="#334155" stroke-width="1"/>
-    <text x="16" y="30" fill="#F59E0B" font-family="monospace" font-size="11" font-weight="bold">TIER 2: DEPARTMENT APPROVER</text>
-    <text x="16" y="55" fill="#F1F5F9" font-family="sans-serif" font-size="13" font-weight="600">Document Review &amp; Workflow</text>
-    <text x="16" y="80" fill="#94A3B8" font-family="sans-serif" font-size="11">• Application state transitions</text>
-    <text x="16" y="100" fill="#94A3B8" font-family="sans-serif" font-size="11">• Status change verification (Pending/Approved)</text>
-    <text x="16" y="120" fill="#94A3B8" font-family="sans-serif" font-size="11">• Remark logging &amp; audit tracking</text>
-    <text x="16" y="140" fill="#10B981" font-family="monospace" font-size="10">✓ State Machine Verified</text>
+    <rect class="dg-f-surface dg-s-line-strong" width="215" height="150" rx="8" stroke-width="1"/>
+    <text class="dg-f-warn" x="16" y="30" font-family="monospace" font-size="11" font-weight="bold">TIER 2: DEPARTMENT APPROVER</text>
+    <text class="dg-f-text" x="16" y="55" font-family="sans-serif" font-size="13" font-weight="600">Document Review &amp; Workflow</text>
+    <text class="dg-f-text2" x="16" y="80" font-family="sans-serif" font-size="11">• Application state transitions</text>
+    <text class="dg-f-text2" x="16" y="100" font-family="sans-serif" font-size="11">• Status change verification (Pending/Approved)</text>
+    <text class="dg-f-text2" x="16" y="120" font-family="sans-serif" font-size="11">• Remark logging &amp; audit tracking</text>
+    <text class="dg-f-ok" x="16" y="140" font-family="monospace" font-size="10">✓ State Machine Verified</text>
   </g>
 
   <!-- Flow connector 2-3 -->
-  <path d="M 525 185 L 560 185" stroke="#00E5FF" stroke-width="1.5" stroke-dasharray="2 2"/>
-  <polygon points="560,182 567,185 560,188" fill="#00E5FF"/>
+  <path class="dg-s-accent" d="M 525 185 L 560 185" stroke-width="1.5" stroke-dasharray="2 2"/>
+  <polygon class="dg-f-accent" points="560,182 567,185 560,188"/>
 
   <!-- Role 3: Department Admin -->
   <g transform="translate(570, 110)">
-    <rect width="190" height="150" rx="8" fill="#0F172A" stroke="#334155" stroke-width="1"/>
-    <text x="16" y="30" fill="#10B981" font-family="monospace" font-size="11" font-weight="bold">TIER 3: DEPT ADMIN</text>
-    <text x="16" y="55" fill="#F1F5F9" font-family="sans-serif" font-size="13" font-weight="600">Governance &amp; Reports</text>
-    <text x="16" y="80" fill="#94A3B8" font-family="sans-serif" font-size="11">• Consolidated dashboard counts</text>
-    <text x="16" y="100" fill="#94A3B8" font-family="sans-serif" font-size="11">• Role permission boundaries</text>
-    <text x="16" y="120" fill="#94A3B8" font-family="sans-serif" font-size="11">• Export generation integrity</text>
-    <text x="16" y="140" fill="#10B981" font-family="monospace" font-size="10">✓ Governance Flow Verified</text>
+    <rect class="dg-f-surface dg-s-line-strong" width="190" height="150" rx="8" stroke-width="1"/>
+    <text class="dg-f-ok" x="16" y="30" font-family="monospace" font-size="11" font-weight="bold">TIER 3: DEPT ADMIN</text>
+    <text class="dg-f-text" x="16" y="55" font-family="sans-serif" font-size="13" font-weight="600">Governance &amp; Reports</text>
+    <text class="dg-f-text2" x="16" y="80" font-family="sans-serif" font-size="11">• Consolidated dashboard counts</text>
+    <text class="dg-f-text2" x="16" y="100" font-family="sans-serif" font-size="11">• Role permission boundaries</text>
+    <text class="dg-f-text2" x="16" y="120" font-family="sans-serif" font-size="11">• Export generation integrity</text>
+    <text class="dg-f-ok" x="16" y="140" font-family="monospace" font-size="10">✓ Governance Flow Verified</text>
   </g>
 
-  <text x="40" y="300" fill="#64748B" font-family="monospace" font-size="11">// Strict RBAC and workflow boundaries verified across citizen submission, department processing, and executive oversight</text>
+  <text class="dg-f-text3" x="40" y="300" font-family="monospace" font-size="11">// Strict RBAC and workflow boundaries verified across citizen submission, department processing, and executive oversight</text>
 </svg>

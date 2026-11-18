@@ -35,7 +35,7 @@ export function ReadingProgress({ targetId }: { targetId: string }) {
     >
       <div
         ref={bar}
-        className="h-full origin-left scale-x-0 bg-accent-hover shadow-[0_0_10px_rgba(0,229,255,0.7)]"
+        className="h-full origin-left scale-x-0 bg-accent-hover shadow-[0_0_10px_rgb(var(--c-glow)/0.6)]"
       />
     </div>
   )

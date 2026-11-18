@@ -23,7 +23,8 @@ export function SmoothScroll() {
   useEffect(() => {
     // Touch devices keep native momentum scrolling; Lenis would only add a per-frame loop there.
     if (reduced || window.matchMedia("(pointer: coarse)").matches) return
-    const lenis = new Lenis({ duration: 1.1, anchors: { offset: -80 }, autoRaf: false })
+    // No `anchors`: Lenis would swallow in-page links (incl. the skip link) without moving focus.
+    const lenis = new Lenis({ duration: 1.1, autoRaf: false })
     lenisInstance = lenis
     lenis.on("scroll", ScrollTrigger.update)
     const tick = (time: number) => lenis.raf(time * 1000)

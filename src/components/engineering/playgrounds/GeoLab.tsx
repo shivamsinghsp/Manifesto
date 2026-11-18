@@ -31,13 +31,13 @@ const STATUS: Record<
   },
   near_edge: {
     label: "Near boundary",
-    tone: "text-amber-300 border-amber-400/40 bg-amber-400/10",
+    tone: "text-warning border-warning/40 bg-warning/10",
     Icon: AlertTriangle,
     note: "Accepted, but inside the GPS-jitter caution zone.",
   },
   outside: {
     label: "Outside geofence",
-    tone: "text-rose-300 border-rose-400/40 bg-rose-400/10",
+    tone: "text-error border-error/40 bg-error/10",
     Icon: ShieldAlert,
     note: "Attendance would be rejected.",
   },
@@ -131,10 +131,10 @@ export function GeoLab() {
   }
 
   const btn =
-    "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 font-mono text-xs text-text-secondary transition-colors hover:border-accent/50 hover:text-text"
+    "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg border border-border bg-chip px-3 font-mono text-xs text-text-secondary transition-colors hover:border-accent/50 hover:text-text"
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0E131F]/90 shadow-2xl">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface/90 shadow-2xl">
       <div className="grid grid-cols-1 lg:grid-cols-12">
         {/* Map */}
         <div
@@ -144,7 +144,7 @@ export function GeoLab() {
           aria-label="Geofence map. Arrow keys move the user by 10 metres (Shift for 50). Plus and minus change the radius."
           aria-describedby="geo-readout"
           onKeyDown={onKey}
-          className="relative h-[360px] bg-[#070A12] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent-hover sm:h-[440px] lg:col-span-8 lg:h-auto lg:min-h-[600px]"
+          className="relative h-[360px] bg-surface-alt outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent-hover sm:h-[440px] lg:col-span-8 lg:h-auto lg:min-h-[600px]"
         >
           {mount === "ready" ? (
             <CanvasErrorBoundary
@@ -179,7 +179,7 @@ export function GeoLab() {
         </div>
 
         {/* Readout + controls */}
-        <div className="flex flex-col gap-6 border-t border-white/[0.08] p-5 sm:p-6 lg:col-span-4 lg:border-l lg:border-t-0">
+        <div className="flex flex-col gap-6 border-t border-border p-5 sm:p-6 lg:col-span-4 lg:border-l lg:border-t-0">
           <div id="geo-readout">
             <div
               className={cn(
@@ -212,7 +212,7 @@ export function GeoLab() {
                 <dt className="text-[11px] uppercase tracking-wider text-text-tertiary">
                   {delta > 0 ? "Over by" : "Margin"}
                 </dt>
-                <dd className={cn("text-lg", delta > 0 ? "text-rose-300" : "text-text")}>
+                <dd className={cn("text-lg", delta > 0 ? "text-error" : "text-text")}>
                   {Math.abs(delta)} m
                 </dd>
               </div>
@@ -259,7 +259,7 @@ export function GeoLab() {
               step={5}
               value={radius}
               onChange={(e) => changeRadius(Number(e.target.value))}
-              className="h-11 w-full accent-[#00E5FF]"
+              className="h-11 w-full accent-accent"
             />
           </div>
 
@@ -340,7 +340,7 @@ export function GeoLab() {
         </div>
       </div>
 
-      <div className="border-t border-white/[0.08] bg-white/[0.02] p-5 font-mono text-xs leading-relaxed text-text-secondary sm:p-6">
+      <div className="border-t border-border bg-chip p-5 font-mono text-xs leading-relaxed text-text-secondary sm:p-6">
         <p className="mb-1 text-[11px] uppercase tracking-wider text-text-tertiary">
           Validation (same rule as Shynr&apos;s attendance API)
         </p>
@@ -350,6 +350,10 @@ export function GeoLab() {
         </p>
         <p className="mt-1">
           accept ⇔ d ≤ radius · caution zone ⇔ d ≥ 0.82 · radius or radius − d ≤ 20 m
+        </p>
+        <p className="mt-3 font-body text-[12px] normal-case leading-relaxed text-text-tertiary">
+          Note: this checks the distance of the coordinates the browser reports. It does not prove
+          the GPS reading is genuine, so on its own it does not stop location spoofing.
         </p>
       </div>
       <p className="sr-only" aria-live="polite">

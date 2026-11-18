@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import NextLink from "next/link"
 import { notFound } from "next/navigation"
 import { Fragment, type ReactNode } from "react"
@@ -7,11 +6,13 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react"
 import { projects, type CaseStudySection, type ProjectImage } from "@/content/projects"
 import { ArchitectureDiagram } from "@/components/engineering/ArchitectureDiagram"
 import { SectionNav, type NavSection } from "@/components/case-study/SectionNav"
+import { ProjectMedia } from "@/components/ui/ProjectMedia"
 import { ReadingProgress } from "@/components/case-study/ReadingProgress"
 import { Outcomes } from "@/components/case-study/Outcomes"
 import { Challenges } from "@/components/case-study/Challenges"
 import { pageMetadata } from "@/lib/seo"
-import { slugify } from "@/lib/slug"
+import { slugify, titleCase } from "@/lib/slug"
+import { readPublicSvg } from "@/lib/svg"
 
 type Params = Promise<{ slug: string }>
 
@@ -49,17 +50,19 @@ function Paragraphs({ content }: { content?: string | string[] }) {
   )
 }
 
-function Screenshot({ image }: { image: ProjectImage }) {
+function Screenshot({ image, small = false }: { image: ProjectImage; small?: boolean }) {
   return (
     <figure className="w-full" data-reveal>
-      <div className="bg-surface/70 relative overflow-hidden rounded-2xl border border-white/10 p-2 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-surface/70 p-2 shadow-2xl">
         <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-surface-alt">
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
-            sizes="(max-width: 768px) 92vw, (max-width: 1280px) 66vw, 860px"
-            className="object-cover object-top"
+          <ProjectMedia
+            image={image}
+            fit="contain"
+            sizes={
+              small
+                ? "(max-width: 640px) 92vw, (max-width: 1280px) 33vw, 430px"
+                : "(max-width: 768px) 92vw, (max-width: 1280px) 66vw, 860px"
+            }
           />
         </div>
       </div>
@@ -117,6 +120,13 @@ function SectionBody({ section }: { section: CaseStudySection }) {
       {section.type === "image" || section.type === "product-feature"
         ? section.image && <Screenshot image={section.image} />
         : null}
+      {section.gallery && section.gallery.length > 0 && (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {section.gallery.map((img) => (
+            <Screenshot key={img.src} image={img} small />
+          ))}
+        </div>
+      )}
       <Paragraphs content={section.content} />
       {section.type === "two-column" && (
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -126,7 +136,12 @@ function SectionBody({ section }: { section: CaseStudySection }) {
       )}
       {section.diagram && (
         <figure className="w-full">
-          <ArchitectureDiagram {...section.diagram} />
+          <ArchitectureDiagram
+            svg={readPublicSvg(section.diagram.src)}
+            alt={section.diagram.alt}
+            width={section.diagram.width}
+            height={section.diagram.height}
+          />
           <figcaption className="text-mono-label mt-3 text-right text-text-tertiary">
             {section.diagram.caption}
           </figcaption>
@@ -190,9 +205,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
     { id: "outcomes", label: "Outcomes", index: "02" },
     ...(project.caseStudy ?? []).map((s, i) => ({
       id: slugify(s.title || s.category || `section-${i + 3}`),
-      label: (s.title || s.category || "Section")
-        .toLowerCase()
-        .replace(/(^|\s)\S/g, (c) => c.toUpperCase()),
+      label: s.navLabel ?? titleCase(s.title || s.category || "Section"),
       index: pad(i + 3),
       section: s,
     })),
@@ -201,7 +214,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
   const facts = [
     { label: "Role", value: project.role },
     { label: "Engagement", value: project.engagement },
-    { label: "Timeline", value: project.timeline ?? "—" },
+    { label: "Timeline", value: project.timeline },
     { label: "Type", value: project.category },
   ]
 
@@ -255,21 +268,43 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
             </div>
           </dl>
 
+          {project.notice && (
+            <p
+              role="note"
+              className="text-body-small col-span-full mt-8 rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-text"
+            >
+              <span className="mr-2 font-mono text-xs uppercase tracking-wider text-text-secondary">
+                Note
+              </span>
+              {project.notice}
+            </p>
+          )}
+
           {project.links && project.links.length > 0 && (
             <div className="col-span-full flex flex-wrap gap-3 pt-8">
-              {project.links.map((link) => (
-                <a
-                  key={link.url}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-mono-label inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border px-4 text-text transition-colors hover:border-accent hover:text-accent-hover"
-                >
-                  {link.label}
-                  <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-                  <span className="sr-only">(opens in a new tab)</span>
-                </a>
-              ))}
+              {project.links.map((link) =>
+                link.private ? (
+                  <span
+                    key={link.url}
+                    className="text-mono-label inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-dashed border-border px-4 text-text-secondary"
+                    title="This repository is private"
+                  >
+                    {link.label}: private repo, available on request
+                  </span>
+                ) : (
+                  <a
+                    key={link.url}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-mono-label inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border px-4 text-text transition-colors hover:border-accent hover:text-accent-text"
+                  >
+                    {link.label}
+                    <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                    <span className="sr-only">(opens in a new tab)</span>
+                  </a>
+                )
+              )}
             </div>
           )}
         </div>
@@ -280,17 +315,14 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
           className="relative aspect-[16/9] overflow-hidden bg-surface md:aspect-[21/9]"
           style={{ viewTransitionName: `project-${project.slug}` }}
         >
-          <Image
-            src={project.heroImage.src}
-            alt={project.heroImage.alt}
-            fill
+          <ProjectMedia
+            image={project.heroImage}
             priority
             sizes="(max-width: 1440px) 100vw, 1440px"
-            className="object-cover object-top"
           />
           <div
             aria-hidden="true"
-            className="from-bg/70 pointer-events-none absolute inset-0 bg-gradient-to-t via-transparent to-transparent"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/70 via-transparent to-transparent"
           />
         </div>
       </div>
@@ -318,7 +350,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
           <div className="col-span-full grid grid-cols-1 gap-4 md:grid-cols-2">
             <NextLink
               href={`/work/${prev.slug}`}
-              className="hover:border-accent/50 group flex min-h-[44px] flex-col gap-2 rounded-xl border border-border p-6 transition-colors"
+              className="group flex min-h-[44px] flex-col gap-2 rounded-xl border border-border p-6 transition-colors hover:border-accent/50"
             >
               <span className="text-mono-label inline-flex items-center gap-2 text-text-tertiary">
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Previous
@@ -329,7 +361,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
             </NextLink>
             <NextLink
               href={`/work/${next.slug}`}
-              className="hover:border-accent/50 group flex min-h-[44px] flex-col items-end gap-2 rounded-xl border border-border p-6 text-right transition-colors"
+              className="group flex min-h-[44px] flex-col items-end gap-2 rounded-xl border border-border p-6 text-right transition-colors hover:border-accent/50"
             >
               <span className="text-mono-label inline-flex items-center gap-2 text-text-tertiary">
                 Next <ArrowRight className="h-4 w-4" aria-hidden="true" />

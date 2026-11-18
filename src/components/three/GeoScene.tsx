@@ -16,17 +16,18 @@ import { Grid, Html, Line } from "@react-three/drei"
 import * as THREE from "three"
 import type { GeofenceStatus } from "@/lib/geo"
 import { dprFor, type PerfTier } from "@/lib/device"
+import { useScenePalette, type ScenePalette } from "./palette"
 import { createGlowTexture } from "./textures"
 
 /** 1 world unit = 10 metres. Ground plane: x = east, -z = north. */
 export const M_PER_UNIT = 10
 export const MAP_HALF_M = 480
 
-const STATUS_COLOR: Record<GeofenceStatus, string> = {
-  in_range: "#00E5FF",
-  near_edge: "#F59E0B",
-  outside: "#F43F5E",
-}
+const statusColor = (pal: ScenePalette): Record<GeofenceStatus, string> => ({
+  in_range: pal.hex.accent,
+  near_edge: pal.hex.warn,
+  outside: pal.hex.bad,
+})
 
 export interface GeoSceneProps {
   user: { x: number; y: number }
@@ -67,7 +68,17 @@ function mulberry32(seed: number) {
   }
 }
 
-function City({ radius, color, tier }: { radius: number; color: string; tier: PerfTier }) {
+function City({
+  radius,
+  color,
+  tier,
+  dark,
+}: {
+  radius: number
+  color: string
+  tier: PerfTier
+  dark: boolean
+}) {
   const ref = useRef<THREE.InstancedMesh>(null)
   const blocks = useMemo(() => {
     const rand = mulberry32(7)
@@ -115,12 +126,14 @@ function City({ radius, color, tier }: { radius: number; color: string; tier: Pe
   useEffect(() => {
     const mesh = ref.current
     if (!mesh) return
-    const inside = new THREE.Color(color).multiplyScalar(0.35).add(new THREE.Color("#141e33"))
-    const outside = new THREE.Color("#121a2c")
+    const inside = dark
+      ? new THREE.Color(color).multiplyScalar(0.35).add(new THREE.Color("#141e33"))
+      : new THREE.Color("#e9e5dc").lerp(new THREE.Color(color), 0.35)
+    const outside = new THREE.Color(dark ? "#121a2c" : "#d6d1c4")
     const r = radius / M_PER_UNIT
     blocks.forEach((b, i) => mesh.setColorAt(i, Math.hypot(b.x, b.z) <= r ? inside : outside))
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
-  }, [blocks, radius, color])
+  }, [blocks, radius, color, dark])
 
   return (
     <instancedMesh ref={ref} args={[undefined, undefined, blocks.length]} frustumCulled={false}>
@@ -140,7 +153,8 @@ function GeoWorld({
   reduced,
   tier,
 }: Omit<GeoSceneProps, "active">) {
-  const color = STATUS_COLOR[status]
+  const pal = useScenePalette()
+  const color = statusColor(pal)[status]
   const colorObj = useMemo(() => new THREE.Color(color), [color])
   const glow = useMemo(() => createGlowTexture(), [])
   useEffect(() => () => glow.dispose(), [glow])
@@ -228,11 +242,13 @@ function GeoWorld({
 
   return (
     <>
-      <color attach="background" args={["#070A12"]} />
-      <fog attach="fog" args={["#070A12", 70, 170]} />
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[30, 60, 20]} intensity={1.1} />
-      <hemisphereLight args={["#2a4a7a", "#05070c", 0.5]} />
+      <color attach="background" args={[pal.dark ? "#070A12" : "#EEEBE3"]} />
+      <fog attach="fog" args={[pal.dark ? "#070A12" : "#EEEBE3", 70, 170]} />
+      <ambientLight intensity={pal.dark ? 0.55 : 0.9} />
+      <directionalLight position={[30, 60, 20]} intensity={pal.dark ? 1.1 : 1.3} />
+      <hemisphereLight
+        args={[pal.dark ? "#2a4a7a" : "#ffffff", pal.dark ? "#05070c" : "#cfc8b8", 0.5]}
+      />
 
       {/* Ground + interaction plane (tap/click to place the user) */}
       <mesh
@@ -252,21 +268,21 @@ function GeoWorld({
         }}
       >
         <planeGeometry args={[MAP_HALF_M / 5, MAP_HALF_M / 5]} />
-        <meshStandardMaterial color="#0A101C" roughness={1} />
+        <meshStandardMaterial color={pal.dark ? "#0A101C" : "#E4DFD3"} roughness={1} />
       </mesh>
       <Grid
         position={[0, 0.01, 0]}
         args={[MAP_HALF_M / 5, MAP_HALF_M / 5]}
         cellSize={2.5}
         sectionSize={10}
-        cellColor="#16233b"
-        sectionColor="#1f3a62"
+        cellColor={pal.dark ? "#16233b" : "#cfc8b9"}
+        sectionColor={pal.dark ? "#1f3a62" : "#a9a08d"}
         cellThickness={0.6}
         sectionThickness={1}
         fadeDistance={140}
         fadeStrength={1.5}
       />
-      <City radius={radius} color={color} tier={tier} />
+      <City radius={radius} color={color} tier={tier} dark={pal.dark} />
 
       {/* Geofence: floor disc, boundary ring and a translucent wall */}
       <group>
@@ -315,15 +331,19 @@ function GeoWorld({
       <group>
         <mesh position={[0, 2.2, 0]}>
           <cylinderGeometry args={[0.18, 0.4, 4.4, 12]} />
-          <meshStandardMaterial color="#d8e1f0" emissive="#00B8D4" emissiveIntensity={0.25} />
+          <meshStandardMaterial
+            color={pal.dark ? "#d8e1f0" : "#3d4452"}
+            emissive={pal.accent}
+            emissiveIntensity={pal.dark ? 0.25 : 0.1}
+          />
         </mesh>
         <sprite position={[0, 4.6, 0]} scale={4}>
           <spriteMaterial
             map={glow}
-            color="#ffffff"
+            color={pal.dark ? "#ffffff" : pal.hex.accent}
             transparent
-            opacity={0.8}
-            blending={THREE.AdditiveBlending}
+            opacity={0.8 * pal.glow}
+            blending={pal.blending}
             depthWrite={false}
           />
         </sprite>
@@ -376,8 +396,8 @@ function GeoWorld({
             map={glow}
             color={color}
             transparent
-            opacity={0.65}
-            blending={THREE.AdditiveBlending}
+            opacity={0.65 * Math.max(pal.glow, 0.4)}
+            blending={pal.blending}
             depthWrite={false}
           />
         </sprite>

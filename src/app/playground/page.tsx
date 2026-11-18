@@ -1,5 +1,8 @@
 import { GeoLab } from "@/components/engineering/playgrounds/GeoLab"
 import { pageMetadata } from "@/lib/seo"
+import { independentProjects, periodLabel } from "@/content/career"
+
+const hume = independentProjects.find((p) => p.slug === "hume-voice-assistant")!
 
 export const metadata = pageMetadata({
   title: "Engineering Playground",
@@ -27,7 +30,7 @@ export default function PlaygroundPage() {
           <div className="mb-10">
             <div className="mb-3 flex flex-wrap items-center gap-3">
               <p className="text-mono-label text-text-tertiary">{"// MODEL_01"}</p>
-              <span className="border-accent/30 bg-accent/5 rounded border px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-hover">
+              <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-hover">
                 Interactive model
               </span>
             </div>
@@ -44,7 +47,7 @@ export default function PlaygroundPage() {
         </div>
       </section>
 
-      <section aria-labelledby="voice-h" className="section-y bg-surface/60 border-b border-border">
+      <section aria-labelledby="voice-h" className="section-y border-b border-border bg-surface/60">
         <div className="container-x">
           <div className="mb-10">
             <div className="mb-3 flex flex-wrap items-center gap-3">
@@ -58,17 +61,17 @@ export default function PlaygroundPage() {
             </h2>
           </div>
 
-          <div className="max-w-4xl rounded-2xl border border-white/10 bg-[#0E1322]/85 p-6 shadow-2xl md:p-8">
-            <dl className="mb-6 flex flex-wrap gap-8 border-b border-white/[0.08] pb-6">
+          <div className="max-w-4xl rounded-2xl border border-border bg-surface/90 p-6 shadow-2xl md:p-8">
+            <dl className="mb-6 flex flex-wrap gap-8 border-b border-border pb-6">
               <div>
                 <dt className="mb-1 font-mono text-[11px] uppercase text-text-tertiary">
                   Timeline
                 </dt>
-                <dd className="text-sm text-text">July 2025</dd>
+                <dd className="text-sm text-text">{periodLabel(hume.period)}</dd>
               </div>
               <div>
                 <dt className="mb-1 font-mono text-[11px] uppercase text-text-tertiary">Role</dt>
-                <dd className="text-sm text-text">Independent developer</dd>
+                <dd className="text-sm text-text">{hume.role}</dd>
               </div>
               <div>
                 <dt className="mb-1 font-mono text-[11px] uppercase text-text-tertiary">
@@ -86,13 +89,13 @@ export default function PlaygroundPage() {
               {["React.js", "TypeScript", "Hume AI", "EVI API", "WebSockets"].map((t) => (
                 <li
                   key={t}
-                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-xs text-text-secondary"
+                  className="rounded-full border border-border bg-chip px-3 py-1 font-mono text-xs text-text-secondary"
                 >
                   {t}
                 </li>
               ))}
             </ul>
-            <div className="relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] p-6">
+            <div className="relative overflow-hidden rounded-xl border border-border bg-chip p-6">
               <h3 className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-accent-hover">
                 <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent-hover" />{" "}
                 Streaming pipeline
@@ -102,20 +105,20 @@ export default function PlaygroundPage() {
                   <span className="text-accent-hover">01.</span> Browser microphone audio capture
                   (PCM stream)
                 </li>
-                <li aria-hidden="true" className="text-accent/70 pl-6">
+                <li aria-hidden="true" className="pl-6 text-accent/70">
                   ↓ low-latency WebSocket transport
                 </li>
                 <li>
                   <span className="text-accent-hover">02.</span> Hume AI EVI server pipeline
                 </li>
-                <li aria-hidden="true" className="text-accent/70 pl-6">
+                <li aria-hidden="true" className="pl-6 text-accent/70">
                   ↓ bidirectional audio + prosody analysis
                 </li>
                 <li>
                   <span className="text-accent-hover">03.</span> Live transcription + prosodic
                   emotion vector streaming
                 </li>
-                <li aria-hidden="true" className="text-accent/70 pl-6">
+                <li aria-hidden="true" className="pl-6 text-accent/70">
                   ↓ client state synthesis
                 </li>
                 <li>

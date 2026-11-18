@@ -28,8 +28,8 @@ export function SkillsSection() {
         aria-hidden="true"
         className="relative order-2 aspect-square w-full max-w-[560px] justify-self-center lg:order-1 lg:col-span-6"
       >
-        <div className="absolute inset-[12%] rounded-full border border-dashed border-white/[0.07]" />
-        <div className="absolute inset-[30%] rounded-full border border-white/[0.05]" />
+        <div className="absolute inset-[12%] rounded-full border border-dashed border-border-muted" />
+        <div className="absolute inset-[30%] rounded-full border border-border-muted" />
         {mount === "ready" && (
           <CanvasErrorBoundary fallback={null}>
             <SkillsScene selected={selected} reduced={reduced} active={active} tier={tier} />
@@ -59,8 +59,8 @@ export function SkillsSection() {
                 className={cn(
                   "inline-flex min-h-[40px] items-center gap-2 rounded-full border px-4 font-mono text-xs uppercase tracking-wider transition-colors",
                   on
-                    ? "border-white/40 bg-white/10 text-text"
-                    : "border-white/10 text-text-secondary hover:border-white/25 hover:text-text"
+                    ? "border-text-tertiary bg-text/10 text-text"
+                    : "border-border text-text-secondary hover:border-text-tertiary hover:text-text"
                 )}
               >
                 <span
@@ -81,7 +81,7 @@ export function SkillsSection() {
                 "border-l pl-4 transition-opacity duration-300",
                 selected && selected !== g.id ? "opacity-40" : "opacity-100"
               )}
-              style={{ borderColor: `${g.color}66` }}
+              style={{ borderColor: `color-mix(in srgb, ${g.color} 40%, transparent)` }}
             >
               <dt
                 className="mb-2 font-mono text-xs uppercase tracking-widest"

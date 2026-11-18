@@ -19,26 +19,26 @@ export function HeroFallback() {
     >
       <defs>
         <radialGradient id="hf-glow">
-          <stop offset="0" stopColor="#00E5FF" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#00E5FF" stopOpacity="0" />
+          <stop offset="0" style={{ stopColor: "var(--canvas-accent)" }} stopOpacity="0.45" />
+          <stop offset="1" style={{ stopColor: "var(--canvas-accent)" }} stopOpacity="0" />
         </radialGradient>
       </defs>
       <path
         d={d}
         fill="none"
-        stroke="#00B8D4"
-        strokeOpacity="0.35"
+        className="stroke-accent"
+        strokeOpacity="0.45"
         strokeWidth="1"
         strokeDasharray="3 4"
       />
       {pts.map(([x, y], i) => (
         <g key={i}>
           <circle cx={x} cy={y} r="22" fill="url(#hf-glow)" />
-          <circle cx={x} cy={y} r="4" fill={i === 2 ? "#00E5FF" : "#F1F3F7"} />
+          <circle cx={x} cy={y} r="4" className={i === 2 ? "fill-accent" : "fill-text"} />
           <text
             x={x + 16}
             y={y + 4}
-            fill="#8590A4"
+            className="fill-text-tertiary"
             fontSize="10"
             fontFamily="monospace"
             letterSpacing="1.5"

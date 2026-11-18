@@ -27,7 +27,7 @@ export function MotionToggle({
         aria-hidden="true"
         className={cn(
           "relative inline-block h-4 w-7 rounded-full border transition-colors",
-          reduced ? "bg-accent/30 border-accent" : "border-border bg-white/5"
+          reduced ? "border-accent bg-accent/30" : "border-border bg-chip"
         )}
       >
         <span

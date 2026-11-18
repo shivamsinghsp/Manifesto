@@ -1,4 +1,4 @@
-import { experiences } from "@/content/experience"
+import { education as educationEntries, periodLabel } from "@/content/career"
 import { site } from "@/content/site"
 import { ProfilePhoto } from "@/components/ui/ProfilePhoto"
 import { pageMetadata } from "@/lib/seo"
@@ -26,7 +26,7 @@ const principles = [
 ]
 
 export default function AboutPage() {
-  const education = experiences.filter((e) => e.type === "Education")
+  const education = educationEntries
   return (
     <>
       <section className="bg-atmosphere relative border-b border-border py-16 md:py-24">
@@ -86,7 +86,7 @@ export default function AboutPage() {
             </p>
             <a
               href={site.resumePath}
-              className="hover:border-accent/50 inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 font-mono text-xs uppercase tracking-wider text-text transition-colors hover:text-accent-hover"
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-border bg-chip px-5 font-mono text-xs uppercase tracking-wider text-text transition-colors hover:border-accent/50 hover:text-accent-hover"
             >
               Resume (PDF){" "}
               <span aria-hidden="true" className="text-accent-hover">
@@ -98,7 +98,7 @@ export default function AboutPage() {
       </section>
 
       {education.length > 0 && (
-        <section aria-labelledby="edu-h" className="section-y bg-surface/60 border-b border-border">
+        <section aria-labelledby="edu-h" className="section-y border-b border-border bg-surface/60">
           <div className="container-x">
             <p className="text-mono-label mb-3 text-text-tertiary">{"// 02. EDUCATION"}</p>
             <h2 id="edu-h" className="text-display-secondary mb-10">
@@ -111,14 +111,16 @@ export default function AboutPage() {
                   className="rounded-2xl border border-border bg-surface p-6 md:p-8"
                   data-reveal
                 >
-                  {e.dateRange && (
-                    <p className="text-mono-label text-text-secondary">{e.dateRange}</p>
-                  )}
+                  <p className="text-mono-label text-text-secondary">
+                    {periodLabel(e.period)}
+                    {e.status && ` · ${e.status}`}
+                  </p>
                   <h3 className="text-subheading mt-3 text-text">{e.title}</h3>
                   <p className="mt-1 font-mono text-xs uppercase tracking-wider text-accent-hover">
-                    {e.organization}
+                    {e.organization.name}
                   </p>
-                  <p className="text-body-small mt-4 text-text-secondary">{e.description}</p>
+                  <p className="text-body-small mt-4 text-text-secondary">{e.summary}</p>
+                  {e.grade && <p className="text-body-small mt-2 text-text">{e.grade}</p>}
                 </li>
               ))}
             </ul>

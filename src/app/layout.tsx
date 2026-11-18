@@ -4,12 +4,14 @@ import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google"
 import "./globals.css"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
+import { SkipLink } from "@/components/layout/SkipLink"
 import { ClientChrome } from "@/components/motion/ClientChrome"
+import { ThemeProvider } from "@/components/theme/ThemeProvider"
 import { MOTION_BOOT_SCRIPT } from "@/lib/motion-preference"
 import { metadataBase, pageMetadata } from "@/lib/seo"
 import { SITE_URL, site } from "@/content/site"
 import { skillGroups } from "@/content/skills"
-import { experiences } from "@/content/experience"
+import { education } from "@/content/career"
 
 // Only the families needed for first paint are preloaded; the rest load on demand.
 const plexSerif = IBM_Plex_Serif({
@@ -45,14 +47,17 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#0A0E17",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F6F4EF" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0E17" },
+  ],
+  colorScheme: "dark light",
   width: "device-width",
   initialScale: 1,
 }
 
 function JsonLd() {
-  const education = experiences.find((e) => e.type === "Education")
+  const edu = education[0]
   const data = {
     "@context": "https://schema.org",
     "@graph": [
@@ -78,8 +83,13 @@ function JsonLd() {
           addressRegion: "Uttar Pradesh",
           addressCountry: "IN",
         },
-        ...(education && {
-          alumniOf: { "@type": "CollegeOrUniversity", name: education.organization },
+        ...(edu && {
+          alumniOf: { "@type": "CollegeOrUniversity", name: edu.organization.name },
+          hasCredential: {
+            "@type": "EducationalOccupationalCredential",
+            credentialCategory: "degree",
+            name: edu.title,
+          },
         }),
         knowsAbout: skillGroups.flatMap((g) => g.items).slice(0, 20),
         sameAs: [site.socials.github, site.socials.linkedin],
@@ -103,22 +113,19 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       className={`${plexSerif.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
       <body>
-        <Script id="motion-boot" strategy="beforeInteractive">
-          {MOTION_BOOT_SCRIPT}
-        </Script>
-        <a
-          href="#main"
-          className="sr-only-focusable fixed left-4 top-3 z-[2000] rounded-lg bg-cta-bg px-4 py-3 font-mono text-xs uppercase tracking-wider text-cta-text"
-        >
-          Skip to content
-        </a>
-        <JsonLd />
-        <Header />
-        <main id="main" tabIndex={-1} className="min-h-[60vh] outline-none">
-          {children}
-        </main>
-        <Footer />
-        <ClientChrome />
+        <ThemeProvider>
+          <Script id="motion-boot" strategy="beforeInteractive">
+            {MOTION_BOOT_SCRIPT}
+          </Script>
+          <SkipLink />
+          <JsonLd />
+          <Header />
+          <main id="main" tabIndex={-1} className="min-h-[60vh] outline-none">
+            {children}
+          </main>
+          <Footer />
+          <ClientChrome />
+        </ThemeProvider>
       </body>
     </html>
   )

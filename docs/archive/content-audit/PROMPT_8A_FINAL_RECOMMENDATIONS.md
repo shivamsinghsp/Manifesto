@@ -23,7 +23,7 @@ The portfolio has excellent visual design and technical infrastructure, but the 
 | 5 | **Add project timelines** | Every project's TIMELINE header field renders empty. |
 | 6 | **Provide or create real screenshots/diagrams** | The visual placeholders are acceptable during development but unacceptable for publication. |
 | 7 | **Clarify the Shynr relationship** | The SME Platform references a company that doesn't appear in the experience data. This will raise questions. |
-| 8 | **Clarify the Androcoders → BAT → Crowe Oman relationships** | The experience entry mentions Sitecore/Crowe Oman work, but the project says SharePoint/BAT. These may be different projects at the same company, but the relationship is unclear. |
+| 8 | **Clarify the Androcoders → [client] → Crowe Oman relationships** | The experience entry mentions Sitecore/Crowe Oman work, but the project says SharePoint/[client]. These may be different projects at the same company, but the relationship is unclear. |
 
 ### P1 — STRONGLY RECOMMENDED
 
