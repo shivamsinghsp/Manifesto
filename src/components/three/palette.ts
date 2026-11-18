@@ -40,10 +40,10 @@ function build(dark: boolean): ScenePalette {
   const style = typeof window === "undefined" ? null : getComputedStyle(document.documentElement)
   const get = (n: string, f: string) => (style ? read(style, n, f) : f)
   const getRgb = (n: string, f: string) => (style ? rgbVar(style, n, f) : f)
-  const ink = get("--canvas-ink", dark ? "#e6ecf5" : "#1b2130")
+  const ink = dark ? get("--canvas-ink", "#f8fafc") : "#0a0f1d"
   const accent = get("--canvas-accent", dark ? "#00e5ff" : "#00758a")
-  const warn = getRgb("--c-warning", "#f59e0b")
-  const bad = getRgb("--c-error", "#f43f5e")
+  const warn = getRgb("--c-warning", dark ? "#f59e0b" : "#b45309")
+  const bad = getRgb("--c-error", dark ? "#f43f5e" : "#e11d48")
   return {
     dark,
     ink: new THREE.Color(ink),
@@ -69,14 +69,36 @@ export function cssColor(value: string, fallback = "#ffffff"): string {
   return getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim() || fallback
 }
 
-export function useScenePalette(): ScenePalette {
+function getIsDark(themeHookValue?: string): boolean {
+  if (typeof document !== "undefined") {
+    const attr = document.documentElement.getAttribute("data-theme")
+    if (attr === "light") return false
+    if (attr === "dark") return true
+  }
+  return themeHookValue !== "light"
+}
+
+export function useScenePalette(overrideDark?: boolean): ScenePalette {
   const { resolvedTheme } = useTheme()
-  const dark = resolvedTheme !== "light"
-  const [palette, setPalette] = useState(() => build(dark))
+  const initialDark = typeof overrideDark === "boolean" ? overrideDark : getIsDark(resolvedTheme)
+  const [palette, setPalette] = useState(() => build(initialDark))
+
   useEffect(() => {
-    // Wait a frame so the new data-theme variables are computed.
-    const id = requestAnimationFrame(() => setPalette(build(dark)))
-    return () => cancelAnimationFrame(id)
-  }, [dark])
+    const update = () => {
+      const nextDark = typeof overrideDark === "boolean" ? overrideDark : getIsDark(resolvedTheme)
+      setPalette(build(nextDark))
+    }
+    update()
+
+    if (typeof MutationObserver !== "undefined") {
+      const observer = new MutationObserver(update)
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme", "class"],
+      })
+      return () => observer.disconnect()
+    }
+  }, [overrideDark, resolvedTheme])
+
   return palette
 }

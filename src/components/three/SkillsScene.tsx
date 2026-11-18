@@ -23,32 +23,39 @@ function Ring({
   selected,
   reduced,
   fontFamily,
+  dark,
 }: {
   group: SkillGroup
   selected: GroupId | null
   reduced: boolean
   fontFamily: string
+  dark: boolean
 }) {
   const cfg = RINGS[group.id]
   const spin = useRef<THREE.Group>(null)
-  const pal = useScenePalette()
+  const pal = useScenePalette(dark)
+  const groupAccent = useMemo(
+    () => cssColor(group.color, pal.hex.accent),
+    [group.color, pal.hex.accent]
+  )
   const color = useMemo(
-    () => new THREE.Color(cssColor(group.color, pal.hex.accent)),
-    // Re-resolve the CSS variable whenever the theme palette changes.
-    [group.color, pal]
+    () => new THREE.Color(groupAccent),
+    [groupAccent]
   )
   const labels = useMemo(
     () =>
       group.items.map((item) =>
         createLabelTexture(item, {
           font: fontFamily,
-          color: pal.hex.ink,
-          px: 36,
-          pillBg: pal.dark ? "rgba(10,14,23,0.78)" : "rgba(255,255,255,0.92)",
-          pillBorder: pal.dark ? "rgba(255,255,255,0.14)" : "rgba(20,23,31,0.16)",
+          color: dark ? "#F8FAFC" : "#0A0F1D",
+          fontWeight: 600,
+          px: 42,
+          dotColor: groupAccent,
+          pillBg: dark ? "rgba(11,17,32,0.96)" : "rgba(255,255,255,0.98)",
+          pillBorder: dark ? "rgba(255,255,255,0.22)" : "rgba(15,23,42,0.22)",
         })
       ),
-    [group.items, fontFamily, pal]
+    [group.items, fontFamily, dark, groupAccent]
   )
   const ringGeo = useMemo(() => {
     const pts = new THREE.EllipseCurve(0, 0, cfg.radius, cfg.radius, 0, Math.PI * 2).getPoints(160)
@@ -92,10 +99,10 @@ function Ring({
         </lineLoop>
         {labels.map((l, i) => {
           const a = (i / labels.length) * Math.PI * 2
-          const h = 0.27
+          const h = 0.32
           return (
             <sprite
-              key={group.items[i]}
+              key={`${group.items[i]}-${dark ? "dark" : "light"}`}
               position={[Math.cos(a) * cfg.radius, Math.sin(a) * cfg.radius, 0]}
               scale={[h * l.aspect, h, 1]}
             >
@@ -115,9 +122,17 @@ function Ring({
   )
 }
 
-function Cluster({ selected, reduced }: { selected: GroupId | null; reduced: boolean }) {
+function Cluster({
+  selected,
+  reduced,
+  dark,
+}: {
+  selected: GroupId | null
+  reduced: boolean
+  dark: boolean
+}) {
   const root = useRef<THREE.Group>(null)
-  const pal = useScenePalette()
+  const pal = useScenePalette(dark)
   const glow = useMemo(() => createGlowTexture(), [])
   useEffect(() => () => glow.dispose(), [glow])
   const [fontFamily, setFontFamily] = useState<string | null>(null)
@@ -199,6 +214,7 @@ function Cluster({ selected, reduced }: { selected: GroupId | null; reduced: boo
             selected={selected}
             reduced={reduced}
             fontFamily={fontFamily}
+            dark={dark}
           />
         ))}
     </group>
@@ -210,12 +226,16 @@ export default function SkillsScene({
   reduced,
   active,
   tier,
+  dark: propDark,
 }: {
   selected: GroupId | null
   reduced: boolean
   active: boolean
   tier: PerfTier
+  dark?: boolean
 }) {
+  const pal = useScenePalette(propDark)
+  const dark = typeof propDark === "boolean" ? propDark : pal.dark
   return (
     <Canvas
       dpr={dprFor(tier)}
@@ -224,7 +244,7 @@ export default function SkillsScene({
       gl={{ antialias: tier !== "low", alpha: true }}
       style={{ touchAction: "pan-y", cursor: "grab" }}
     >
-      <Cluster selected={selected} reduced={reduced} />
+      <Cluster selected={selected} reduced={reduced} dark={dark} />
     </Canvas>
   )
 }

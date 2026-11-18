@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic"
 import { useEffect, useState } from "react"
+import { useTheme } from "next-themes"
 import { skillGroups, tooling, type SkillGroup } from "@/content/skills"
 import { useCanvasGovernor } from "@/components/three/useCanvasGovernor"
 import { useLazyMount } from "@/components/three/useLazyMount"
@@ -18,6 +19,8 @@ export function SkillsSection() {
   const { ref, inView, active } = useCanvasGovernor<HTMLDivElement>("200px")
   const mount = useLazyMount(inView)
   const reduced = useReducedMotion()
+  const { resolvedTheme } = useTheme()
+  const dark = resolvedTheme !== "light"
   const [tier, setTier] = useState<PerfTier>("mid")
   useEffect(() => setTier(getPerfTier()), [])
 
@@ -32,7 +35,13 @@ export function SkillsSection() {
         <div className="absolute inset-[30%] rounded-full border border-border-muted" />
         {mount === "ready" && (
           <CanvasErrorBoundary fallback={null}>
-            <SkillsScene selected={selected} reduced={reduced} active={active} tier={tier} />
+            <SkillsScene
+              selected={selected}
+              reduced={reduced}
+              active={active}
+              tier={tier}
+              dark={dark}
+            />
           </CanvasErrorBoundary>
         )}
         {mount === "ready" && (
