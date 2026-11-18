@@ -113,7 +113,7 @@ export const engagements: Engagement[] = [
       {
         slug: "sharepoint-knowledge-hub",
         role: "Frontend contributor (SPFx / React)",
-        period: { start: null, end: null, confirmed: false },
+        period: { start: "2026-06", end: "2026-09", confirmed: true },
         summary:
           "Contributed SPFx 1.20 web parts for the Homepage, Library and SME Finder (Phase 2B), with lazy loading via .getPaged().",
       },
@@ -192,8 +192,8 @@ export const independentProjects: IndependentProject[] = [
     slug: "hume-voice-assistant",
     title: "Real-time AI voice assistant (Hume EVI)",
     role: "Independent developer",
-    // Owner confirms the project exists; date (resume says Jul 2025) and source repo are unverified.
-    period: { start: "2025-07", end: "2025-07", confirmed: false },
+    // Owner-confirmed dates. The source repository is still unverified (not linked).
+    period: { start: "2025-06", end: "2025-07", confirmed: true },
     summary:
       "A separate calling-agent experiment on Hume AI's Empathic Voice Interface: real-time voice, live transcripts and emotional cues over WebSockets.",
     tags: ["React", "TypeScript", "Hume EVI", "WebSockets"],
