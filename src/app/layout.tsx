@@ -4,6 +4,7 @@ import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google"
 import "./globals.css"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
+import { SkipLink } from "@/components/layout/SkipLink"
 import { ClientChrome } from "@/components/motion/ClientChrome"
 import { ThemeProvider } from "@/components/theme/ThemeProvider"
 import { MOTION_BOOT_SCRIPT } from "@/lib/motion-preference"
@@ -111,12 +112,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Script id="motion-boot" strategy="beforeInteractive">
             {MOTION_BOOT_SCRIPT}
           </Script>
-          <a
-            href="#main"
-            className="sr-only-focusable fixed left-4 top-3 z-[2000] rounded-lg bg-cta-bg px-4 py-3 font-mono text-xs uppercase tracking-wider text-cta-text"
-          >
-            Skip to content
-          </a>
+          <SkipLink />
           <JsonLd />
           <Header />
           <main id="main" tabIndex={-1} className="min-h-[60vh] outline-none">

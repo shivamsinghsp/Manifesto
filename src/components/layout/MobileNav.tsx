@@ -27,7 +27,7 @@ export function MobileNav() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false)
-        trigger.current?.focus()
+        trigger.current?.focus({ preventScroll: true })
       }
       if (e.key === "Tab" && panel.current) {
         const items = panel.current.querySelectorAll<HTMLElement>("a, button")
@@ -69,6 +69,8 @@ export function MobileNav() {
         role="dialog"
         aria-modal="true"
         aria-label="Site menu"
+        // Closed: removed from the tab order and the accessibility tree.
+        inert={!open}
         className={cn(
           "fixed inset-0 z-[1000] flex-col bg-bg/[0.98] backdrop-blur-xl",
           open ? "flex" : "hidden"
@@ -80,7 +82,7 @@ export function MobileNav() {
             type="button"
             onClick={() => {
               setOpen(false)
-              trigger.current?.focus()
+              trigger.current?.focus({ preventScroll: true })
             }}
             className="flex h-11 w-11 items-center justify-center rounded-button border border-border text-text transition-colors hover:bg-surface-alt"
             aria-label="Close menu"

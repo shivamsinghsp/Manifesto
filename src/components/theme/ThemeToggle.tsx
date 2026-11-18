@@ -30,7 +30,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false)
-        btn.current?.focus()
+        btn.current?.focus({ preventScroll: true })
       }
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault()
@@ -40,12 +40,14 @@ export function ThemeToggle({ className }: { className?: string }) {
         const i = items.indexOf(document.activeElement as HTMLElement)
         const next =
           e.key === "ArrowDown" ? (i + 1) % items.length : (i - 1 + items.length) % items.length
-        items[next]?.focus()
+        items[next]?.focus({ preventScroll: true })
       }
     }
     document.addEventListener("pointerdown", onDown)
     document.addEventListener("keydown", onKey)
-    menu.current?.querySelector<HTMLElement>('[aria-checked="true"]')?.focus()
+    menu.current
+      ?.querySelector<HTMLElement>('[aria-checked="true"]')
+      ?.focus({ preventScroll: true })
     return () => {
       document.removeEventListener("pointerdown", onDown)
       document.removeEventListener("keydown", onKey)
@@ -62,7 +64,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : undefined
     )
     setOpen(false)
-    btn.current?.focus()
+    btn.current?.focus({ preventScroll: true })
   }
 
   return (

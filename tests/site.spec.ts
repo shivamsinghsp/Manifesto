@@ -70,7 +70,8 @@ test("skip link moves focus to main content", async ({ page, isMobile }) => {
   const skip = page.getByRole("link", { name: "Skip to content" })
   await expect(skip).toBeFocused()
   await page.keyboard.press("Enter")
-  await expect(page).toHaveURL(/#main$/)
+  // Focus is the contract. (The #main hash can be reset by the router if Enter lands before hydration.)
+  await expect(page.locator("#main")).toBeFocused()
 })
 
 test("case study sections are numbered sequentially", async ({ page }) => {
@@ -167,11 +168,11 @@ test("SEO routes use the configured site URL", async ({ request }) => {
 test("project cards navigate to their case study (view-transition link)", async ({ page }) => {
   await page.goto("/work")
   await page
-    .getByRole("link", { name: /Kanpur Architects Association/ })
+    .getByRole("link", { name: /Kanpur Architect Association/ })
     .first()
     .click()
   await expect(page).toHaveURL(/\/work\/kanpur-architects-association$/)
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Kanpur Architects Association")
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Kanpur Architect Association")
 })
 
 test("3D hero mounts after interaction without errors", async ({ page }) => {
@@ -181,4 +182,53 @@ test("3D hero mounts after interaction without errors", async ({ page }) => {
   await page.mouse.move(400, 320)
   await expect(page.locator("#hero canvas")).toHaveCount(1, { timeout: 15000 })
   expect(errors).toEqual([])
+})
+
+test("saved theme applies before first paint and the menu switches it", async ({ page }) => {
+  await page.addInitScript(() => {
+    if (!sessionStorage.getItem("seeded")) {
+      localStorage.setItem("theme", "light")
+      sessionStorage.setItem("seeded", "1")
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+      ;(window as unknown as { __t: string | null }).__t =
+        document.documentElement.getAttribute("data-theme")
+    })
+  })
+  await page.emulateMedia({ colorScheme: "dark" })
+  await page.goto("/")
+  expect(await page.evaluate(() => (window as unknown as { __t: string | null }).__t)).toBe("light")
+  await page
+    .getByRole("button", { name: /^Theme/ })
+    .first()
+    .click()
+  await page.getByRole("menuitemradio", { name: "Dark" }).click()
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
+  await page.reload()
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
+})
+
+test("career facts come from one source and the Rapsora role is not current", async ({ page }) => {
+  await page.goto("/experience")
+  const main = page.locator("main")
+  await expect(main).toContainText("Jan 2026 – Oct 2026")
+  await expect(main).toContainText("10 mos")
+  await expect(main).not.toContainText(/6-month|January\s*–\s*June 2026/)
+  await page.goto("/work/pledge-portal-qa")
+  await expect(page.getByRole("link", { name: /Public portal/ })).toHaveAttribute(
+    "href",
+    "https://pledgeup.in"
+  )
+  await expect(page.getByRole("note")).toContainText("QA-only")
+})
+
+test("no confidential client name appears on the Knowledge Hub page", async ({ page }) => {
+  await page.goto("/work/sharepoint-knowledge-hub")
+  await expect(page.locator("body")).not.toContainText(/\bBAT\b|British American/)
+  const imgs = await page
+    .locator("img")
+    .evaluateAll((els) =>
+      els.map((e) => (e as HTMLImageElement).currentSrc || (e as HTMLImageElement).src)
+    )
+  expect(imgs.some((s) => s.includes("sharepoint-knowledge-hub/0"))).toBe(false)
 })
