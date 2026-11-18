@@ -22,8 +22,7 @@ import { searchPortfolio } from "@/lib/search"
 import { setMotionReduced, useReducedMotion } from "@/lib/motion-preference"
 import { useThemeSwitch } from "@/components/theme/useThemeSwitch"
 
-export const OPEN_PALETTE_EVENT = "open-command-palette"
-export const OPEN_POSTER_EVENT = "open-intro-poster"
+import { OPEN_PALETTE_EVENT, OPEN_POSTER_EVENT } from "./events"
 
 const EASTER_EGG = /^sudo\s+hire\s+shivam$/i
 
@@ -33,8 +32,8 @@ const groupClass =
   "[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider [&_[cmdk-group-heading]]:text-text-tertiary"
 
 /** Ctrl/Cmd+K palette: pages, projects, "Ask Shivam's Work" answers and site actions. */
-export function CommandPalette() {
-  const [open, setOpen] = useState(false)
+export default function CommandPalette({ defaultOpen = false }: { defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen)
   const [query, setQuery] = useState("")
   const [toast, setToast] = useState<string | null>(null)
   const router = useRouter()
@@ -251,26 +250,5 @@ export function CommandPalette() {
         <span className="hidden sm:inline">psst: try “sudo hire shivam”</span>
       </div>
     </Command.Dialog>
-  )
-}
-
-/** Button that opens the palette (shows the right shortcut for the platform). */
-export function CommandTrigger({ className }: { className?: string }) {
-  const [mac, setMac] = useState(false)
-  useEffect(() => setMac(/Mac|iPhone|iPad/.test(navigator.platform)), [])
-  return (
-    <button
-      type="button"
-      onClick={() => window.dispatchEvent(new Event(OPEN_PALETTE_EVENT))}
-      aria-label="Open command palette"
-      aria-keyshortcuts="Control+K Meta+K"
-      className={className}
-    >
-      <Terminal className="h-4 w-4" aria-hidden="true" />
-      <span className="hidden lg:inline">Search</span>
-      <kbd className="hidden rounded border border-border px-1.5 font-mono text-[10px] text-text-tertiary sm:inline">
-        {mac ? "⌘K" : "Ctrl K"}
-      </kbd>
-    </button>
   )
 }

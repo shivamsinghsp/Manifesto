@@ -28,7 +28,10 @@ export function TypedLine({ lines }: { lines: string[] }) {
 
   const text = reduced ? lines[0] : lines[idx].slice(0, chars)
   return (
-    <p aria-hidden="true" className="font-mono text-[13px] text-text-secondary">
+    <p
+      aria-hidden="true"
+      className="h-5 overflow-hidden whitespace-nowrap font-mono text-[12px] leading-5 text-text-secondary sm:text-[13px]"
+    >
       <span className="text-accent-text">shivam@portfolio</span>
       <span className="text-text-tertiary">:~$ </span>
       <span>{text}</span>

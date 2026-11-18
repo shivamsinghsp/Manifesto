@@ -60,7 +60,7 @@ export default function Home() {
                   <SayHiChip className="inline-flex min-h-[30px] items-center gap-1.5 rounded-full border border-dashed border-border px-3 font-mono text-[11px] text-text-secondary transition-colors hover:border-accent hover:text-accent-text" />
                 </li>
               </ul>
-              <div className="mb-6 min-h-[20px]">
+              <div className="mb-6 h-5 w-full overflow-hidden">
                 <TypedLine
                   lines={[
                     "whoami  # software engineer, full-stack",

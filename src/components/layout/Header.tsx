@@ -7,7 +7,7 @@ import { MobileNav } from "./MobileNav"
 import { NAV_LINKS, site } from "@/content/site"
 import { MotionToggle } from "@/components/motion/MotionToggle"
 import { ThemeToggle } from "@/components/theme/ThemeToggle"
-import { CommandTrigger } from "@/components/command/CommandPalette"
+import { CommandTrigger } from "@/components/command/LazyCommandPalette"
 import { cn } from "@/lib/utils"
 
 /** Floating pill navigation. The outer <header> keeps the layout height (--header-h). */
@@ -44,7 +44,7 @@ export function Header() {
           {site.shortName}
         </NextLink>
 
-        <nav aria-label="Primary" className="hidden md:block">
+        <nav aria-label="Primary" className="hidden lg:block">
           <ul className="flex items-center gap-0.5">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href || pathname.startsWith(`${link.href}/`)
@@ -71,7 +71,7 @@ export function Header() {
 
         <div className="flex items-center gap-0.5">
           <CommandTrigger className="inline-flex h-10 items-center gap-2 rounded-full border border-border px-3 font-mono text-xs text-text-secondary transition-colors hover:border-accent hover:text-text" />
-          <MotionToggle compact className="hidden md:inline-flex" />
+          <MotionToggle compact className="hidden lg:inline-flex" />
           <ThemeToggle />
           <MobileNav />
         </div>

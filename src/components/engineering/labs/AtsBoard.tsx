@@ -48,10 +48,10 @@ export function AtsBoard() {
             onDrop={() => dragId && move(dragId, stage)}
             className="min-h-[160px] rounded-xl border border-dashed border-border bg-surface-alt/50 p-3"
           >
-            <h4 className="mb-2 flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-text-tertiary">
+            <h3 className="mb-2 flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-text-tertiary">
               {stage}
               <span>{cards.filter((c) => c.stage === stage).length}</span>
-            </h4>
+            </h3>
             <ul className="grid gap-2">
               {cards
                 .filter((c) => c.stage === stage)
