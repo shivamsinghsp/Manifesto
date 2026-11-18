@@ -14,15 +14,16 @@ cp .env.example .env.local   # then fill in values (see below)
 npm run dev                  # http://localhost:3000
 ```
 
-| Script                            | What it does                                                                                |
-| --------------------------------- | ------------------------------------------------------------------------------------------- |
-| `npm run dev`                     | Dev server                                                                                  |
-| `npm run build` / `npm start`     | Production build / serve it                                                                 |
-| `npm run lint`                    | ESLint (`next/core-web-vitals` + TypeScript), zero warnings allowed                         |
-| `npm run type-check`              | `tsc --noEmit`                                                                              |
-| `npm test`                        | Vitest unit tests (geo maths, contact validation, rate limiting, search, content integrity) |
-| `npm run test:e2e`                | Playwright suite on desktop + mobile (starts `npm start`; run `npm run build` first)        |
-| `npm run format` / `format:check` | Prettier (with Tailwind class sorting)                                                      |
+| Script                            | What it does                                                                                                                                               |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                     | Dev server                                                                                                                                                 |
+| `npm run build` / `npm start`     | Production build / serve it                                                                                                                                |
+| `npm run lint`                    | ESLint (`next/core-web-vitals` + TypeScript), zero warnings allowed                                                                                        |
+| `npm run type-check`              | `tsc --noEmit`                                                                                                                                             |
+| `npm test`                        | Vitest unit tests (geo maths, contact validation, rate limiting, search, content integrity)                                                                |
+| `npm run test:e2e`                | Playwright suite on desktop + mobile (starts `npm start`; run `npm run build` first)                                                                       |
+| `npm run format` / `format:check` | Prettier (with Tailwind class sorting)                                                                                                                     |
+| `npm run resume:pdf`              | Prints `/resume` to `public/resume.pdf` (A4, must be one page). Run `npm run build` first; set `PW_CHROMIUM_PATH` if Playwright's browser isn't installed. |
 
 CI (`.github/workflows/playwright.yml`) runs lint → types → unit → build → e2e on pushes and PRs to `main`.
 
@@ -63,7 +64,13 @@ All content is typed and lives in `src/content/`. Pages, metadata, JSON-LD, the 
 - Unverified dates: `confirmed: false` adds "(to be confirmed)". Approximate dates: `approximate: true` plus optional `startQualifier` / `endQualifier` ("mid", "early").
 - To add a project, add a `ProjectRole` under its engagement (or `independentProjects`) **and** a matching entry in `projects.ts`. The build fails if they don't match.
 - `src/content/career.test.ts` fails if any other source file states a month-year date, a "N months/weeks" duration or a year range. That keeps facts in one place.
-- `public/resume.pdf` is maintained by hand and is **not** generated from this file.
+- `public/resume.pdf` **is generated** from `career.ts` + `src/content/resume.ts` (bullet wording) by `npm run resume:pdf`. Regenerate and commit it whenever either file changes.
+
+### Privacy rules for assets
+
+- Never commit screenshots that show a confidential client's name or logo, or real people's names, contact details or faces. Use original illustrations or blurred copies (see `*-redacted.png`).
+- Files in `public/` can be downloaded by URL even when no page uses them, so remove sensitive originals rather than just unlinking them.
+- Feature switches live in `site.features` (`mascot` is pending owner approval).
 
 **Rules for content:** outcomes and metrics must be facts stated in the project record or the resume. Case-study sections are numbered automatically (01 Overview, 02 Outcomes, then each section in order). A `text` section written as `01\nProblem\n→ Solution` renders as structured challenge cards.
 

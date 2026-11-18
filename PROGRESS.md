@@ -2,7 +2,18 @@
 
 Resume point for the 3D playful upgrade. Details: `docs/AUDIT.md` (Phase 1), `docs/PLAN.md` (Phase 2), `docs/OWNER_TODO.md` (things only the owner can do).
 
-## Status: ⛔ waiting at Gate B (foundation + theme system + template migration)
+## Status: ✅ Gate B completion pass done · ⛔ waiting at Gate C (mascot approval)
+
+Full report: `docs/GATE_B_REPORT.md`.
+
+### Gate B completion pass (2026-11-18)
+
+- Career facts updated per the latest owner brief (Rapsora Full Stack Developer; Androcoders Software Engineering Intern May–Sep 2025 with internship/training phases; graduated Jul 2026, CGPA 7.24).
+- `/resume` web document + generated one-page ATS PDF (`npm run resume:pdf`).
+- Knowledge Hub verified-only scope; GPS-spoofing caveat; Kanpur screenshots redacted; client name scrubbed from the tree.
+- Mascot "Node" behind `site.features.mascot`, for Gate C.
+- Vercel: production deploy of `main` @ 0ef2530 succeeded; every branch preview succeeds.
+- Verification: vitest 38/38, e2e 55 passed / 3 skipped, matrix 156/156 clean, Lighthouse ≥ 91 / 100 / 100 / 100.
 
 ## Done
 
