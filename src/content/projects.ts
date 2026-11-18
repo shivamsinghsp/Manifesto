@@ -89,7 +89,7 @@ const projectData: ProjectData[] = [
     ],
     outcomes: [
       { value: "Solo", label: "Developer: architecture, frontend, APIs and data models" },
-      { value: "4", label: "Role levels: Admin 100 · HR 50 · Employee 20 · User 10" },
+      { value: "4", label: "Role levels: Super Admin 100 · Sub Admin 50 · Employee 20 · User 10" },
       { value: "Live", label: "Production deployment at shynr.in" },
     ],
     tags: [
@@ -157,7 +157,7 @@ const projectData: ProjectData[] = [
           "NextAuth.js v4",
           "Google OAuth / Credential Providers",
           "Custom In-Memory Rate Limiter",
-          "Role levels (Admin 100 · HR 50 · Employee 20 · User 10)",
+          "Role levels (Super Admin 100 · Sub Admin 50 · Employee 20 · User 10)",
           "Middleware Route Protection",
         ],
       },
@@ -442,13 +442,13 @@ const projectData: ProjectData[] = [
       "A SharePoint Online knowledge hub for a large enterprise client: a homepage, a filterable document library and an SME Finder, built as SPFx 1.20 web parts in React and TypeScript.",
     longDescription: [
       "The Knowledge Hub is a SharePoint Online application built from SPFx web parts. It brings an enterprise's templates, documents and subject-matter experts into one place, so people stop hunting across scattered sources.",
-      "During my engagement at Rapsora Technologies I contributed SPFx 1.20 web parts in React and TypeScript for the Homepage, the Library and the SME Finder (Phase 2B), including lazy loading of large lists with .getPaged(). The client is confidential, so it is not named here and the visuals are original illustrations rather than screenshots.",
+      "During my engagement at Rapsora Technologies I contributed SPFx 1.20 web parts in React and TypeScript for the Homepage, the Library and the SME Finder (Phase 2B), including lazy loading of large lists with .getPaged(), and worked with Microsoft Graph. The client is confidential, so it is not named here and the visuals are original illustrations rather than screenshots.",
     ],
     notice:
       "Confidential enterprise client. The client is not named, and no internal screenshots, data, URLs or people are shown.",
-    // Pending owner confirmation, not shown publicly: PnPjs, CAML, Microsoft Graph,
+    // Pending owner confirmation, not shown publicly: PnPjs, CAML,
     // live presence, the four-month duration claim, "0 external backends", "3 data sources", "5,000+" scale figure.
-    tags: ["SharePoint Online", "SPFx 1.20", "React", "TypeScript"],
+    tags: ["SharePoint Online", "SPFx 1.20", "React", "TypeScript", "Microsoft Graph"],
     outcomes: [
       { value: "3", label: "Areas contributed: Homepage, Library, SME Finder (Phase 2B)" },
       { value: "SPFx 1.20", label: "Web parts in React and TypeScript" },

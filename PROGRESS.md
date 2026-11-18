@@ -2,7 +2,17 @@
 
 Resume point for the 3D playful upgrade. Details: `docs/AUDIT.md` (Phase 1), `docs/PLAN.md` (Phase 2), `docs/OWNER_TODO.md` (things only the owner can do).
 
-## Status: ✅ Gate B completion pass done · ⛔ waiting at Gate C (mascot approval)
+## Status: ✅ Gate B complete · ✅ mascot approved (Gate C, owner answers applied)
+
+### Owner answers applied (2026-11-18)
+
+- Mascot kept; refined to a professional "screen face" (no googly eyes, smile or wave). Lighthouse `/` 92 light / 94 dark, CLS 0.009.
+- Shynr roles: Super Admin 100 · Sub Admin 50 · Employee 20 · User 10 (matches `auth-rbac.svg`).
+- Microsoft Graph added (skills, Knowledge Hub page, resume). Phone stays on the PDF. The "5,000+" figure stays unpublished.
+- AaoSeekhe: Jul 2026 – Aug 2026 (confirmed).
+- Resume PDF regenerated (one page).
+
+Next from the plan: pill nav + ⌘K palette, typed terminal hero, build-cube scene, labs, marquee + physics footer.
 
 Full report: `docs/GATE_B_REPORT.md`.
 

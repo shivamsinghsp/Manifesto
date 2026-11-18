@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useReducedMotion } from "@/lib/motion-preference"
 import { cn } from "@/lib/utils"
 
@@ -9,14 +9,12 @@ import { cn } from "@/lib/utils"
  * hero's build cube. Pure SVG + CSS (no canvas, no libraries).
  * - Eyes follow the pointer on fine-pointer devices only (one rAF per move).
  * - Blinks on a CSS timer. Everything is static under reduced motion or on touch.
- * - Decorative: aria-hidden, never focusable, never covers content (pointer-events off
- *   except the small hit area for the wave).
+ * - Decorative: aria-hidden, never focusable, pointer-events off (never blocks content).
  */
 export function Mascot({ className }: { className?: string }) {
   const reduced = useReducedMotion()
   const root = useRef<HTMLDivElement>(null)
   const pupils = useRef<SVGGElement>(null)
-  const [wave, setWave] = useState(false)
 
   useEffect(() => {
     if (reduced || !window.matchMedia("(pointer: fine)").matches) return
@@ -32,7 +30,7 @@ export function Mascot({ className }: { className?: string }) {
         const dx = e.clientX - (r.left + r.width / 2)
         const dy = e.clientY - (r.top + r.height * 0.45)
         const d = Math.hypot(dx, dy) || 1
-        const k = Math.min(1, d / 260) * 2.6
+        const k = Math.min(1, d / 260) * 2.2
         g.style.transform = `translate(${(dx / d) * k}px, ${(dy / d) * k}px)`
       })
     }
@@ -59,19 +57,19 @@ export function Mascot({ className }: { className?: string }) {
           <path
             d="M60 14 L100 34 L60 54 L20 34 Z"
             className="fill-surface stroke-accent"
-            strokeWidth="2"
+            strokeWidth="1.6"
             strokeLinejoin="round"
           />
           <path
             d="M20 34 L60 54 L60 104 L20 84 Z"
             className="fill-surface-alt stroke-accent"
-            strokeWidth="2"
+            strokeWidth="1.6"
             strokeLinejoin="round"
           />
           <path
             d="M100 34 L60 54 L60 104 L100 84 Z"
             className="fill-accent/15 stroke-accent"
-            strokeWidth="2"
+            strokeWidth="1.6"
             strokeLinejoin="round"
           />
           {/* antenna: a tiny "node" */}
@@ -85,35 +83,25 @@ export function Mascot({ className }: { className?: string }) {
             strokeLinecap="round"
           />
           <circle cx="60" cy="3" r="3.2" className="mascot-led fill-accent" />
-          {/* face on the left face */}
-          <g className="mascot-eyes">
-            <ellipse
-              cx="32"
-              cy="62"
-              rx="5.4"
-              ry="6.2"
-              className="fill-bg stroke-text/30"
+          {/* "Screen face" drawn flat, then skewed onto the cube's left face (isometric). */}
+          <g transform="skewY(26.565)">
+            <rect
+              x="25"
+              y="33"
+              width="30"
+              height="27"
+              rx="4"
+              className="fill-bg stroke-text/20"
               strokeWidth="1"
             />
-            <ellipse
-              cx="49"
-              cy="70"
-              rx="5.4"
-              ry="6.2"
-              className="fill-bg stroke-text/30"
-              strokeWidth="1"
-            />
-            <g ref={pupils} className="mascot-pupils">
-              <circle cx="32" cy="62.5" r="2.6" className="fill-text" />
-              <circle cx="49" cy="70.5" r="2.6" className="fill-text" />
+            <g className="mascot-eyes">
+              <g ref={pupils} className="mascot-pupils">
+                <rect x="31" y="40" width="5" height="9" rx="2.5" className="fill-accent" />
+                <rect x="44" y="40" width="5" height="9" rx="2.5" className="fill-accent" />
+              </g>
             </g>
+            <rect x="35.5" y="53" width="9" height="1.6" rx="0.8" className="fill-text/40" />
           </g>
-          <path
-            d="M33 79 Q40 85 47 82"
-            className="fill-none stroke-text/70"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
           {/* code glyph on the right face */}
           <path
             d="M72 66 L67 70 L72 74 M88 58 L93 62 L88 66 M84 54 L76 78"
@@ -123,16 +111,7 @@ export function Mascot({ className }: { className?: string }) {
             strokeLinejoin="round"
           />
         </g>
-        {/* waving hand (shown on hover/tap of the hit area) */}
-        <g className={cn("mascot-hand", wave && "is-waving")}>
-          <circle cx="106" cy="58" r="5.5" className="fill-surface stroke-accent" strokeWidth="2" />
-        </g>
       </svg>
-      <span
-        className="pointer-events-auto absolute inset-[18%] rounded-full"
-        onPointerEnter={() => setWave(true)}
-        onPointerLeave={() => setWave(false)}
-      />
     </div>
   )
 }

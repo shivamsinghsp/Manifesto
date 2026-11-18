@@ -67,7 +67,7 @@ export const resume = {
           meta: meta("shynr", "shynr.in"),
           bullets: [
             "Built a full-stack HRMS and public job portal with Next.js, React, TypeScript, MongoDB and NextAuth.js.",
-            "Implemented role-based authentication and authorisation (Admin, HR, Employee, User) across both domains.",
+            "Implemented role-based authentication and authorisation (Super Admin, Sub Admin, Employee, User) across both domains.",
             "Built GPS geofenced attendance (Haversine distance checks against office radii) and REST APIs for attendance, leave, announcements, job applications and users.",
           ],
         },
@@ -89,7 +89,7 @@ export const resume = {
           heading: "Enterprise SharePoint Knowledge Hub",
           meta: meta("sharepoint-knowledge-hub", "Confidential client"),
           bullets: [
-            "Contributed SPFx 1.20 web parts in React and TypeScript for the Homepage, Library and SME Finder (Phase 2B), with lazy loading of large lists via .getPaged().",
+            "Contributed SPFx 1.20 web parts in React and TypeScript for the Homepage, Library and SME Finder (Phase 2B), with lazy loading of large lists via .getPaged(); worked with Microsoft Graph.",
           ],
         },
         {
@@ -137,7 +137,15 @@ export const resume = {
     { label: "Databases", items: ["MongoDB (Mongoose)", "MySQL"] },
     {
       label: "Platforms",
-      items: ["SharePoint Online", "SPFx", "Sitecore CMS", "Vercel", "Cloudinary", "AWS (EC2, S3)"],
+      items: [
+        "SharePoint Online",
+        "SPFx",
+        "Microsoft Graph",
+        "Sitecore CMS",
+        "Vercel",
+        "Cloudinary",
+        "AWS (EC2, S3)",
+      ],
     },
     {
       label: "Tools & QA",

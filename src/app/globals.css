@@ -639,7 +639,7 @@ html[data-motion="reduce"] ::view-transition-new(*) {
   }
 }
 
-/* Mascot ("Node"): idle bob, blink, LED pulse, wave. All off under reduced motion. */
+/* Mascot ("Node"): idle bob, blink, LED pulse. All off under reduced motion. */
 .mascot {
   position: relative;
 }
@@ -649,15 +649,6 @@ html[data-motion="reduce"] ::view-transition-new(*) {
 .mascot-eyes {
   transform-box: fill-box;
   transform-origin: center;
-}
-.mascot-hand {
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: 0% 100%;
-  transition: opacity 200ms;
-}
-.mascot-hand.is-waving {
-  opacity: 1;
 }
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="reduce"]) .mascot:not([data-reduced]) .mascot-body {
@@ -669,9 +660,6 @@ html[data-motion="reduce"] ::view-transition-new(*) {
   html:not([data-motion="reduce"]) .mascot:not([data-reduced]) .mascot-led {
     animation: mascot-led 2.4s ease-in-out infinite;
   }
-  html:not([data-motion="reduce"]) .mascot:not([data-reduced]) .mascot-hand.is-waving {
-    animation: mascot-wave 0.9s ease-in-out infinite;
-  }
 }
 @keyframes mascot-bob {
   0%,
@@ -679,7 +667,7 @@ html[data-motion="reduce"] ::view-transition-new(*) {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
   }
 }
 @keyframes mascot-blink {
@@ -695,15 +683,6 @@ html[data-motion="reduce"] ::view-transition-new(*) {
 @keyframes mascot-led {
   50% {
     opacity: 0.35;
-  }
-}
-@keyframes mascot-wave {
-  0%,
-  100% {
-    transform: rotate(0deg) translateY(0);
-  }
-  50% {
-    transform: rotate(-18deg) translateY(-3px);
   }
 }
 

@@ -133,3 +133,14 @@ Ready for review on the preview deployment:
 - **Mascot "Node":** an original isometric cube with a face and a code glyph, bottom-left of the hero visual. SVG + CSS only, so no measurable performance cost. Eyes follow a mouse pointer; it blinks and bobs; it's static on touch and under Reduce Motion. Decorative (`aria-hidden`). It doesn't cover the headline, CTAs or step rail at any width. Turn it off with `site.features.mascot = false`.
 
 **Please confirm:** (a) keep the mascot as is, (b) change its look or position, or (c) remove it. Gate C stays open until you answer.
+
+## 13. Update: owner answers applied (Gate C)
+
+- **Mascot: approved and kept.** Refined for a professional look: the googly eyes, smile and wave are replaced by a "screen face" (display inset with LED-style eyes that blink and track the pointer). Still SVG + CSS, responsive and decorative. Lighthouse `/` mobile: 92 (light) / 94 (dark) performance, 100/100/100 for the rest, CLS 0.009.
+- **Shynr roles:** Super Admin 100 · Sub Admin 50 · Employee 20 · User 10 on the site, resume and knowledge base. This matches `public/diagrams/projects/shynr/auth-rbac.svg`. (The "three levels" heading in the owner's message was read as a typo, since the confirmed list has four.)
+- **Microsoft Graph:** confirmed as used in the SharePoint project. Added to the skills list, the Knowledge Hub tags and copy, and the resume. Where exactly it was used isn't stated, so no specific feature (e.g. presence) is claimed.
+- **Phone number:** stays on the PDF.
+- **AaoSeekhe:** Jul 2026 – Aug 2026 (confirmed). Now shown on the case study, career.log, knowledge base and resume.
+- **"5,000+":** remains unpublished.
+- Resume PDF regenerated: still one page, text-extractable, TrueType fonts.
+- Checks: vitest 38/38, e2e 55 passed / 3 skipped, build, lint and type-check clean.

@@ -77,7 +77,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
     keywords: ["auth", "authentication", "rbac", "authorization", "roles", "login", "oauth"],
     projectSlug: "shynr",
     answer:
-      "Shynr uses NextAuth.js for Google OAuth and credential login. Authorization is a numeric hierarchy (Admin 100 · HR 50 · Employee 20 · User 10), so permission checks are simple greater-than comparisons across the HRMS and job portal.",
+      "Shynr uses NextAuth.js for Google OAuth and credential login. Authorization is a numeric hierarchy (Super Admin 100 · Sub Admin 50 · Employee 20 · User 10), so permission checks are simple greater-than comparisons across the HRMS and job portal.",
     sourceSection: "AUTHENTICATION + RBAC",
   },
 
@@ -95,7 +95,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
     id: "aao-seekhe-overview",
     keywords: ["aao seekhe", "education", "stateless", "forms", "framer motion", "animations"],
     projectSlug: "aao-seekhe",
-    answer: `Shivam built AaoSeekhe as the solo full-stack developer at ${RAPSORA_SHORT} (dates to be confirmed): a multi-page education-services site with Framer Motion UI and serverless API routes using Zod validation, XSS sanitisation and Nodemailer email delivery. Live at aaoseekhe.com.`,
+    answer: `Shivam built AaoSeekhe as the solo full-stack developer at ${RAPSORA_SHORT} (${period("aao-seekhe")}): a multi-page education-services site with Framer Motion UI and serverless API routes using Zod validation, XSS sanitisation and Nodemailer email delivery. Live at aaoseekhe.com.`,
     sourceSection: "INTERACTIVE UI",
   },
   {
@@ -112,7 +112,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
     id: "sharepoint-overview",
     keywords: ["sharepoint", "spfx", "microsoft", "m365", "enterprise", "confidential"],
     projectSlug: "sharepoint-knowledge-hub",
-    answer: `During his ${RAPSORA_SHORT} engagement, Shivam contributed SPFx 1.20 web parts in React and TypeScript to an enterprise SharePoint Knowledge Hub: the Homepage, Library and SME Finder (Phase 2B). The client is confidential.`,
+    answer: `During his ${RAPSORA_SHORT} engagement, Shivam contributed SPFx 1.20 web parts in React and TypeScript to an enterprise SharePoint Knowledge Hub: the Homepage, Library and SME Finder (Phase 2B), and worked with Microsoft Graph. The client is confidential.`,
     sourceSection: "CONTEXT",
   },
   {

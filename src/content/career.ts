@@ -87,7 +87,7 @@ export const engagements: Engagement[] = [
       "Solo developer of the Shynr HRMS & Job Portal (Next.js, MongoDB, NextAuth, geofenced attendance).",
       "Sole developer of the Kanpur Architect Association website.",
       "Solo full-stack developer of AaoSeekhe.",
-      "Contributed SPFx 1.20 web parts (React, TypeScript) to an enterprise SharePoint Knowledge Hub.",
+      "Contributed SPFx 1.20 web parts (React, TypeScript, Microsoft Graph) to an enterprise SharePoint Knowledge Hub.",
       "Performed functional, workflow and regression testing (QA only) of the PLEDGE portal.",
     ],
     tags: [
@@ -98,6 +98,7 @@ export const engagements: Engagement[] = [
       "NextAuth.js",
       "SPFx",
       "SharePoint Online",
+      "Microsoft Graph",
       "Functional Testing",
       "Regression Testing",
     ],
@@ -140,7 +141,7 @@ export const engagements: Engagement[] = [
       {
         slug: "aao-seekhe",
         role: "Solo full-stack developer",
-        period: { start: null, end: null, confirmed: false },
+        period: { start: "2026-07", end: "2026-08", confirmed: true },
         summary:
           "Built the multi-page education-services site with validated enquiry forms and email delivery.",
       },
