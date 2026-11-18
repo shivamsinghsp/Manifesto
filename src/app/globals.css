@@ -704,6 +704,40 @@ html[data-motion="reduce"] ::view-transition-new(*) {
   font-weight: 500;
 }
 
+/* Marquee ticker */
+.marquee-row {
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover .marquee-row,
+.marquee:focus-within .marquee-row {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+html[data-motion="reduce"] .marquee-row {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion="full"]) .marquee-row {
+    animation: none;
+  }
+}
+
+/* Giant footer name */
+.footer-name {
+  font-size: clamp(3.5rem, 15vw, 15rem);
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(var(--c-text) / 0.18);
+  background: linear-gradient(180deg, rgb(var(--c-text) / 0.1), transparent 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  margin-bottom: -0.18em;
+}
+
 /* Corner-bracket frame on project imagery */
 .bracket {
   position: absolute;
