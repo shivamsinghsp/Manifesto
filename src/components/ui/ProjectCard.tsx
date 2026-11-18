@@ -1,4 +1,4 @@
-import Image from "next/image"
+import { ProjectMedia } from "./ProjectMedia"
 import { ArrowRight, ArrowUpRight } from "lucide-react"
 import { TransitionLink } from "@/components/motion/TransitionLink"
 import { TiltCard } from "./TiltCard"
@@ -26,18 +26,15 @@ export function ProjectCard({ project, featured = false, priority = false, class
           featured ? "aspect-[16/10] sm:aspect-[16/9]" : "aspect-[16/10]"
         )}
       >
-        <Image
-          src={project.heroImage.src}
-          alt={project.heroImage.alt}
-          fill
+        <ProjectMedia
+          image={project.heroImage}
           priority={priority}
+          parallax
           sizes={
             featured
               ? "(max-width: 1024px) 92vw, 680px"
               : "(max-width: 768px) 92vw, (max-width: 1280px) 46vw, 600px"
           }
-          className="object-cover object-top"
-          data-parallax-img
         />
       </div>
       <div

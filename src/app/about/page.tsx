@@ -1,4 +1,4 @@
-import { experiences } from "@/content/experience"
+import { education as educationEntries, periodLabel } from "@/content/career"
 import { site } from "@/content/site"
 import { ProfilePhoto } from "@/components/ui/ProfilePhoto"
 import { pageMetadata } from "@/lib/seo"
@@ -26,7 +26,7 @@ const principles = [
 ]
 
 export default function AboutPage() {
-  const education = experiences.filter((e) => e.type === "Education")
+  const education = educationEntries
   return (
     <>
       <section className="bg-atmosphere relative border-b border-border py-16 md:py-24">
@@ -111,14 +111,12 @@ export default function AboutPage() {
                   className="rounded-2xl border border-border bg-surface p-6 md:p-8"
                   data-reveal
                 >
-                  {e.dateRange && (
-                    <p className="text-mono-label text-text-secondary">{e.dateRange}</p>
-                  )}
+                  <p className="text-mono-label text-text-secondary">{periodLabel(e.period)}</p>
                   <h3 className="text-subheading mt-3 text-text">{e.title}</h3>
                   <p className="mt-1 font-mono text-xs uppercase tracking-wider text-accent-hover">
-                    {e.organization}
+                    {e.organization.name}
                   </p>
-                  <p className="text-body-small mt-4 text-text-secondary">{e.description}</p>
+                  <p className="text-body-small mt-4 text-text-secondary">{e.summary}</p>
                 </li>
               ))}
             </ul>

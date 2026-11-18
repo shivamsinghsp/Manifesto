@@ -2,10 +2,10 @@ import type { CSSProperties } from "react"
 import NextLink from "next/link"
 import { ArrowDown } from "lucide-react"
 import { projects } from "@/content/projects"
-import { experiences } from "@/content/experience"
+import { availability, education, rapsora, RAPSORA_SHORT, work } from "@/content/career"
 import { site } from "@/content/site"
 import { ProjectCard } from "@/components/ui/ProjectCard"
-import { Timeline } from "@/components/ui/Timeline"
+import { CareerLog } from "@/components/ui/CareerLog"
 import { CtaLink } from "@/components/ui/Link"
 import { SectionHeading } from "@/components/ui/SectionHeading"
 import { ProfilePhoto } from "@/components/ui/ProfilePhoto"
@@ -24,15 +24,6 @@ const line = (i: number) => ({ "--i": i }) as CSSProperties
 export default function Home() {
   const featured = projects.find((p) => p.slug === "shynr") ?? projects[0]
   const others = projects.filter((p) => p.slug !== featured.slug)
-  const recent = experiences
-    .filter((e) => e.type === "Work")
-    .slice(0, 2)
-    .map((e) => ({
-      date: e.dateRange,
-      title: e.title,
-      subtitle: e.organization,
-      description: e.description,
-    }))
 
   return (
     <>
@@ -250,13 +241,14 @@ export default function Home() {
               Where I&apos;ve been
             </h2>
             <p className="text-body-large mb-8 text-text-secondary">
-              My engineering work spans full-stack product development, enterprise platforms, and
-              interactive web applications.
+              {rapsora.title} at {RAPSORA_SHORT}, where I delivered {rapsora.projects?.length}{" "}
+              projects, and {work[1].title} at {work[1].organization.name} before that.{" "}
+              {availability.label}.
             </p>
             <CtaLink href="/experience">Full timeline</CtaLink>
           </div>
           <div className="col-span-full lg:col-span-7 lg:col-start-6">
-            <Timeline items={recent} />
+            <CareerLog items={[...work, ...education]} compact />
           </div>
         </div>
       </section>
@@ -309,8 +301,7 @@ export default function Home() {
             <span className="italic text-text-secondary">{site.ctaHeadline.emphasis}</span>
           </h2>
           <p className="text-body-large mx-auto mb-12 max-w-2xl text-text-secondary">
-            I&apos;m open to software engineering opportunities and technical collaborations. Send a
-            note and I&apos;ll get back to you.
+            {availability.detail} Send a note and I&apos;ll get back to you.
           </p>
           <Magnetic>
             <NextLink href="/contact" className={buttonClass("primary", "lg")}>

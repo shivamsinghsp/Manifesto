@@ -1,5 +1,8 @@
 import { GeoLab } from "@/components/engineering/playgrounds/GeoLab"
 import { pageMetadata } from "@/lib/seo"
+import { independentProjects, periodLabel } from "@/content/career"
+
+const hume = independentProjects.find((p) => p.slug === "hume-voice-assistant")!
 
 export const metadata = pageMetadata({
   title: "Engineering Playground",
@@ -64,11 +67,11 @@ export default function PlaygroundPage() {
                 <dt className="mb-1 font-mono text-[11px] uppercase text-text-tertiary">
                   Timeline
                 </dt>
-                <dd className="text-sm text-text">July 2025</dd>
+                <dd className="text-sm text-text">{periodLabel(hume.period)}</dd>
               </div>
               <div>
                 <dt className="mb-1 font-mono text-[11px] uppercase text-text-tertiary">Role</dt>
-                <dd className="text-sm text-text">Independent developer</dd>
+                <dd className="text-sm text-text">{hume.role}</dd>
               </div>
               <div>
                 <dt className="mb-1 font-mono text-[11px] uppercase text-text-tertiary">

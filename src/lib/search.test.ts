@@ -20,7 +20,7 @@ describe("searchPortfolio", () => {
 })
 
 describe("project content integrity", () => {
-  it("every project has outcomes and no internal 'Tier' labels", () => {
+  it("every project has outcomes and no internal Tier labels", () => {
     for (const p of projects) {
       expect(p.outcomes.length).toBeGreaterThan(0)
       expect(JSON.stringify(p)).not.toMatch(/Tier \d/)

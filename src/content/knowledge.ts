@@ -1,3 +1,44 @@
+import { site } from "@/content/site"
+import { projects } from "@/content/projects"
+import {
+  availability,
+  education,
+  engagements,
+  independentProjects,
+  periodLabel,
+  projectContext,
+  rapsora,
+  RAPSORA_SHORT,
+  work,
+  durationLabel,
+} from "@/content/career"
+
+const period = (slug: string) => {
+  const ctx = projectContext(slug)
+  return ctx ? periodLabel(ctx.projectRole.period) : "dates to be confirmed"
+}
+const edu = education[0]
+const hume = independentProjects[0]
+
+function experienceSummary() {
+  return work
+    .map((e) => {
+      const dur = durationLabel(e.period)
+      return `${e.title} at ${e.organization.name} (${periodLabel(e.period)}${dur ? `, ${dur}` : ""})${e.client ? ` for ${e.client}` : ""}`
+    })
+    .join("; ")
+    .concat(". The Rapsora engagement has ended and he is open to new opportunities.")
+}
+
+function roleSummary() {
+  const lines = engagements.flatMap((e) =>
+    (e.projects ?? []).map(
+      (p) => `${p.role} on ${projects.find((x) => x.slug === p.slug)?.title ?? p.slug}`
+    )
+  )
+  return `At ${RAPSORA_SHORT}: ${lines.join("; ")}.`
+}
+
 export interface KnowledgeEntry {
   id: string
   keywords: string[]
@@ -20,8 +61,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
       "primary developer",
     ],
     projectSlug: "shynr",
-    answer:
-      "Shivam built Shynr as a full-stack HRMS + Job Portal during his internship at Rapsora Technologies. As primary feature developer, he implemented the foundational platform in a 4-week core product sprint (33 commits) using Next.js 15, MongoDB, NextAuth, and Cloudinary, featuring geofenced attendance, RBAC, and an ATS pipeline.",
+    answer: `Shivam built Shynr, an HRMS + job portal, as the solo developer at ${RAPSORA_SHORT} (${period("shynr")}). It uses Next.js 15, MongoDB, NextAuth and Cloudinary, with geofenced attendance, RBAC and an ATS pipeline. Live at shynr.in.`,
     sourceSection: "CONTEXT",
   },
   {
@@ -37,7 +77,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
     keywords: ["auth", "authentication", "rbac", "authorization", "roles", "login", "oauth"],
     projectSlug: "shynr",
     answer:
-      "Shynr uses NextAuth.js for Google OAuth and credential login. Authorization uses a numeric hierarchy (Super Admin = 100, Employee = 20), allowing simple greater-than comparisons across the HRMS and Job Portal boundaries.",
+      "Shynr uses NextAuth.js for Google OAuth and credential login. Authorization is a numeric hierarchy (Admin 100 · HR 50 · Employee 20 · User 10), so permission checks are simple greater-than comparisons across the HRMS and job portal.",
     sourceSection: "AUTHENTICATION + RBAC",
   },
 
@@ -46,25 +86,8 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
     id: "kaa-overview",
     keywords: ["kaa", "kanpur", "architects", "association", "directory", "cms", "events"],
     projectSlug: "kanpur-architects-association",
-    answer:
-      "Shivam delivered the Kanpur Architects Association platform as an independent client project over 3.5 months. It serves three audiences with a public directory, member dashboard, and admin portal. Features include a custom MongoDB-backed CMS, geo-spatial search, and an ad/banner engine.",
+    answer: `Shivam developed the entire Kanpur Architect Association website as the sole developer, at ${RAPSORA_SHORT} (${period("kanpur-architects-association")}). It has public pages (executives, an A–Z members directory, membership, events calendar, members portal, contact) and an admin panel for members, events, leadership profiles, inquiries, applications and banner ad campaigns. Live at kanpurarchitects.in.`,
     sourceSection: "PUBLIC PLATFORM",
-  },
-  {
-    id: "kaa-geo-search",
-    keywords: ["geo search", "spatial", "2dsphere", "$near", "proximity", "mongodb geo"],
-    projectSlug: "kanpur-architects-association",
-    answer:
-      "The KAA architect directory uses MongoDB 2dsphere indexing. Stored coordinates allow $near queries to return architects sorted by proximity to the search location, combined with text and specialization filters.",
-    sourceSection: "GEO-SPATIAL SEARCH",
-  },
-  {
-    id: "kaa-cms",
-    keywords: ["cms", "content management", "isr", "cache", "invalidation", "revalidatepath"],
-    projectSlug: "kanpur-architects-association",
-    answer:
-      "The custom CMS in KAA uses MongoDB-backed schemas directly in Next.js. Content updates trigger targeted Next.js ISR (revalidatePath) from the service layer to immediately reflect changes without full rebuilds.",
-    sourceSection: "CUSTOM CMS",
   },
 
   // AAO SEEKHE
@@ -72,8 +95,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
     id: "aao-seekhe-overview",
     keywords: ["aao seekhe", "education", "stateless", "forms", "framer motion", "animations"],
     projectSlug: "aao-seekhe",
-    answer:
-      "Aao Seekhe is an independent multi-page educational platform built with Next.js, Framer Motion, and serverless API endpoints with Zod validation, XSS sanitization, and Nodemailer SMTP delivery.",
+    answer: `Shivam built AaoSeekhe as the solo full-stack developer at ${RAPSORA_SHORT} (dates to be confirmed): a multi-page education-services site with Framer Motion UI and serverless API routes using Zod validation, XSS sanitisation and Nodemailer email delivery. Live at aaoseekhe.com.`,
     sourceSection: "INTERACTIVE UI",
   },
   {
@@ -98,8 +120,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
       "confidential",
     ],
     projectSlug: "sharepoint-knowledge-hub",
-    answer:
-      "As an enterprise frontend contributor within the team, Shivam contributed to developing SPFx web parts using React, Fluent UI, and PnPjs—collaborating on the metadata-driven knowledge library and Microsoft Graph-powered SME directory within M365.",
+    answer: `During his ${RAPSORA_SHORT} engagement, Shivam contributed SPFx 1.20 web parts in React and TypeScript to an enterprise SharePoint Knowledge Hub: the Homepage, Library and SME Finder (Phase 2B). The client is confidential.`,
     sourceSection: "CONTEXT",
   },
   {
@@ -140,8 +161,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
       "quality assurance",
     ],
     projectSlug: "pledge-portal-qa",
-    answer:
-      "During his Rapsora internship, Shivam performed functional and regression testing on the Government of Uttar Pradesh's PLEDGE portal, verifying multi-tier role permissions, form validation, and documenting reproducible defect reports across staging releases.",
+    answer: `Shivam was QA only on PLEDGE, a DIEP (Government of Uttar Pradesh) portal for private industrial park development and MSME growth (${period("pledge-portal-qa")}, at ${RAPSORA_SHORT}). He did functional, workflow and regression testing across applicant, approver and admin roles. He did not build the portal. Public portal: pledgeup.in.`,
     sourceSection: "QA PROTOCOL",
   },
   {
@@ -164,19 +184,18 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
     id: "tech-mongodb",
     keywords: ["mongodb", "mongoose", "nosql", "database"],
     answer:
-      "Shivam has extensive experience with MongoDB, implementing 6 models in Shynr (HRMS/ATS entities) and 12 models in Kanpur Architects Association (custom CMS, directory, and ads). He uses Mongoose for schema modeling and leverages features like 2dsphere geospatial indexing.",
+      "Shivam has used MongoDB with Mongoose on Shynr (HRMS and ATS data) and on the Kanpur Architect Association website (members, events and admin content).",
   },
   {
     id: "tech-nextjs",
     keywords: ["next.js", "nextjs", "react", "app router", "ssr", "server components"],
     answer:
-      "Next.js App Router is Shivam's primary framework. He used it as a monolithic architecture for Shynr, a multi-audience platform with ISR cache invalidation for KAA, and a serverless API backend for Aao Seekhe.",
+      "Next.js App Router is Shivam's main framework: one application serving both the HRMS and job portal in Shynr, a public site plus admin panel for Kanpur Architect Association, and serverless form APIs for AaoSeekhe.",
   },
   {
     id: "role-ownership",
     keywords: ["role", "ownership", "solo", "responsibility", "contributions", "lead"],
-    answer:
-      "Shivam's work includes: Primary Feature Developer for Shynr (4-week core product sprint during Rapsora internship), Independent Full-Stack Developer for KAA (client delivery over 3.5 months), Full-Stack Developer for Aao Seekhe (independent project), Enterprise Contributor for SharePoint Knowledge Hub, and QA & Verification Engineer for PLEDGE Portal.",
+    answer: roleSummary(),
   },
   {
     id: "topic-automation",
@@ -191,7 +210,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
       "scripts",
     ],
     answer:
-      "Shivam has engineered several automated workflows, including GPS geofenced attendance verification in Shynr, serverless form validation with transactional email dispatch in Aao Seekhe, and automated ISR cache revalidation (revalidatePath) triggered on CMS publishing in KAA.",
+      "Examples of automated workflows Shivam has built: GPS geofenced attendance verification in Shynr, and serverless form validation with transactional email in AaoSeekhe.",
   },
   {
     id: "topic-ai-ml",
@@ -255,7 +274,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
       "prisma",
     ],
     answer:
-      "Shivam's primary database specialization is MongoDB / NoSQL, utilizing Mongoose for schema modeling, indexing strategies (including 2dsphere for geospatial queries), and relationship referencing. In enterprise settings, he has also worked with SharePoint Lists and CAML querying.",
+      "Shivam's primary database specialization is MongoDB / NoSQL, utilizing Mongoose for schema modeling, indexes and document references. In enterprise settings, he has also worked with SharePoint Lists and CAML querying.",
     sourceSection: "DATA STORAGE & MODELING",
   },
   {
@@ -291,15 +310,13 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
       "work history",
       "rapsora",
     ],
-    answer:
-      "Shivam completed a 6-month Software Engineering Internship at Rapsora Technologies (January–June 2026, delivering Shynr HRMS and conducting QA on the PLEDGE Portal) and a Web Developer Internship at Androcoders (developing 15+ pages with Sitecore CMS for Crowe Oman).",
+    answer: experienceSummary(),
     sourceSection: "WORK EXPERIENCE",
   },
   {
     id: "profile-education",
     keywords: ["education", "college", "degree", "university", "btech", "csjm", "academics", "gpa"],
-    answer:
-      "Shivam is pursuing his Bachelor of Technology (B.Tech) in Information Technology at Chhatrapati Shahu Ji Maharaj University (CSJM), Kanpur (2022–2026), building strong foundations in software engineering, data structures, algorithms, and system design.",
+    answer: `${edu.title} at ${edu.organization.name}, ${edu.organization.location} (${periodLabel(edu.period)}).`,
     sourceSection: "ACADEMIC BACKGROUND",
   },
   {
@@ -316,8 +333,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
       "opportunities",
       "contact",
     ],
-    answer:
-      "Shivam is currently open to software engineering and full-stack developer opportunities. He can be contacted directly via the contact form on this website or by email at shivamsinghabc439@gmail.com.",
+    answer: `${availability.label}: ${availability.detail} His ${RAPSORA_SHORT} engagement (${periodLabel(rapsora.period)}) has ended. Contact him through the form on this site or at ${site.email}.`,
     sourceSection: "STATUS & AVAILABILITY",
   },
   {
@@ -334,8 +350,7 @@ export const portfolioKnowledge: KnowledgeEntry[] = [
       "microphone",
       "streaming",
     ],
-    answer:
-      "Shivam built a Real-Time AI Voice Assistant as an independent experiment using Hume AI's Empathic Voice Interface (EVI) API. The project demonstrates real-time bidirectional voice interaction, live transcription, and emotional-cue detection through WebSocket streaming, built with React.js and TypeScript.",
+    answer: `Separately from his internships, Shivam built a real-time AI voice (calling) assistant on Hume AI's Empathic Voice Interface (EVI): bidirectional voice, live transcription and emotional cues over WebSockets. Date: ${periodLabel(hume.period)}.`,
     sourceSection: "ENGINEERING PLAYGROUND",
   },
   {

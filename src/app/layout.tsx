@@ -9,7 +9,7 @@ import { MOTION_BOOT_SCRIPT } from "@/lib/motion-preference"
 import { metadataBase, pageMetadata } from "@/lib/seo"
 import { SITE_URL, site } from "@/content/site"
 import { skillGroups } from "@/content/skills"
-import { experiences } from "@/content/experience"
+import { education } from "@/content/career"
 
 // Only the families needed for first paint are preloaded; the rest load on demand.
 const plexSerif = IBM_Plex_Serif({
@@ -52,7 +52,7 @@ export const viewport: Viewport = {
 }
 
 function JsonLd() {
-  const education = experiences.find((e) => e.type === "Education")
+  const edu = education[0]
   const data = {
     "@context": "https://schema.org",
     "@graph": [
@@ -78,8 +78,8 @@ function JsonLd() {
           addressRegion: "Uttar Pradesh",
           addressCountry: "IN",
         },
-        ...(education && {
-          alumniOf: { "@type": "CollegeOrUniversity", name: education.organization },
+        ...(edu && {
+          alumniOf: { "@type": "CollegeOrUniversity", name: edu.organization.name },
         }),
         knowsAbout: skillGroups.flatMap((g) => g.items).slice(0, 20),
         sameAs: [site.socials.github, site.socials.linkedin],
