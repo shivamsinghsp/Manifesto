@@ -6,6 +6,7 @@ import { Cursor } from "./Cursor"
 import { Preloader } from "./Preloader"
 import { RouteTransition } from "./RouteTransition"
 import { ViewTransitionListener } from "./TransitionLink"
+import { CommandPalette } from "@/components/command/CommandPalette"
 
 /** Global client-only enhancements. Everything here is optional polish. */
 export function ClientChrome() {
@@ -17,6 +18,7 @@ export function ClientChrome() {
       <RouteTransition />
       <Preloader />
       <Cursor />
+      <CommandPalette />
       <div aria-hidden="true" className="grain" />
     </>
   )
