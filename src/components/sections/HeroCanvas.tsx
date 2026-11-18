@@ -9,7 +9,7 @@ import { getPerfTier, type PerfTier } from "@/lib/device"
 import { useReducedMotion } from "@/lib/motion-preference"
 import { HeroFallback } from "./HeroFallback"
 
-const HeroScene = dynamic(() => import("@/components/three/HeroScene"), { ssr: false })
+const HeroScene = dynamic(() => import("@/components/three/BuildCubeScene"), { ssr: false })
 
 /** Decorative WebGL layer for the hero. The static SVG renders first and stays if WebGL is unavailable. */
 export function HeroCanvas() {

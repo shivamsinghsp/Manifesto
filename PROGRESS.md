@@ -2,7 +2,11 @@
 
 Resume point for the 3D playful upgrade. Details: `docs/AUDIT.md` (Phase 1), `docs/PLAN.md` (Phase 2), `docs/OWNER_TODO.md` (things only the owner can do).
 
-## Status: ✅ Gate B complete · ✅ mascot approved (Gate C, owner answers applied)
+## Status: ✅ COMPLETE: see `docs/FINAL_REPORT.md`
+
+Built in the final pass: pill nav + Ctrl/Cmd+K palette (lazy), build-cube hero, status chips, typed line, say-hi chip, profile.json card, four playground labs, project-card brackets and follow chips, count-up stats, marquee + matter-js footer sandbox, giant footer name. Final dates: Knowledge Hub Jun–Sep 2026, Hume Jun–Jul 2025. Verification: vitest 38/38, e2e 60/4 skipped, matrix 156/156 clean, Lighthouse ≥ 91 everywhere except the home page (median 92, range 88–95).
+
+## Status (previous): ✅ Gate B complete · ✅ mascot approved (Gate C, owner answers applied)
 
 ### Owner answers applied (2026-11-18)
 

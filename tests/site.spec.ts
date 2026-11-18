@@ -244,3 +244,37 @@ test("no confidential client name appears on the Knowledge Hub page", async ({ p
     )
   expect(imgs.some((s) => s.includes("sharepoint-knowledge-hub/0"))).toBe(false)
 })
+
+test("command palette opens with the keyboard and answers questions", async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, "keyboard shortcut")
+  await page.goto("/", { waitUntil: "networkidle" })
+  await page.keyboard.press("Control+k")
+  const input = page.getByPlaceholder(/Search pages and projects/)
+  await expect(input).toBeVisible()
+  await input.fill("geofencing")
+  await expect(page.getByRole("option").first()).toContainText(/Haversine|geolocation/i)
+  await page.keyboard.press("Escape")
+  await expect(input).toBeHidden()
+})
+
+test("playground labs enforce their rules", async ({ page }) => {
+  await page.goto("/playground")
+  await page.getByRole("radio", { name: /User 10/ }).click()
+  await expect(page.getByText("User (10) can perform 2 of 8 actions")).toBeVisible()
+  await page.getByRole("radio", { name: "Approver" }).click()
+  await page.getByRole("button", { name: "Approve" }).click()
+  await expect(page.getByText(/BLOCKED/).first()).toBeVisible()
+  const send = page.getByRole("button", { name: "Send request" })
+  for (let i = 0; i < 6; i++) await send.click()
+  await expect(page.getByText(/429 Too Many Requests/)).toBeVisible()
+})
+
+test("footer stack sandbox has an accessible list and a redrop button", async ({ page }) => {
+  await page.goto("/about")
+  await page.locator("#sandbox-h").scrollIntoViewIfNeeded()
+  await expect(page.getByRole("button", { name: /Redrop/ })).toBeVisible()
+  await expect(page.locator("footer ul.sr-only li").first()).toHaveText(/React/)
+})
