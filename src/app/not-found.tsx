@@ -13,7 +13,7 @@ export default function NotFound() {
   return (
     <section className="bg-blueprint flex min-h-[70vh] flex-col items-center justify-center border-b border-border py-24">
       <div className="container-x flex flex-col items-center text-center">
-        <p className="text-mono-label mb-6 text-accent-hover">{"// ERROR_404"}</p>
+        <p className="text-mono-label mb-6 text-accent-hover">{"ERROR_404"}</p>
         <h1 className="text-display mb-6">Page not found</h1>
         <p className="text-body-large mx-auto mb-12 max-w-lg text-text-secondary">
           The page you&apos;re looking for doesn&apos;t exist or has been moved.

@@ -36,7 +36,7 @@ export default function AboutPage() {
         />
         <div className="container-x relative">
           <p className="text-mono-label animate-reveal-fade mb-8 text-text-tertiary">
-            {"// 03. MANIFESTO"}
+            {"03. MANIFESTO"}
           </p>
           <h1 className="mb-10 font-display text-[clamp(3rem,1.5rem+7vw,7.5rem)] leading-[1.02] tracking-tight">
             <span className="line-mask">
@@ -67,7 +67,7 @@ export default function AboutPage() {
             <ProfilePhoto />
           </div>
           <div className="col-span-full md:col-span-5 lg:col-span-7 lg:col-start-6" data-reveal>
-            <p className="text-mono-label mb-3 text-text-tertiary">{"// 01. THE JOURNEY"}</p>
+            <p className="text-mono-label mb-3 text-text-tertiary">{"01. THE JOURNEY"}</p>
             <h2 id="journey-h" className="text-display-secondary mb-8 italic">
               The journey
             </h2>
@@ -100,7 +100,7 @@ export default function AboutPage() {
       {education.length > 0 && (
         <section aria-labelledby="edu-h" className="section-y border-b border-border bg-surface/60">
           <div className="container-x">
-            <p className="text-mono-label mb-3 text-text-tertiary">{"// 02. EDUCATION"}</p>
+            <p className="text-mono-label mb-3 text-text-tertiary">{"02. EDUCATION"}</p>
             <h2 id="edu-h" className="text-display-secondary mb-10">
               Education
             </h2>
@@ -132,7 +132,7 @@ export default function AboutPage() {
         <div className="grid-container gap-y-12">
           <div className="col-span-full md:col-span-3">
             <div className="md:sticky md:top-28">
-              <p className="text-mono-label mb-3 text-text-tertiary">{"// 03. PHILOSOPHY"}</p>
+              <p className="text-mono-label mb-3 text-text-tertiary">{"03. PHILOSOPHY"}</p>
               <h2 id="philosophy-h" className="text-display-secondary italic">
                 Philosophy
               </h2>

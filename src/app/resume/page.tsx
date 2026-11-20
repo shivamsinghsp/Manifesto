@@ -62,7 +62,7 @@ export default function ResumePage() {
     <div className="resume-page container-x grid gap-10 py-12 md:py-16 lg:grid-cols-[14rem_1fr]">
       {/* Sidebar: actions + "On this page" */}
       <aside className="resume-aside lg:sticky lg:top-28 lg:self-start" aria-label="Resume tools">
-        <p className="text-mono-label mb-4 text-text-tertiary">{"// RESUME.md"}</p>
+        <p className="text-mono-label mb-4 text-text-tertiary">{"RESUME.md"}</p>
         <div className="flex flex-wrap gap-2 lg:flex-col">
           <a
             href={site.resumePath}

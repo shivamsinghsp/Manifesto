@@ -5,8 +5,8 @@ import { useReducedMotion } from "@/lib/motion-preference"
 import { cn } from "@/lib/utils"
 
 /**
- * "Node" — an original mascot: a small isometric cube with a face, echoing the
- * hero's build cube. Pure SVG + CSS (no canvas, no libraries).
+ * "Node" — an original mascot: a small isometric cube with a face, a nod to the
+ * hero engine's plates. Pure SVG + CSS (no canvas, no libraries).
  * - Eyes follow the pointer on fine-pointer devices only (one rAF per move).
  * - Blinks on a CSS timer. Everything is static under reduced motion or on touch.
  * - Decorative: aria-hidden, never focusable, pointer-events off (never blocks content).

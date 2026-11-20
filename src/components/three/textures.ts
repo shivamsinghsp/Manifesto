@@ -17,7 +17,7 @@ export function createGlowTexture(size = 128) {
   return tex
 }
 
-/** Resolves the next/font family name for a CSS variable (e.g. --font-plex-mono). */
+/** Resolves the next/font family name for a CSS variable (e.g. --font-geist-mono). */
 export function cssFontFamily(variable: string, fallback = "monospace") {
   if (typeof document === "undefined") return fallback
   const v = getComputedStyle(document.documentElement).getPropertyValue(variable).trim()

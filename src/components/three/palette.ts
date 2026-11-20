@@ -41,17 +41,17 @@ function build(dark: boolean): ScenePalette {
   const get = (n: string, f: string) => (style ? read(style, n, f) : f)
   const getRgb = (n: string, f: string) => (style ? rgbVar(style, n, f) : f)
   const ink = dark ? get("--canvas-ink", "#f8fafc") : "#0a0f1d"
-  const accent = get("--canvas-accent", dark ? "#00e5ff" : "#00758a")
+  const accent = get("--canvas-accent", dark ? "#ff5e1f" : "#c2410c")
   const warn = getRgb("--c-warning", dark ? "#f59e0b" : "#b45309")
   const bad = getRgb("--c-error", dark ? "#f43f5e" : "#e11d48")
   return {
     dark,
     ink: new THREE.Color(ink),
-    line: new THREE.Color(get("--canvas-line", dark ? "#3b4a66" : "#a9b1bf")),
+    line: new THREE.Color(get("--canvas-line", dark ? "#4a4740" : "#b3ada2")),
     accent: new THREE.Color(accent),
-    accent2: new THREE.Color(get("--canvas-accent-2", dark ? "#6366f1" : "#4f46e5")),
-    ground: new THREE.Color(get("--canvas-ground", dark ? "#0e1322" : "#e7e3d9")),
-    fog: new THREE.Color(get("--canvas-fog", dark ? "#0a0e17" : "#f6f4ef")),
+    accent2: new THREE.Color(get("--canvas-accent-2", dark ? "#b8b2a6" : "#6f6a60")),
+    ground: new THREE.Color(get("--canvas-ground", dark ? "#161614" : "#e8e5dd")),
+    fog: new THREE.Color(get("--canvas-fog", dark ? "#0e0e0d" : "#f3f1ec")),
     glow: Number(get("--canvas-glow", dark ? "1" : "0.25")) || 0,
     blending: dark ? THREE.AdditiveBlending : THREE.NormalBlending,
     ok: new THREE.Color(accent),

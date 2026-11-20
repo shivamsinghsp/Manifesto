@@ -30,7 +30,7 @@ function Category({
         <div className="col-span-full md:col-span-3">
           <div className="flex items-center justify-between border-b border-border pb-4 md:sticky md:top-28 md:block md:border-b-0 md:border-t md:pt-4">
             <div>
-              <p className="text-mono-label mb-2 text-text-tertiary">{"// CATEGORY"}</p>
+              <p className="text-mono-label mb-2 text-text-tertiary">{"CATEGORY"}</p>
               <h2 id={id} className="text-display-secondary text-[2rem]">
                 {title}
               </h2>
@@ -62,7 +62,7 @@ export default function ExperiencePage() {
       <section className="bg-blueprint border-b border-border py-16 md:py-24">
         <div className="container-x">
           <p className="text-mono-label animate-reveal-fade mb-6 text-text-tertiary">
-            {"// 02. TIMELINE"}
+            {"02. TIMELINE"}
           </p>
           <h1 className="text-display mb-8">Experience</h1>
           <p className="text-body-large mb-8 max-w-2xl text-text-secondary">

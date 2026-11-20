@@ -2,7 +2,6 @@ import NextLink from "next/link"
 import { NAV_LINKS, site } from "@/content/site"
 import { EmailLink } from "@/components/ui/EmailLink"
 import { IntroPosterButton } from "@/components/ui/IntroPosterButton"
-import { Marquee } from "@/components/footer/Marquee"
 import { FooterSandbox } from "@/components/footer/FooterSandbox"
 import { skillGroups } from "@/content/skills"
 
@@ -14,13 +13,12 @@ const linkClass =
 export function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-border bg-footer pb-8">
-      <Marquee items={stack} />
       <section aria-labelledby="sandbox-h" className="container-x relative z-10 pb-4 pt-14">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-mono-label mb-2 text-text-tertiary">{"// stack.drop()"}</p>
+            <p className="text-mono-label mb-2 text-text-tertiary">Play</p>
             <h2 id="sandbox-h" className="text-headline text-text">
-              Things I build with
+              Throw the stack around
             </h2>
           </div>
           <p className="text-body-small max-w-sm text-text-secondary">
@@ -116,7 +114,12 @@ export function Footer() {
           <p className="text-mono-label text-text-tertiary">
             © {new Date().getFullYear()} {site.name}
           </p>
-          <p className="text-mono-label text-text-tertiary">{`// END_OF_DOCUMENT`}</p>
+          <a
+            href="#main"
+            className="text-mono-label inline-flex min-h-[44px] items-center text-text-tertiary transition-colors hover:text-accent-text"
+          >
+            Back to top ↑
+          </a>
         </div>
       </div>
       <p

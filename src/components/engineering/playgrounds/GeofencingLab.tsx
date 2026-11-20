@@ -252,7 +252,7 @@ export function GeofencingLab() {
             className={cn(
               "inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-xs transition-all duration-200",
               isSimulatingWalk
-                ? "shadow-[0_0_15px_rgb(var(--c-glow) / 0.3)] border-accent bg-accent/20 text-accent-text"
+                ? "border-accent bg-accent/20 text-accent-text"
                 : "border-border bg-chip text-text-secondary hover:bg-text/10 hover:text-text"
             )}
           >
@@ -575,7 +575,7 @@ export function GeofencingLab() {
               className={cn(
                 "rounded border px-2 py-0.5 font-mono text-[10px] transition-all",
                 distance < 10
-                  ? "border-text-tertiary bg-text/20 font-medium text-text shadow-[0_0_8px_var(--dg-line)]"
+                  ? "border-text-tertiary bg-text/20 font-medium text-text"
                   : "border-border bg-chip text-text-secondary hover:bg-text/10 hover:text-text"
               )}
             >
@@ -587,7 +587,7 @@ export function GeofencingLab() {
               className={cn(
                 "rounded border px-2 py-0.5 font-mono text-[10px] transition-all",
                 status === "in_range" && distance >= 10
-                  ? "shadow-[0_0_8px_rgb(var(--c-glow) / 0.25)] border-accent bg-accent/20 font-medium text-accent-text"
+                  ? "border-accent bg-accent/20 font-medium text-accent-text"
                   : "border-accent/20 bg-accent/5 text-accent-text/90 hover:bg-accent/15"
               )}
             >
@@ -599,7 +599,7 @@ export function GeofencingLab() {
               className={cn(
                 "rounded border px-2 py-0.5 font-mono text-[10px] transition-all",
                 status === "near_edge"
-                  ? "shadow-[0_0_8px_rgb(var(--c-warning) / 0.25)] border-warning bg-warning/20 font-medium text-warning"
+                  ? "border-warning bg-warning/20 font-medium text-warning"
                   : "border-warning/20 bg-warning/5 text-warning/90 hover:bg-warning/15"
               )}
             >
@@ -611,7 +611,7 @@ export function GeofencingLab() {
               className={cn(
                 "rounded border px-2 py-0.5 font-mono text-[10px] transition-all",
                 status === "outside"
-                  ? "shadow-[0_0_8px_rgb(var(--c-error) / 0.25)] border-error bg-error/20 font-medium text-error"
+                  ? "border-error bg-error/20 font-medium text-error"
                   : "border-error/20 bg-error/5 text-error/90 hover:bg-error/15"
               )}
             >
@@ -631,8 +631,7 @@ export function GeofencingLab() {
             <div
               className={cn(
                 "flex items-center gap-3 rounded-xl border p-3.5 transition-all duration-300",
-                status === "in_range" &&
-                  "shadow-[0_0_15px_rgb(var(--c-glow) / 0.12)] border-accent/30 bg-accent/10 text-accent-text",
+                status === "in_range" && "border-accent/30 bg-accent/10 text-accent-text",
                 status === "near_edge" &&
                   "shadow-[0_0_15px_rgb(var(--c-warning) / 0.15)] border-warning/30 bg-warning/10 text-warning",
                 status === "outside" &&

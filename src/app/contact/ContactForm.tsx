@@ -132,7 +132,7 @@ export function ContactForm() {
     <section className="section-y relative">
       <div className="grid-container gap-y-14">
         <div className="col-span-full lg:col-span-5">
-          <p className="text-mono-label mb-8 text-text-tertiary">{"// 04. CONTACT"}</p>
+          <p className="text-mono-label mb-8 text-text-tertiary">{"04. CONTACT"}</p>
           <h1 className="text-display mb-8">
             {site.ctaHeadline.lead} <br />
             <span className="italic text-text-secondary">{site.ctaHeadline.emphasis}</span>

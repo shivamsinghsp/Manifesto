@@ -33,10 +33,7 @@ export function ReadingProgress({ targetId }: { targetId: string }) {
       aria-hidden="true"
       className="fixed inset-x-0 top-[var(--header-h)] z-[890] h-[2px] bg-transparent"
     >
-      <div
-        ref={bar}
-        className="h-full origin-left scale-x-0 bg-accent-hover shadow-[0_0_10px_rgb(var(--c-glow)/0.6)]"
-      />
+      <div ref={bar} className="h-full origin-left scale-x-0 bg-accent-hover" />
     </div>
   )
 }
