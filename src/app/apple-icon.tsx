@@ -12,7 +12,7 @@ export default function AppleIcon() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#0A0E17",
+        background: "#0E0E0D",
         color: "#F1F3F7",
         fontSize: 92,
         fontWeight: 700,
@@ -21,7 +21,7 @@ export default function AppleIcon() {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        S<span style={{ color: "#00E5FF" }}>S</span>
+        S<span style={{ color: "#FF5E1F" }}>S</span>
       </div>
     </div>,
     size

@@ -4,7 +4,7 @@ import { ThemeProvider as NextThemes, useTheme } from "next-themes"
 import { useEffect, type ReactNode } from "react"
 
 export const THEME_STORAGE_KEY = "theme"
-const META_COLORS = { light: "#F6F4EF", dark: "#0A0E17" } as const
+const META_COLORS = { light: "#F3F1EC", dark: "#0E0E0D" } as const
 
 /** Keeps <meta name="theme-color"> in step with the chosen theme (not just the OS). */
 function ThemeColorSync() {

@@ -23,7 +23,7 @@ export function renderOgImage({
         flexDirection: "column",
         justifyContent: "space-between",
         padding: "64px 72px",
-        background: "#0A0E17",
+        background: "#0E0E0D",
         backgroundImage:
           "radial-gradient(ellipse 80% 60% at 20% 0%, rgba(0,184,212,0.22), transparent 70%), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)",
         backgroundSize: "100% 100%, 60px 60px, 60px 60px",
@@ -46,11 +46,11 @@ export function renderOgImage({
             width: 14,
             height: 14,
             borderRadius: 7,
-            background: "#00E5FF",
-            boxShadow: "0 0 18px #00E5FF",
+            background: "#FF5E1F",
+            boxShadow: "none",
           }}
         />
-        {`// ${eyebrow.toUpperCase()}`}
+        {`${eyebrow.toUpperCase()}`}
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <div
@@ -65,7 +65,7 @@ export function renderOgImage({
           {title}
         </div>
         {subtitle && (
-          <div style={{ fontSize: 30, color: "#A8AFBF", maxWidth: 980, lineHeight: 1.35 }}>
+          <div style={{ fontSize: 30, color: "#ACA79D", maxWidth: 980, lineHeight: 1.35 }}>
             {subtitle}
           </div>
         )}
@@ -79,8 +79,8 @@ export function renderOgImage({
                   fontSize: 18,
                   letterSpacing: 3,
                   padding: "8px 12px",
-                  border: `1px solid ${i === 2 ? "#00E5FF" : "rgba(255,255,255,0.15)"}`,
-                  color: i === 2 ? "#00E5FF" : "#A8AFBF",
+                  border: `1px solid ${i === 2 ? "#FF5E1F" : "rgba(255,255,255,0.15)"}`,
+                  color: i === 2 ? "#FF5E1F" : "#ACA79D",
                 }}
               >
                 {s}

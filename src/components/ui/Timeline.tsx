@@ -26,7 +26,7 @@ export function Timeline({
         <li key={i} className="relative py-7 pl-8 first:pt-0" data-reveal>
           <span
             aria-hidden="true"
-            className="absolute left-[-4px] top-9 h-[7px] w-[7px] bg-accent shadow-[0_0_10px_rgb(var(--c-glow)/0.5)] [li:first-child>&]:top-2"
+            className="absolute left-[-4px] top-9 h-[7px] w-[7px] bg-accent [li:first-child>&]:top-2"
           />
           {item.date && <p className="text-mono-label text-text-secondary">{item.date}</p>}
           <H className="text-subheading mt-2 text-text">{item.title}</H>

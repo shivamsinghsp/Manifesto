@@ -38,10 +38,7 @@ function Ring({
     () => cssColor(group.color, pal.hex.accent),
     [group.color, pal.hex.accent]
   )
-  const color = useMemo(
-    () => new THREE.Color(groupAccent),
-    [groupAccent]
-  )
+  const color = useMemo(() => new THREE.Color(groupAccent), [groupAccent])
   const labels = useMemo(
     () =>
       group.items.map((item) =>
@@ -141,7 +138,7 @@ function Cluster({
 
   useEffect(() => {
     let alive = true
-    document.fonts.ready.then(() => alive && setFontFamily(cssFontFamily("--font-plex-mono")))
+    document.fonts.ready.then(() => alive && setFontFamily(cssFontFamily("--font-geist-mono")))
     return () => {
       alive = false
     }

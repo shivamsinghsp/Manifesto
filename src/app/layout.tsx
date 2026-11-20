@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import Script from "next/script"
-import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google"
+import localFont from "next/font/local"
 import "./globals.css"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
@@ -13,27 +13,41 @@ import { SITE_URL, site } from "@/content/site"
 import { skillGroups } from "@/content/skills"
 import { education } from "@/content/career"
 
-// Only the families needed for first paint are preloaded; the rest load on demand.
-const plexSerif = IBM_Plex_Serif({
-  weight: ["400"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  variable: "--font-plex-serif",
+// Two families: Instrument Serif (display) + Geist (UI/body, with its mono cut for metadata).
+// Self-hosted from npm so builds never depend on reaching Google Fonts.
+const instrument = localFont({
+  src: [
+    {
+      path: "../../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2",
+      style: "normal",
+      weight: "400",
+    },
+    {
+      path: "../../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2",
+      style: "italic",
+      weight: "400",
+    },
+  ],
+  variable: "--font-instrument",
   display: "swap",
+  fallback: ["Times New Roman", "serif"],
 })
-const plexSans = IBM_Plex_Sans({
-  weight: ["400", "500"],
-  preload: false,
-  subsets: ["latin"],
-  variable: "--font-plex-sans",
+// Latin-subset variable files (~29 KB / ~23 KB). Not preloaded: the display face is the LCP text.
+const geistSans = localFont({
+  src: "../../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2",
+  weight: "100 900",
+  variable: "--font-geist-sans",
   display: "swap",
+  preload: false,
+  fallback: ["system-ui", "-apple-system", "Segoe UI", "sans-serif"],
 })
-const plexMono = IBM_Plex_Mono({
-  weight: ["400", "500"],
-  preload: false,
-  subsets: ["latin"],
-  variable: "--font-plex-mono",
+const geistMono = localFont({
+  src: "../../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2",
+  weight: "100 900",
+  variable: "--font-geist-mono",
   display: "swap",
+  preload: false,
+  fallback: ["ui-monospace", "SFMono-Regular", "monospace"],
 })
 
 export const metadata: Metadata = {
@@ -48,8 +62,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F6F4EF" },
-    { media: "(prefers-color-scheme: dark)", color: "#0A0E17" },
+    { media: "(prefers-color-scheme: light)", color: "#F3F1EC" },
+    { media: "(prefers-color-scheme: dark)", color: "#0E0E0D" },
   ],
   colorScheme: "dark light",
   width: "device-width",
@@ -110,7 +124,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${plexSerif.variable} ${plexSans.variable} ${plexMono.variable}`}
+      className={`${instrument.variable} ${geistSans.variable} ${geistMono.variable}`}
     >
       <body suppressHydrationWarning>
         <ThemeProvider>
