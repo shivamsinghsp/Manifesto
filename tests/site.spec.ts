@@ -115,6 +115,41 @@ test("mobile menu opens and closes with Escape", async ({ page, isMobile }) => {
   await expect(dialog).toBeHidden()
 })
 
+test("mobile menu covers the viewport, locks scroll and closes on navigation", async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(!isMobile, "mobile only")
+  await page.goto("/")
+  const open = page.getByRole("button", { name: "Open menu" })
+  const dialog = page.getByRole("dialog", { name: "Site menu" })
+  const vp = page.viewportSize()!
+  // Repeated open/close must behave the same every time.
+  for (let i = 0; i < 2; i++) {
+    await open.click()
+    await expect(dialog).toBeVisible()
+    // Regression: the overlay used to be sized to the blurred header pill, not the viewport.
+    const box = (await dialog.boundingBox())!
+    expect(Math.round(box.width)).toBe(vp.width)
+    expect(Math.round(box.height)).toBe(vp.height)
+    await expect(page.locator("html")).toHaveCSS("overflow", "hidden")
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    await expect(dialog.getByRole("link", { name: /Work/ })).toBeFocused()
+    await page.getByRole("button", { name: "Close menu" }).click()
+    await expect(dialog).toBeHidden()
+    await expect(open).toBeFocused()
+  }
+  await open.click()
+  await dialog.getByRole("link", { name: /Work/ }).click()
+  await expect(page).toHaveURL(/\/work$/)
+  await expect(dialog).toBeHidden()
+  await expect(page.locator("html")).not.toHaveCSS("overflow", "hidden")
+  // A link to the current page still closes the menu (pathname doesn't change).
+  await open.click()
+  await dialog.getByRole("link", { name: /Work/ }).click()
+  await expect(dialog).toBeHidden()
+})
+
 test("contact form validates on the client", async ({ page }) => {
   await page.goto("/contact")
   await page.getByRole("button", { name: /send message/i }).click()
@@ -175,13 +210,28 @@ test("project cards navigate to their case study (view-transition link)", async 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Kanpur Architect Association")
 })
 
+// Passed as an argument: addInitScript serialises the function, so closures don't survive.
+const fakeCores = (n: number) =>
+  Object.defineProperty(navigator, "hardwareConcurrency", { get: () => n })
+
 test("3D hero mounts after interaction without errors", async ({ page }) => {
+  // Pin a mid/high-tier profile: low-tier devices intentionally keep the static SVG.
+  await page.addInitScript(fakeCores, 8)
   const errors = trackErrors(page)
   await page.goto("/", { waitUntil: "networkidle" })
   await page.mouse.move(200, 300)
   await page.mouse.move(400, 320)
   await expect(page.locator("#hero canvas")).toHaveCount(1, { timeout: 15000 })
   expect(errors).toEqual([])
+})
+
+test("low-tier devices keep the static hero illustration", async ({ page }) => {
+  await page.addInitScript(fakeCores, 2)
+  await page.goto("/", { waitUntil: "networkidle" })
+  await page.mouse.move(200, 300)
+  await page.waitForTimeout(3000)
+  await expect(page.locator("#hero canvas")).toHaveCount(0)
+  await expect(page.locator("#hero svg").first()).toBeVisible()
 })
 
 test("saved theme applies before first paint and the menu switches it", async ({ page }) => {
