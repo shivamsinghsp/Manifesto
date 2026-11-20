@@ -20,7 +20,7 @@ export default function PlaygroundPage() {
     <article className="pb-16">
       <header className="bg-blueprint border-b border-border py-16 md:py-24">
         <div className="container-x">
-          <p className="text-mono-label mb-6 text-text-tertiary">{"// ENGINEERING_PLAYGROUND"}</p>
+          <p className="text-mono-label mb-6 text-text-tertiary">{"ENGINEERING_PLAYGROUND"}</p>
           <h1 className="text-display mb-8">Interactive models</h1>
           <p className="text-body-large max-w-3xl text-text-secondary">
             These are not production systems. They are lightweight interactive models demonstrating
@@ -33,7 +33,7 @@ export default function PlaygroundPage() {
         <div className="container-x">
           <div className="mb-10">
             <div className="mb-3 flex flex-wrap items-center gap-3">
-              <p className="text-mono-label text-text-tertiary">{"// MODEL_01"}</p>
+              <p className="text-mono-label text-text-tertiary">{"MODEL_01"}</p>
               <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-hover">
                 Interactive model
               </span>
@@ -55,7 +55,7 @@ export default function PlaygroundPage() {
         <div className="container-x">
           <div className="mb-8">
             <div className="mb-3 flex flex-wrap items-center gap-3">
-              <p className="text-mono-label text-text-tertiary">{"// MODEL_02"}</p>
+              <p className="text-mono-label text-text-tertiary">{"MODEL_02"}</p>
               <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-text">
                 Interactive model
               </span>
@@ -76,7 +76,7 @@ export default function PlaygroundPage() {
         <div className="container-x">
           <div className="mb-8">
             <div className="mb-3 flex flex-wrap items-center gap-3">
-              <p className="text-mono-label text-text-tertiary">{"// MODEL_03"}</p>
+              <p className="text-mono-label text-text-tertiary">{"MODEL_03"}</p>
               <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-text">
                 Interactive model
               </span>
@@ -97,7 +97,7 @@ export default function PlaygroundPage() {
         <div className="container-x">
           <div className="mb-8">
             <div className="mb-3 flex flex-wrap items-center gap-3">
-              <p className="text-mono-label text-text-tertiary">{"// MODEL_04"}</p>
+              <p className="text-mono-label text-text-tertiary">{"MODEL_04"}</p>
               <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-text">
                 Interactive model
               </span>
@@ -118,7 +118,7 @@ export default function PlaygroundPage() {
         <div className="container-x">
           <div className="mb-8">
             <div className="mb-3 flex flex-wrap items-center gap-3">
-              <p className="text-mono-label text-text-tertiary">{"// MODEL_05"}</p>
+              <p className="text-mono-label text-text-tertiary">{"MODEL_05"}</p>
               <span className="rounded border border-accent/30 bg-accent/5 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-accent-text">
                 Interactive model
               </span>
@@ -139,7 +139,7 @@ export default function PlaygroundPage() {
         <div className="container-x">
           <div className="mb-10">
             <div className="mb-3 flex flex-wrap items-center gap-3">
-              <p className="text-mono-label text-text-tertiary">{"// EXPERIMENT_06"}</p>
+              <p className="text-mono-label text-text-tertiary">{"EXPERIMENT_06"}</p>
               <span className="rounded border border-border bg-surface-alt px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-text-secondary">
                 Experiment
               </span>

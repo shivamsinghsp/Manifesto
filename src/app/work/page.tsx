@@ -18,7 +18,7 @@ export default function WorkPage() {
       <section className="bg-blueprint border-b border-border py-16 md:py-24">
         <div className="container-x">
           <p className="text-mono-label animate-reveal-fade mb-6 text-text-tertiary">
-            {"// 01. ARCHIVE"}
+            {"01. ARCHIVE"}
           </p>
           <h1 className="text-display mb-8">Selected Work</h1>
           <p className="text-body-large max-w-2xl text-text-secondary">

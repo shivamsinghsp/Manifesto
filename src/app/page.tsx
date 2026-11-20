@@ -40,24 +40,23 @@ export default function Home() {
           <div className="grid-container h-full items-center gap-y-10 py-12 md:py-16 lg:py-0">
             <div className="relative z-10 col-span-full flex flex-col items-start lg:col-span-6">
               <ul
-                className="animate-reveal-fade mb-4 flex flex-wrap items-center gap-2"
+                className="animate-reveal-fade mb-5 flex flex-col gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-text-secondary"
                 aria-label="Status"
               >
-                <li className="inline-flex min-h-[30px] items-center gap-2 rounded-full border border-success/40 bg-success/10 px-3 font-mono text-[11px] text-text">
+                <li className="inline-flex items-center gap-2 text-text">
                   <span aria-hidden="true" className="relative inline-flex h-2 w-2">
                     <span className="absolute inset-0 rounded-full bg-success opacity-60 motion-safe:animate-ping" />
                     <span className="relative h-2 w-2 rounded-full bg-success" />
                   </span>
                   {availability.label}
                 </li>
-                <li className="inline-flex min-h-[30px] items-center rounded-full border border-border bg-chip px-3 font-mono text-[11px] text-chip-text">
-                  ~/shivam · Kanpur, IN
-                </li>
-                <li className="inline-flex min-h-[30px] items-center rounded-full border border-border bg-chip px-3 font-mono text-[11px] text-chip-text">
-                  {site.jobTitle} · Full-stack
-                </li>
-                <li>
-                  <SayHiChip className="inline-flex min-h-[30px] items-center gap-1.5 rounded-full border border-dashed border-border px-3 font-mono text-[11px] text-text-secondary transition-colors hover:border-accent hover:text-accent-text" />
+                <li className="flex flex-wrap items-center gap-x-2 gap-y-2">
+                  <span>Kanpur, IN</span>
+                  <span aria-hidden="true" className="text-text-tertiary">
+                    ·
+                  </span>
+                  <span>{site.jobTitle}, full-stack</span>
+                  <SayHiChip className="ml-1 inline-flex min-h-[32px] items-center gap-1.5 rounded-full border border-dashed border-border px-3 normal-case tracking-normal text-text-secondary transition-colors hover:border-accent hover:text-accent-text" />
                 </li>
               </ul>
               <div className="mb-6 h-5 w-full overflow-hidden">
@@ -128,7 +127,7 @@ export default function Home() {
       </section>
 
       {/* ── 01 Featured ── */}
-      <section id="work" aria-labelledby="featured-h" className="section-y border-b border-border">
+      <section id="work" aria-labelledby="featured-h" className="section-y">
         <div className="container-x">
           <SectionHeading
             id="featured-h"
@@ -146,7 +145,7 @@ export default function Home() {
       <section
         id="explore"
         aria-labelledby="explore-h"
-        className="section-y relative overflow-hidden border-b border-border"
+        className="section-y relative overflow-hidden"
       >
         <div
           aria-hidden="true"
@@ -161,10 +160,7 @@ export default function Home() {
       </section>
 
       {/* ── 03 Recent ── */}
-      <section
-        aria-labelledby="recent-h"
-        className="section-y border-b border-border bg-surface/60"
-      >
+      <section aria-labelledby="recent-h" className="section-y bg-surface/60">
         <div className="container-x">
           <SectionHeading
             id="recent-h"
@@ -183,11 +179,7 @@ export default function Home() {
       </section>
 
       {/* ── 04 Stack ── */}
-      <section
-        id="stack"
-        aria-labelledby="stack-h"
-        className="section-y relative overflow-hidden border-b border-border"
-      >
+      <section id="stack" aria-labelledby="stack-h" className="section-y relative overflow-hidden">
         <div className="container-x">
           <SectionHeading id="stack-h" label="04. STACK" title="Tools I build with" />
           <SkillsSection />
@@ -195,7 +187,7 @@ export default function Home() {
       </section>
 
       {/* ── 05 Labs ── */}
-      <section id="labs" aria-labelledby="labs-h" className="section-y border-b border-border">
+      <section id="labs" aria-labelledby="labs-h" className="section-y">
         <div className="container-x">
           <SectionHeading
             id="labs-h"
@@ -272,10 +264,10 @@ export default function Home() {
       </section>
 
       {/* ── 06 Background ── */}
-      <section id="experience" aria-labelledby="bg-h" className="section-y border-b border-border">
+      <section id="experience" aria-labelledby="bg-h" className="section-y">
         <div className="grid-container gap-y-12">
           <div className="col-span-full lg:col-span-4" data-reveal>
-            <p className="text-mono-label mb-3 text-text-tertiary">{"// 06. BACKGROUND"}</p>
+            <p className="text-mono-label mb-3 text-text-tertiary">{"06. BACKGROUND"}</p>
             <h2 id="bg-h" className="text-display-secondary mb-6">
               Where I&apos;ve been
             </h2>
@@ -293,17 +285,13 @@ export default function Home() {
       </section>
 
       {/* ── 07 About ── */}
-      <section
-        id="about"
-        aria-labelledby="about-h"
-        className="section-y border-b border-border bg-surface/60"
-      >
+      <section id="about" aria-labelledby="about-h" className="section-y bg-surface/60">
         <div className="grid-container items-center gap-y-10">
           <div className="col-span-full w-full min-w-0 lg:col-span-6" data-reveal>
             <ProfileCard />
           </div>
           <div className="col-span-full lg:col-span-5 lg:col-start-8" data-reveal>
-            <p className="text-mono-label mb-3 text-text-tertiary">{"// 07. ABOUT"}</p>
+            <p className="text-mono-label mb-3 text-text-tertiary">{"07. ABOUT"}</p>
             <h2 id="about-h" className="text-display-secondary mb-6">
               Systems <span className="italic text-text-secondary">over</span> symptoms.
             </h2>

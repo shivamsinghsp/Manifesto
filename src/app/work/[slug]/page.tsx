@@ -233,7 +233,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
             </NextLink>
           </div>
           <div className="col-span-full mb-12 lg:col-span-9">
-            <p className="text-mono-label animate-reveal-up mb-5 text-text-tertiary">{`// CASE STUDY · ${project.category}`}</p>
+            <p className="text-mono-label animate-reveal-up mb-5 text-text-tertiary">{`CASE STUDY · ${project.category}`}</p>
             <h1 className="text-display mb-6">{project.title}</h1>
             <p className="text-body-large max-w-3xl text-text-secondary">
               {project.shortDescription}
